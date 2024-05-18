@@ -1,4 +1,4 @@
-package org.example.engine.activity;
+package org.example.engine.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

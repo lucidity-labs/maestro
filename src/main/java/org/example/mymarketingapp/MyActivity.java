@@ -9,6 +9,6 @@ public class MyActivity {
     }
 
     public void doSomething() {
-        System.out.println(this + " is doing something with " + someClass);
+        System.out.println(this + " is interacting with " + someClass);
     }
 }

@@ -1,11 +1,9 @@
-package org.example.engine;
+package org.example.engine.api;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
-import org.example.engine.activity.Activity;
-import org.example.engine.workflow.Workflow;
-import org.example.engine.workflow.WorkflowInterceptor;
+import org.example.engine.internal.WorkflowInterceptor;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package org.example.engine.workflow;
+package org.example.engine.api;
 
 public interface Workflow {
 

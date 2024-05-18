@@ -1,4 +1,4 @@
-package org.example.engine.workflow;
+package org.example.engine.internal;
 
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
