@@ -8,7 +8,8 @@ public class MyWorkflow implements Workflow {
     @Activity
     private MyActivity myActivity;
 
-    public void start() {
+    @Override
+    public <T> void start(T input) {
         myActivity.doSomething();
     }
 }

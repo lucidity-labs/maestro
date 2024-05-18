@@ -4,10 +4,11 @@ import org.example.engine.Maestro;
 import org.example.mymarketingapp.MyActivity;
 import org.example.mymarketingapp.MyWorkflow;
 import org.example.mymarketingapp.SomeClass;
+import org.example.mymarketingapp.SomeInput;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Maestro.registerActivity(new MyActivity(new SomeClass()));
-        Maestro.newWorkflow(MyWorkflow.class).start();
+        Maestro.newWorkflow(MyWorkflow.class).start(new SomeInput());
     }
 }
