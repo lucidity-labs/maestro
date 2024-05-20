@@ -1,4 +1,4 @@
-package org.example;
+package org.example.mymarketingapp;
 
 import org.example.engine.api.Maestro;
 import org.example.engine.api.Workflow;
