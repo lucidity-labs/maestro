@@ -1,16 +1,21 @@
 package org.example;
 
 import org.example.engine.api.Maestro;
-import org.example.mymarketingapp.MyActivity;
-import org.example.mymarketingapp.MyWorkflow;
-import org.example.mymarketingapp.SomeClass;
-import org.example.mymarketingapp.SomeInput;
+import org.example.engine.api.Workflow;
+import org.example.mymarketingapp.activity.Foo;
+import org.example.mymarketingapp.activity.MyActivity;
+import org.example.mymarketingapp.activity.MyActivityImpl;
+import org.example.mymarketingapp.workflow.MyWorkflow;
+import org.example.mymarketingapp.workflow.SomeInput;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Maestro.registerActivity(new MyActivity(new SomeClass()));
+        MyActivity myActivity = new MyActivityImpl(new Foo());
 
-        MyWorkflow myWorkflow = Maestro.newWorkflow(MyWorkflow.class);
-        myWorkflow.start(new SomeInput());
+        Maestro.registerActivity(myActivity);
+
+        Workflow<SomeInput> workflow = Maestro.newWorkflow(MyWorkflow.class);
+
+        workflow.start(new SomeInput());
     }
 }

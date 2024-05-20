@@ -1,53 +1,79 @@
 package org.example.engine.api;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.implementation.MethodDelegation;
-import net.bytebuddy.matcher.ElementMatchers;
-import org.example.engine.internal.WorkflowInterceptor;
-
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Maestro {
 
-    private static Map<Class<?>, Object> typeToActivity = new HashMap<>();
+    private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
 
     public static void registerActivity(Object activity) {
-        typeToActivity.put(activity.getClass(), activity);
+        typeToActivity.put(getInterface(activity.getClass()), proxyActivity(activity));
     }
 
-    public static <T extends Workflow> T newWorkflow(Class<T> clazz) throws Exception {
-        return createProxyAndInjectFields(clazz);
+    @SuppressWarnings("unchecked")
+    public static <T extends Workflow<?>> T newWorkflow(Class<T> clazz) throws Exception {
+        T instance = clazz.getDeclaredConstructor().newInstance();
+        populateAnnotatedFields(instance);
+
+        return (T) Proxy.newProxyInstance(
+                clazz.getClassLoader(),
+                new Class<?>[]{Workflow.class},
+                new WorkflowInvocationHandler(instance)
+        );
     }
 
     private static <T> T getActivity(Class<T> activityType) {
         return activityType.cast(typeToActivity.get(activityType));
     }
 
-    private static <T extends Workflow> T createProxyAndInjectFields(Class<T> clazz) throws Exception {
-        Class<? extends T> proxyClass = new ByteBuddy()
-                .subclass(clazz)
-                .method(ElementMatchers.isDeclaredBy(clazz))
-                .intercept(MethodDelegation.to(WorkflowInterceptor.class))
-                .make()
-                .load(clazz.getClassLoader())
-                .getLoaded();
+    @SuppressWarnings("unchecked")
+    private static <T> T proxyActivity(T instance) {
+        return (T) Proxy.newProxyInstance(
+                instance.getClass().getClassLoader(),
+                new Class<?>[]{getInterface(instance.getClass())},
+                new ActivityInvocationHandler(instance)
+        );
+    }
 
-        T proxyInstance = proxyClass.getDeclaredConstructor().newInstance();
+    private static Class<?> getInterface(Class<?> clazz) {
+        Class<?>[] interfaces = clazz.getInterfaces();
 
-        populateAnnotatedFields(proxyInstance);
+        if (interfaces.length != 1)
+            throw new IllegalArgumentException("The class must implement exactly one interface");
 
-        return proxyInstance;
+        return interfaces[0];
     }
 
     private static void populateAnnotatedFields(Object instance) throws Exception {
-        Field[] fields = instance.getClass().getSuperclass().getDeclaredFields();
+        Field[] fields = instance.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Activity.class)) {
                 field.setAccessible(true);
-                field.set(instance, getActivity(field.getType())); // TODO: implement support for getting the bean of that type from different DI libs/frameworks (spring, CDI)
+                field.set(instance, getActivity(field.getType()));
             }
+        }
+    }
+
+    private record WorkflowInvocationHandler(Object target) implements InvocationHandler {
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            System.out.println("Intercepted method call: " + method.getName());
+            return method.invoke(target, args);
+        }
+    }
+
+    private record ActivityInvocationHandler(Object target) implements InvocationHandler {
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            System.out.println("Intercepted method call: " + method.getName());
+            return method.invoke(target, args);
         }
     }
 }

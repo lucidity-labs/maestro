@@ -1,6 +1,6 @@
 package org.example.engine.api;
 
-public interface Workflow {
+public interface Workflow<T> {
 
-    <T> void start(T input);
+    void start(T input);
 }
