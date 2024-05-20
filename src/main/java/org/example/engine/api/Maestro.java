@@ -11,6 +11,7 @@ public class Maestro {
 
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
 
+    // TODO: maybe expose another method accepting activity options as second param
     public static void registerActivity(Object activity) {
         typeToActivity.put(getInterface(activity.getClass()), proxyActivity(activity));
     }
