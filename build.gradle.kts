@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.postgresql:postgresql:42.7.3")
+    implementation("com.zaxxer:HikariCP:5.1.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

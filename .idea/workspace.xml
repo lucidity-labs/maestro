@@ -5,11 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="added comment">
-      <change afterPath="$PROJECT_DIR$/script/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/script/maestro.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script/maestro.sql" beforeDir="false" afterPath="$PROJECT_DIR$/script/maestro.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,12 +32,17 @@
         <option value="AnnotationType" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -42,25 +52,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.maestro [:Main.main()].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.maestro [:Main.main()].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.mymarketingapp.Main" />
@@ -98,7 +109,8 @@
       <option name="presentableId" value="Default" />
       <updated>1715917900887</updated>
       <workItem from="1715917901900" duration="36148000" />
-      <workItem from="1716334881445" duration="2554000" />
+      <workItem from="1716334881445" duration="6830000" />
+      <workItem from="1716921185924" duration="2763000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />
