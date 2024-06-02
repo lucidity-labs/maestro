@@ -6,7 +6,7 @@ import org.example.mymarketingapp.activity.Foo;
 import org.example.mymarketingapp.activity.MyActivity;
 import org.example.mymarketingapp.activity.MyActivityImpl;
 import org.example.mymarketingapp.workflow.MyWorkflow;
-import org.example.mymarketingapp.workflow.SomeInput;
+import org.example.mymarketingapp.workflow.SomeWorkflowInput;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -14,8 +14,8 @@ public class Main {
 
         Maestro.registerActivity(myActivity);
 
-        Workflow<SomeInput> workflow = Maestro.newWorkflow(MyWorkflow.class);
+        Workflow<SomeWorkflowInput> workflow = Maestro.newWorkflow(MyWorkflow.class);
 
-        workflow.start(new SomeInput());
+        workflow.start(new SomeWorkflowInput("something"));
     }
 }

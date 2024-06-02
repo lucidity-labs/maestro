@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="added comment">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Datasource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/activity/SomeActivityInput.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/activity/SomeActivityOutput.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/MyWorkflow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/MyWorkflow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/SomeInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/SomeWorkflowInput.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +49,7 @@
         <option value="AnnotationType" />
         <option value="Interface" />
         <option value="Record" />
+        <option value="Kotlin Class" />
         <option value="Class" />
       </list>
     </option>
@@ -82,6 +90,11 @@
     ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.example.mymarketingapp.activity" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.mymarketingapp.Main" />
@@ -120,7 +133,7 @@
       <updated>1715917900887</updated>
       <workItem from="1715917901900" duration="36148000" />
       <workItem from="1716334881445" duration="6830000" />
-      <workItem from="1716921185924" duration="4398000" />
+      <workItem from="1716921185924" duration="7297000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />

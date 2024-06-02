@@ -20,5 +20,5 @@ CREATE TABLE event
     input_data JSON,
     output_data JSON,
     status status NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
