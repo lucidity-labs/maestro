@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="added comment">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script/maestro.sql" beforeDir="false" afterPath="$PROJECT_DIR$/script/maestro.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,13 +19,30 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="maestro" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="AnnotationType" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -110,7 +120,7 @@
       <updated>1715917900887</updated>
       <workItem from="1715917901900" duration="36148000" />
       <workItem from="1716334881445" duration="6830000" />
-      <workItem from="1716921185924" duration="2763000" />
+      <workItem from="1716921185924" duration="4398000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />
