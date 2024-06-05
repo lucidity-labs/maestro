@@ -1,5 +1,9 @@
 package org.example.engine.api;
 
+import org.example.engine.internal.Util;
+import org.example.engine.internal.WorkflowContext;
+import org.example.mymarketingapp.workflow.Workflow;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -8,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Maestro {
-
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
 
     // TODO: maybe expose another method accepting activity options as second param
@@ -17,14 +20,14 @@ public class Maestro {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Workflow<?>> T newWorkflow(Class<T> clazz) throws Exception {
+    public static <T extends Workflow<?>> T newWorkflow(Class<T> clazz, WorkflowOptions options) throws Exception {
         T instance = clazz.getDeclaredConstructor().newInstance();
         populateAnnotatedFields(instance);
 
         return (T) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
                 new Class<?>[]{Workflow.class},
-                new WorkflowInvocationHandler(instance)
+                new WorkflowInvocationHandler(instance, options)
         );
     }
 
@@ -44,6 +47,7 @@ public class Maestro {
     private static Class<?> getInterface(Class<?> clazz) {
         Class<?>[] interfaces = clazz.getInterfaces();
 
+        // TODO: let's instead require the user annotate the activity interface with our custom annotation
         if (interfaces.length != 1)
             throw new IllegalArgumentException("The class must implement exactly one interface");
 
@@ -60,12 +64,23 @@ public class Maestro {
         }
     }
 
-    private record WorkflowInvocationHandler(Object target) implements InvocationHandler {
+    private record WorkflowInvocationHandler(Object target, WorkflowOptions options) implements InvocationHandler {
+
+        private static final ThreadLocal<WorkflowContext> workflowContextThreadLocal = new ThreadLocal<>();
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            System.out.println("Intercepted method call: " + method.getName());
-            return method.invoke(target, args);
+            if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
+                workflowContextThreadLocal.set(new WorkflowContext(options.workflowId()));
+
+                System.out.println("Intercepted method call: " + method.getName());
+                Object returnValue = method.invoke(target, args);
+
+                workflowContextThreadLocal.remove();
+                return returnValue;
+            }
+
+            return null;
         }
     }
 

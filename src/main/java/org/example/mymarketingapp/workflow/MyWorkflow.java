@@ -1,7 +1,6 @@
 package org.example.mymarketingapp.workflow;
 
 import org.example.engine.api.Activity;
-import org.example.engine.api.Workflow;
 import org.example.mymarketingapp.activity.MyActivity;
 
 public class MyWorkflow implements Workflow<SomeWorkflowInput> {
@@ -10,8 +9,16 @@ public class MyWorkflow implements Workflow<SomeWorkflowInput> {
     private MyActivity myActivity;
 
     @Override
-    public void start(SomeWorkflowInput input) {
+    public SomeWorkflowOutput start(SomeWorkflowInput input) {
         System.out.println("started workflow");
+
         myActivity.doSomething();
+
+        return new SomeWorkflowOutput("someString");
+    }
+
+    @Override
+    public void confirm(SomeWorkflowInput input) {
+
     }
 }
