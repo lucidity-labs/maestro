@@ -70,13 +70,13 @@ public class Maestro {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
                 String runId = UUID.randomUUID().toString();
-                String input = Json.serialize(args[0]);
+                String input = Json.serializeFirst(args);
 
                 WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId));
 
                 Repo.insertEvent(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(), runId,
-                        Entity.WORKFLOW, target.getClass().getName(), null,
+                        Entity.WORKFLOW, target.getClass().getSimpleName(), null,
                         input, null, Status.STARTED, null
                 ));
 
@@ -84,7 +84,7 @@ public class Maestro {
 
                 Repo.insertEvent(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(), runId,
-                        Entity.WORKFLOW, target.getClass().getName(), null,
+                        Entity.WORKFLOW, target.getClass().getSimpleName(), null,
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
 
@@ -100,7 +100,10 @@ public class Maestro {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            System.out.println("Intercepted method call: " + method.getName());
+            WorkflowContext workflowContext = WorkflowContextManager.get();
+
+
+
             return method.invoke(target, args);
         }
     }

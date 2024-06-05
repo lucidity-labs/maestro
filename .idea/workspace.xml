@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="inserting workflow">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContextManager.java" afterDir="false" />
+    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="move threadlocal to dedicated class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +129,7 @@
       <updated>1715917900887</updated>
       <workItem from="1715917901900" duration="36148000" />
       <workItem from="1716334881445" duration="6830000" />
-      <workItem from="1716921185924" duration="27810000" />
+      <workItem from="1716921185924" duration="28580000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />
@@ -178,7 +179,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717555878025</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="move threadlocal to dedicated class">
+      <option name="closed" value="true" />
+      <created>1717556726780</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1717556726780</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,6 +200,18 @@
     <MESSAGE value="added repo functions" />
     <MESSAGE value="storing workflowcontext in threadlocal" />
     <MESSAGE value="inserting workflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="inserting workflow" />
+    <MESSAGE value="move threadlocal to dedicated class" />
+    <option name="LAST_COMMIT_MESSAGE" value="move threadlocal to dedicated class" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
