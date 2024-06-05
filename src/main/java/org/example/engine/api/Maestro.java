@@ -66,15 +66,13 @@ public class Maestro {
 
     private record WorkflowInvocationHandler(Object target, WorkflowOptions options) implements InvocationHandler {
 
-        private static final ThreadLocal<WorkflowContext> workflowContextThreadLocal = new ThreadLocal<>();
-
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
                 String runId = UUID.randomUUID().toString();
                 String input = Json.serialize(args[0]);
 
-                workflowContextThreadLocal.set(new WorkflowContext(options.workflowId(), runId));
+                WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId));
 
                 Repo.insertEvent(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(), runId,
@@ -90,7 +88,7 @@ public class Maestro {
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
 
-                workflowContextThreadLocal.remove();
+                WorkflowContextManager.clear();
                 return output;
             }
 
