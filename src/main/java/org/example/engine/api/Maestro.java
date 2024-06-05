@@ -1,7 +1,6 @@
 package org.example.engine.api;
 
-import org.example.engine.internal.Util;
-import org.example.engine.internal.WorkflowContext;
+import org.example.engine.internal.*;
 import org.example.mymarketingapp.workflow.Workflow;
 
 import java.lang.reflect.Field;
@@ -10,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
@@ -71,16 +71,30 @@ public class Maestro {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
-                workflowContextThreadLocal.set(new WorkflowContext(options.workflowId()));
+                String runId = UUID.randomUUID().toString();
+                String input = Json.serialize(args[0]);
 
-                System.out.println("Intercepted method call: " + method.getName());
-                Object returnValue = method.invoke(target, args);
+                workflowContextThreadLocal.set(new WorkflowContext(options.workflowId(), runId));
+
+                Repo.insertEvent(new EventEntity(
+                        UUID.randomUUID().toString(), options.workflowId(), runId,
+                        Entity.WORKFLOW, target.getClass().getName(), null,
+                        input, null, Status.STARTED, null
+                ));
+
+                Object output = method.invoke(target, args);
+
+                Repo.insertEvent(new EventEntity(
+                        UUID.randomUUID().toString(), options.workflowId(), runId,
+                        Entity.WORKFLOW, target.getClass().getName(), null,
+                        input, Json.serialize(output), Status.COMPLETED, null
+                ));
 
                 workflowContextThreadLocal.remove();
-                return returnValue;
+                return output;
             }
 
-            return null;
+            return method.invoke(target, args);
         }
     }
 

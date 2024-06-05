@@ -12,7 +12,6 @@ public class Datasource {
         config.setPassword("password");
         config.setDriverClassName("org.postgresql.Driver");
         config.setMaximumPoolSize(10);
-        config.setAutoCommit(false);
         config.setTransactionIsolation("TRANSACTION_READ_COMMITTED");
         return new HikariDataSource(config);
     }

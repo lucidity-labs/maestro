@@ -1,4 +1,4 @@
 package org.example.engine.internal;
 
-public record WorkflowContext(String workflowId) {
+public record WorkflowContext(String workflowId, String runId) {
 }

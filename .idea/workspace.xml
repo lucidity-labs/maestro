@@ -4,18 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="added repo functions">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/SignalFunction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/WorkflowFunction.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/WorkflowOptions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Util.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContext.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/SomeWorkflowOutput.java" afterDir="false" />
+    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="storing workflowcontext in threadlocal">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Entity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Status.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script/maestro.sql" beforeDir="false" afterPath="$PROJECT_DIR$/script/maestro.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Workflow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/Workflow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/MyWorkflow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/workflow/MyWorkflow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Datasource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Datasource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/EventEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/EventEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowEntity.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +52,7 @@
         <option value="Kotlin Class" />
         <option value="Record" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -136,7 +137,7 @@
       <updated>1715917900887</updated>
       <workItem from="1715917901900" duration="36148000" />
       <workItem from="1716334881445" duration="6830000" />
-      <workItem from="1716921185924" duration="22973000" />
+      <workItem from="1716921185924" duration="27160000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />
@@ -170,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717319192363</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="storing workflowcontext in threadlocal">
+      <option name="closed" value="true" />
+      <created>1717549743686</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1717549743686</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,6 +190,7 @@
     <MESSAGE value="moved main class" />
     <MESSAGE value="added comment" />
     <MESSAGE value="added repo functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="added repo functions" />
+    <MESSAGE value="storing workflowcontext in threadlocal" />
+    <option name="LAST_COMMIT_MESSAGE" value="storing workflowcontext in threadlocal" />
   </component>
 </project>
