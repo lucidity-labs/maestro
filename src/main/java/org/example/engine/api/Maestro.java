@@ -72,10 +72,11 @@ public class Maestro {
                 String runId = UUID.randomUUID().toString();
                 String input = Json.serializeFirst(args);
 
-                WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId));
+                WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
 
                 Repo.insertEvent(new EventEntity(
-                        UUID.randomUUID().toString(), options.workflowId(), runId,
+                        UUID.randomUUID().toString(), options.workflowId(),
+                        WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
                         Entity.WORKFLOW, target.getClass().getSimpleName(), null,
                         input, null, Status.STARTED, null
                 ));
@@ -83,7 +84,8 @@ public class Maestro {
                 Object output = method.invoke(target, args);
 
                 Repo.insertEvent(new EventEntity(
-                        UUID.randomUUID().toString(), options.workflowId(), runId,
+                        UUID.randomUUID().toString(), options.workflowId(),
+                        WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
                         Entity.WORKFLOW, target.getClass().getSimpleName(), null,
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
@@ -101,7 +103,6 @@ public class Maestro {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             WorkflowContext workflowContext = WorkflowContextManager.get();
-
 
 
             return method.invoke(target, args);

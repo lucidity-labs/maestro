@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="move threadlocal to dedicated class">
+    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="safer serialization">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script/maestro.sql" beforeDir="false" afterPath="$PROJECT_DIR$/script/maestro.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Json.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/EventEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/EventEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContextManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/WorkflowContextManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +133,7 @@
       <updated>1715917900887</updated>
       <workItem from="1715917901900" duration="36148000" />
       <workItem from="1716334881445" duration="6830000" />
-      <workItem from="1716921185924" duration="28580000" />
+      <workItem from="1716921185924" duration="35246000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />
@@ -187,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717556726780</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="safer serialization">
+      <option name="closed" value="true" />
+      <created>1717557386159</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1717557386159</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,17 +213,7 @@
     <MESSAGE value="storing workflowcontext in threadlocal" />
     <MESSAGE value="inserting workflow" />
     <MESSAGE value="move threadlocal to dedicated class" />
-    <option name="LAST_COMMIT_MESSAGE" value="move threadlocal to dedicated class" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java</url>
-          <line>102</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="safer serialization" />
+    <option name="LAST_COMMIT_MESSAGE" value="safer serialization" />
   </component>
 </project>
