@@ -2,17 +2,21 @@ package org.example.engine.api;
 
 import org.example.engine.internal.*;
 import org.example.mymarketingapp.workflow.Workflow;
+import org.postgresql.util.PSQLException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
+    private static final java.util.logging.Logger logger = Logger.getLogger(Maestro.class.getName());
 
     // TODO: maybe expose another method accepting activity options as second param
     public static void registerActivity(Object activity) {
@@ -74,7 +78,7 @@ public class Maestro {
 
                 WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
 
-                Repo.insertEvent(new EventEntity(
+                Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
                         Entity.WORKFLOW, target.getClass().getSimpleName(), null,
@@ -83,7 +87,7 @@ public class Maestro {
 
                 Object output = method.invoke(target, args);
 
-                Repo.insertEvent(new EventEntity(
+                Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
                         Entity.WORKFLOW, target.getClass().getSimpleName(), null,
@@ -103,9 +107,54 @@ public class Maestro {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             WorkflowContext workflowContext = WorkflowContextManager.get();
+            Long sequenceNumber = WorkflowContextManager.incrementAndGetSequenceNumber();
 
+            EventEntity existingCompletedActivity = Repo.get(
+                    workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
+                    sequenceNumber, Status.COMPLETED
+            );
+            if (existingCompletedActivity != null) {
+                if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.outputData();
+                return Json.deserialize(existingCompletedActivity.outputData(), method.getReturnType());
+            }
 
-            return method.invoke(target, args);
+            Repo.saveIgnoringConflict(new EventEntity(
+                    UUID.randomUUID().toString(), workflowContext.workflowId(),
+                    sequenceNumber, workflowContext.runId(),
+                    Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
+                    Json.serialize(args), null, Status.STARTED, null
+            ));
+
+            EventEntity existingStartedActivity = Repo.get(
+                    workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
+                    sequenceNumber, Status.STARTED
+            );
+
+            Object[] finalArgs = Arrays.stream(method.getParameterTypes())
+                    .findFirst()
+                    .map(paramType -> Json.deserialize(existingStartedActivity.inputData(), paramType))
+                    .map(deserialized -> new Object[]{deserialized})
+                    .orElse(new Object[]{});
+
+            Object output = method.invoke(target, finalArgs);
+
+            try {
+                Repo.save(new EventEntity(
+                        UUID.randomUUID().toString(), workflowContext.workflowId(),
+                        sequenceNumber, workflowContext.runId(),
+                        Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
+                        existingStartedActivity.inputData(), Json.serialize(output),
+                        Status.COMPLETED, null
+                ));
+            } catch (PSQLException e) {
+                if ("23505".equals(e.getSQLState())) {
+                    throw new ConflictException("Abandoning workflow execution because of conflict with completed activity " +
+                            "with workflowId: " + workflowContext.workflowId() + ", sequenceNumber " + sequenceNumber
+                            + ", className: " + target.getClass().getSimpleName() + ", functionName: " + method.getName());
+                }
+            }
+
+            return output;
         }
     }
 }

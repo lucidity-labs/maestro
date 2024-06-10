@@ -18,7 +18,7 @@ public class Main {
 
         Maestro.registerActivity(myActivity);
 
-        Workflow<SomeWorkflowInput> workflow = Maestro.newWorkflow(MyWorkflow.class, new WorkflowOptions(UUID.randomUUID().toString()));
+        Workflow<SomeWorkflowInput> workflow = Maestro.newWorkflow(MyWorkflow.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
 
         SomeWorkflowOutput output = workflow.start(new SomeWorkflowInput("something"));
         System.out.println(output);

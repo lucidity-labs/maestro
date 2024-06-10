@@ -17,3 +17,5 @@ CREATE TABLE event
     status status NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- TODO: this needs constraints and indexes

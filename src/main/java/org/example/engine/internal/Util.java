@@ -18,4 +18,8 @@ public class Util {
         }
         return false;
     }
+
+    public static String getActivityEventId(String className, String methodName, Long sequenceNumber) {
+        return className + "_" + methodName + "_" + sequenceNumber;
+    }
 }
