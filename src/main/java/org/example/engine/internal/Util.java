@@ -1,5 +1,7 @@
 package org.example.engine.internal;
 
+import org.example.engine.api.WorkflowFunction;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -19,7 +21,12 @@ public class Util {
         return false;
     }
 
-    public static String getActivityEventId(String className, String methodName, Long sequenceNumber) {
-        return className + "_" + methodName + "_" + sequenceNumber;
+    public static Method findWorkflowMethod(Class<?> clazz) {
+        for (Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(WorkflowFunction.class)) {
+                return method;
+            }
+        }
+        return null;
     }
 }

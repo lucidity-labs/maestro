@@ -4,6 +4,8 @@ import org.example.engine.internal.*;
 import org.example.mymarketingapp.workflow.Workflow;
 import org.postgresql.util.PSQLException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -15,6 +17,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 public class Maestro {
+    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
     private static final java.util.logging.Logger logger = Logger.getLogger(Maestro.class.getName());
 
@@ -78,10 +81,11 @@ public class Maestro {
 
                 WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
 
+                // TODO: this doesn't support new workflow executions with new run id?
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
-                        Entity.WORKFLOW, target.getClass().getSimpleName(), null,
+                        Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, null, Status.STARTED, null
                 ));
 
@@ -90,12 +94,40 @@ public class Maestro {
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
-                        Entity.WORKFLOW, target.getClass().getSimpleName(), null,
+                        Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
 
                 WorkflowContextManager.clear();
                 return output;
+            }
+            if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
+                // TODO: what should the sequence number be for signals?
+                Repo.saveIgnoringConflict(new EventEntity(
+                        UUID.randomUUID().toString(), options.workflowId(),
+                        1L, null,
+                        Entity.SIGNAL, target.getClass().getSimpleName(), method.getName(),
+                        Json.serializeFirst(args), null, Status.RECEIVED, null
+                ));
+
+                EventEntity existingStartedWorkflow = Repo.get(
+                        options.workflowId(), target.getClass().getSimpleName(), method.getName(),
+                        1L, Status.STARTED
+                );
+
+                if (existingStartedWorkflow != null) {
+                    Method workflowMethod = Util.findWorkflowMethod(proxy.getClass());
+
+                    Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
+                            .findFirst()
+                            .map(paramType -> Json.deserialize(existingStartedWorkflow.inputData(), paramType))
+                            .map(deserialized -> new Object[]{deserialized})
+                            .orElse(new Object[]{});
+
+                    executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
+                }
+
+                return null;
             }
 
             return method.invoke(target, args);
@@ -122,7 +154,7 @@ public class Maestro {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     sequenceNumber, workflowContext.runId(),
                     Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
-                    Json.serialize(args), null, Status.STARTED, null
+                    Json.serializeFirst(args), null, Status.STARTED, null
             ));
 
             EventEntity existingStartedActivity = Repo.get(

@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="storing sequence number in WorkflowContext">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/ConflictException.java" afterDir="false" />
+    <list default="true" id="535a501f-0efd-4078-b5a0-e2da2600aefc" name="Changes" comment="saving activity info">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/application_db.zalHsw/schema/information_schema.FNRwLQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/application_db.zalHsw/schema/information_schema.FNRwLQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/application_db.zalHsw/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/22fe18e4-fe35-46db-a2cb-2b945c62b919/storage_v2/_src_/database/application_db.zalHsw/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
@@ -14,10 +13,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/script/maestro.sql" beforeDir="false" afterPath="$PROJECT_DIR$/script/maestro.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/api/Maestro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Repo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Status.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Status.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/engine/internal/Util.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/mymarketingapp/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +139,7 @@
       <workItem from="1716334881445" duration="6830000" />
       <workItem from="1716921185924" duration="37231000" />
       <workItem from="1718049226599" duration="105000" />
-      <workItem from="1718049342752" duration="4918000" />
+      <workItem from="1718049342752" duration="8750000" />
     </task>
     <task id="LOCAL-00001" summary="creating simple java dynamic proxies">
       <option name="closed" value="true" />
@@ -216,7 +213,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717827013355</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="saving activity info">
+      <option name="closed" value="true" />
+      <created>1718054519896</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1718054519896</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -232,6 +237,7 @@
     <MESSAGE value="move threadlocal to dedicated class" />
     <MESSAGE value="safer serialization" />
     <MESSAGE value="storing sequence number in WorkflowContext" />
-    <option name="LAST_COMMIT_MESSAGE" value="storing sequence number in WorkflowContext" />
+    <MESSAGE value="saving activity info" />
+    <option name="LAST_COMMIT_MESSAGE" value="saving activity info" />
   </component>
 </project>
