@@ -1,24 +1,13 @@
 package org.example.mymarketingapp.workflow;
 
-import org.example.engine.api.Activity;
-import org.example.mymarketingapp.activity.MyActivity;
+import org.example.engine.api.SignalFunction;
+import org.example.engine.api.WorkflowFunction;
 
-public class MyWorkflow implements Workflow<SomeWorkflowInput> {
+public interface MyWorkflow<T> {
 
-    @Activity
-    private MyActivity myActivity;
+    @WorkflowFunction
+    SomeWorkflowOutput start(T input);
 
-    @Override
-    public SomeWorkflowOutput start(SomeWorkflowInput input) {
-        System.out.println("started workflow");
-
-        myActivity.doSomething();
-
-        return new SomeWorkflowOutput("someString");
-    }
-
-    @Override
-    public void confirm(SomeWorkflowInput input) {
-
-    }
+    @SignalFunction
+    void confirm(T input);
 }

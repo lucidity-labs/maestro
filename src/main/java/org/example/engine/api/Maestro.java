@@ -1,7 +1,7 @@
 package org.example.engine.api;
 
 import org.example.engine.internal.*;
-import org.example.mymarketingapp.workflow.Workflow;
+import org.example.mymarketingapp.workflow.MyWorkflow;
 import org.postgresql.util.PSQLException;
 
 import java.util.concurrent.ExecutorService;
@@ -27,13 +27,14 @@ public class Maestro {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Workflow<?>> T newWorkflow(Class<T> clazz, WorkflowOptions options) throws Exception {
+    public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) throws Exception {
         T instance = clazz.getDeclaredConstructor().newInstance();
         populateAnnotatedFields(instance);
+        Class<?> interfaceClazz = Arrays.stream(clazz.getInterfaces()).findFirst().get();
 
         return (T) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
-                new Class<?>[]{Workflow.class},
+                new Class<?>[]{interfaceClazz},
                 new WorkflowInvocationHandler(instance, options)
         );
     }
