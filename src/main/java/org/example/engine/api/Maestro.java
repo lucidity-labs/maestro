@@ -30,11 +30,11 @@ public class Maestro {
     public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) throws Exception {
         T instance = clazz.getDeclaredConstructor().newInstance();
         populateAnnotatedFields(instance);
-        Class<?> interfaceClazz = Arrays.stream(clazz.getInterfaces()).findFirst().get();
+        Class<?> interfaceClass = Arrays.stream(clazz.getInterfaces()).findFirst().get();
 
         return (T) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
-                new Class<?>[]{interfaceClazz},
+                new Class<?>[]{interfaceClass},
                 new WorkflowInvocationHandler(instance, options)
         );
     }
