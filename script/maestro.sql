@@ -7,7 +7,7 @@ CREATE TABLE event
 (
     id VARCHAR PRIMARY KEY,
     workflow_id VARCHAR NOT NULL,
-    sequence_number BIGINT NOT NULL,
+    sequence_number BIGINT,
     run_id VARCHAR,
     entity entity NOT NULL,
     class_name VARCHAR,

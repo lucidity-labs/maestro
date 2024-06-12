@@ -81,11 +81,11 @@ public class Maestro {
                 String input = Json.serializeFirst(args);
 
                 WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
+                Long sequenceNumber = WorkflowContextManager.incrementAndGetSequenceNumber();
 
-                // TODO: this doesn't support new workflow executions with new run id?
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
+                        sequenceNumber, runId,
                         Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, null, Status.STARTED, null
                 ));
@@ -94,7 +94,7 @@ public class Maestro {
 
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        WorkflowContextManager.incrementAndGetSequenceNumber(), runId,
+                        sequenceNumber, runId,
                         Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
@@ -103,10 +103,9 @@ public class Maestro {
                 return output;
             }
             if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
-                // TODO: what should the sequence number be for signals?
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        1L, null,
+                        null, null,
                         Entity.SIGNAL, target.getClass().getSimpleName(), method.getName(),
                         Json.serializeFirst(args), null, Status.RECEIVED, null
                 ));
