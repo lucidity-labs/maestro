@@ -1,6 +1,7 @@
 package org.example.engine.internal;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,8 +61,32 @@ public class Repo {
         return null;
     }
 
-    public static void save(EventEntity event) throws SQLException {
-        save(event, INSERT_QUERY);
+    public static void saveWithRetry(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict {
+        try {
+            save(event);
+        } catch (WorkflowSequenceConflict e) {
+            // TODO: add some retry logic (maybe use a retry library)
+        }
+    }
+
+    public static void save(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict, WorkflowSequenceConflict {
+        try {
+            save(event, INSERT_QUERY);
+        } catch (PSQLException e) {
+            if ("23505".equals(e.getSQLState())) {
+                String detailMessage = e.getServerErrorMessage().getDetail(); // TODO: needs null check?
+                logger.warning(detailMessage);
+
+                if (detailMessage.contains("event_unique_workflow_correlation_status")) {
+                    logger.info("Violation of unique index: event_unique_workflow_correlation_status");
+                    throw new WorkflowCorrelationStatusConflict(detailMessage);
+                } else if (detailMessage.contains("event_unique_workflow_sequence")) {
+                    logger.info("Violation of unique index: event_unique_workflow_sequence");
+                    throw new WorkflowSequenceConflict(detailMessage);
+                } else logger.severe("Unknown unique index violation");
+            }
+            throw e;
+        }
     }
 
     public static void saveIgnoringConflict(EventEntity event) throws SQLException {

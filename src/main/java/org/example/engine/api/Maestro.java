@@ -1,7 +1,6 @@
 package org.example.engine.api;
 
 import org.example.engine.internal.*;
-import org.postgresql.util.PSQLException;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -177,12 +176,9 @@ public class Maestro {
                         existingStartedActivity.inputData(), Json.serialize(output),
                         Status.COMPLETED, null
                 ));
-            } catch (PSQLException e) {
-                if ("23505".equals(e.getSQLState())) {
-                    throw new ConflictException("Abandoning workflow execution because of conflict with completed activity " +
-                            "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber
-                            + ", className: " + target.getClass().getSimpleName() + ", functionName: " + method.getName());
-                }
+            } catch (WorkflowCorrelationStatusConflict e) {
+                throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +
+                        "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber);
             }
 
             return output;
