@@ -46,6 +46,7 @@ public class Repo {
     }
 
     public static List<EventEntity> getSignals(String workflowId, Long sequenceNumber) {
+        List<EventEntity> signals = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_SIGNALS)) {
 
@@ -55,16 +56,14 @@ public class Repo {
             preparedStatement.setLong(4, sequenceNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<EventEntity> signals = new ArrayList<>();
             if (resultSet.next()) {
                 EventEntity eventEntity = map(resultSet);
                 signals.add(eventEntity);
             }
-            return signals;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while fetching signals with workflowId: " + workflowId + " and sequenceNumber: " + sequenceNumber, e);
         }
-        return null;
+        return signals;
     }
 
     public static Long getNextSequenceNumber(String workflowId) throws SQLException {
