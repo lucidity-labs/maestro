@@ -2,6 +2,7 @@ package org.example.engine.api;
 
 import org.example.engine.internal.*;
 
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.lang.reflect.Field;
@@ -81,29 +82,37 @@ public class Maestro {
                 WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
                 Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
-                Repo.saveIgnoringConflict(new EventEntity(
-                        UUID.randomUUID().toString(), options.workflowId(),
-                        correlationNumber, null, runId, // TODO: set sequence number
-                        Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
-                        input, null, Status.STARTED, null
-                ));
+                try {
+                    Repo.saveWithRetry(new EventEntity(
+                            UUID.randomUUID().toString(), options.workflowId(),
+                            correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
+                            Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
+                            input, null, Status.STARTED, null
+                    ));
+                } catch (WorkflowCorrelationStatusConflict e) {
+                    logger.info(e.getMessage());
+                }
 
                 Object output = method.invoke(target, args);
 
-                Repo.saveIgnoringConflict(new EventEntity(
-                        UUID.randomUUID().toString(), options.workflowId(),
-                        correlationNumber, null, runId, // TODO: set sequence number
-                        Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
-                        input, Json.serialize(output), Status.COMPLETED, null
-                ));
+                try {
+                    Repo.saveWithRetry(new EventEntity(
+                            UUID.randomUUID().toString(), options.workflowId(),
+                            correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
+                            Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
+                            input, Json.serialize(output), Status.COMPLETED, null
+                    ));
+                } catch (WorkflowCorrelationStatusConflict e) {
+                    logger.info(e.getMessage());
+                } finally {
+                    WorkflowContextManager.clear();
+                }
 
-                WorkflowContextManager.clear();
                 return output;
-            }
-            if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
-                Repo.saveIgnoringConflict(new EventEntity(
+            } else if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
+                Repo.saveWithRetry(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        null, null, null, // TODO: set sequence number
+                        null, Repo.getNextSequenceNumber(options.workflowId()), null,
                         Entity.SIGNAL, target.getClass().getSimpleName(), method.getName(),
                         Json.serializeFirst(args), null, Status.RECEIVED, null
                 ));
@@ -126,9 +135,9 @@ public class Maestro {
                 }
 
                 return null;
+            } else {
+                return method.invoke(target, args);
             }
-
-            return method.invoke(target, args);
         }
     }
 
@@ -148,12 +157,16 @@ public class Maestro {
                 return Json.deserialize(existingCompletedActivity.outputData(), method.getReturnType());
             }
 
-            Repo.saveIgnoringConflict(new EventEntity(
-                    UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, null, workflowContext.runId(), // TODO: set sequence number
-                    Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
-                    Json.serializeFirst(args), null, Status.STARTED, null
-            ));
+            try {
+                Repo.saveWithRetry(new EventEntity(
+                        UUID.randomUUID().toString(), workflowContext.workflowId(),
+                        correlationNumber, Repo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
+                        Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
+                        Json.serializeFirst(args), null, Status.STARTED, null
+                ));
+            } catch (WorkflowCorrelationStatusConflict e) {
+                logger.info(e.getMessage());
+            }
 
             EventEntity existingStartedActivity = Repo.get(
                     workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
@@ -168,10 +181,21 @@ public class Maestro {
 
             Object output = method.invoke(target, finalArgs);
 
+            applySignalsAndCompleteActivity(workflowContext, correlationNumber, target, method, output, existingStartedActivity);
+
+            return output;
+        }
+
+        private static void applySignalsAndCompleteActivity(
+                WorkflowContext workflowContext, Long correlationNumber, Object target,
+                Method method, Object output, EventEntity existingStartedActivity
+        ) throws SQLException, WorkflowSequenceConflict {
             try {
+
+
                 Repo.save(new EventEntity(
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
-                        correlationNumber, null, workflowContext.runId(), // TODO: set sequence number
+                        correlationNumber, Repo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                         Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
                         existingStartedActivity.inputData(), Json.serialize(output),
                         Status.COMPLETED, null
@@ -180,8 +204,6 @@ public class Maestro {
                 throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +
                         "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber);
             }
-
-            return output;
         }
     }
 }

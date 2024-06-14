@@ -25,4 +25,4 @@ CREATE UNIQUE INDEX event_unique_workflow_correlation_status
 CREATE UNIQUE INDEX event_unique_workflow_sequence
     ON event (workflow_id, sequence_number);
 
--- TODO: this needs indexes
+-- TODO: add indexes

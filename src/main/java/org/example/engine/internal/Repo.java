@@ -1,47 +1,29 @@
 package org.example.engine.internal;
 
 import com.zaxxer.hikari.HikariDataSource;
+import io.github.resilience4j.retry.Retry;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.example.engine.internal.Datasource.initializeDataSource;
-import static org.example.engine.internal.SqlQueries.INSERT_QUERY;
+import static org.example.engine.internal.SqlQueries.*;
 
 public class Repo {
 
     private static final Logger logger = Logger.getLogger(Repo.class.getName());
     private static final HikariDataSource dataSource = initializeDataSource();
 
-    public static EventEntity get(String eventId) {
-        String query = "SELECT id, workflow_id, sequence_number, run_id, entity, class_name, function_name, input_data, output_data, status, created_at FROM event WHERE id = ?";
-
+    public static EventEntity get(String workflowId, String className, String functionName, Long correlationNumber, Status status) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            preparedStatement.setString(1, eventId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return map(resultSet);
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while fetching event with id: " + eventId, e);
-        }
-        return null;
-    }
-
-    public static EventEntity get(String workflowId, String className, String functionName, Long correlationNumber, Status status) {
-        String query = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, entity, class_name, function_name, input_data, output_data, status, created_at " +
-                "FROM event WHERE workflow_id = ? AND class_name= ? AND function_name= ? AND correlation_number= ?::bigint AND status = ?::status";
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT)) {
 
             preparedStatement.setString(1, workflowId);
             preparedStatement.setString(2, className);
@@ -57,45 +39,58 @@ public class Repo {
             logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
                     + ", className: " + className + ", functionName: " + functionName
                     + ", correlationNumber: " + correlationNumber + ", status: " + status, e);
+
+            throw e;
         }
         return null;
     }
 
-    public static void saveWithRetry(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict {
-        try {
-            save(event);
-        } catch (WorkflowSequenceConflict e) {
-            // TODO: add some retry logic (maybe use a retry library)
+    public static List<EventEntity> getSignals(String workflowId, Long sequenceNumber) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_SIGNALS)) {
+
+            preparedStatement.setString(1, workflowId);
+            preparedStatement.setString(2, workflowId);
+            preparedStatement.setLong(3, sequenceNumber);
+            preparedStatement.setLong(4, sequenceNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<EventEntity> signals = new ArrayList<>();
+            if (resultSet.next()) {
+                EventEntity eventEntity = map(resultSet);
+                signals.add(eventEntity);
+            }
+            return signals;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database access error while fetching signals with workflowId: " + workflowId + " and sequenceNumber: " + sequenceNumber, e);
         }
+        return null;
+    }
+
+    public static Long getNextSequenceNumber(String workflowId) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(MAX_SEQUENCE_NUMBER)) {
+
+            preparedStatement.setString(1, workflowId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getLong(1) + 1;
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database access error while fetching max sequence_number with workflowId: " + workflowId);
+            throw e;
+        }
+        return 1L;
+    }
+
+    public static void saveWithRetry(EventEntity event) throws Throwable {
+        Retry.decorateCheckedRunnable(RetryConfiguration.getRetry(), () -> save(event)).run();
     }
 
     public static void save(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict, WorkflowSequenceConflict {
-        try {
-            save(event, INSERT_QUERY);
-        } catch (PSQLException e) {
-            if ("23505".equals(e.getSQLState())) {
-                String detailMessage = e.getServerErrorMessage().getDetail(); // TODO: needs null check?
-                logger.warning(detailMessage);
-
-                if (detailMessage.contains("event_unique_workflow_correlation_status")) {
-                    logger.info("Violation of unique index: event_unique_workflow_correlation_status");
-                    throw new WorkflowCorrelationStatusConflict(detailMessage);
-                } else if (detailMessage.contains("event_unique_workflow_sequence")) {
-                    logger.info("Violation of unique index: event_unique_workflow_sequence");
-                    throw new WorkflowSequenceConflict(detailMessage);
-                } else logger.severe("Unknown unique index violation");
-            }
-            throw e;
-        }
-    }
-
-    public static void saveIgnoringConflict(EventEntity event) throws SQLException {
-        save(event, INSERT_QUERY + " ON CONFLICT DO NOTHING");
-    }
-
-    private static void save(EventEntity event, String query) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_EVENT)) {
 
             preparedStatement.setString(1, event.id());
             preparedStatement.setString(2, event.workflowId());
@@ -110,6 +105,20 @@ public class Repo {
             preparedStatement.setString(11, event.status().name());
             preparedStatement.executeUpdate();
 
+        } catch (PSQLException e) {
+            if ("23505".equals(e.getSQLState())) {
+                String message = e.getMessage(); // TODO: needs null check?
+                logger.warning(message);
+
+                if (message.contains("event_unique_workflow_correlation_status")) {
+                    logger.info("Violation of unique index: event_unique_workflow_correlation_status");
+                    throw new WorkflowCorrelationStatusConflict(message);
+                } else if (message.contains("event_unique_workflow_sequence")) {
+                    logger.info("Violation of unique index: event_unique_workflow_sequence");
+                    throw new WorkflowSequenceConflict(message);
+                } else logger.severe("Unknown unique index violation");
+            }
+            throw e;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while inserting event with id: " + event.id(), e);
             throw e;
