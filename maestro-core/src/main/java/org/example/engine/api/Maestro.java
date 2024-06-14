@@ -55,7 +55,7 @@ public class Maestro {
         return interfaces[0];
     }
 
-    private static void populateAnnotatedFields(Object instance) throws Exception {
+    private static void populateAnnotatedFields(Object instance) throws IllegalAccessException {
         Field[] fields = instance.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Activity.class)) {
@@ -112,8 +112,7 @@ public class Maestro {
                 ));
 
                 EventEntity existingStartedWorkflow = Repo.get(
-                        options.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                        1L, Status.STARTED
+                        options.workflowId(), target.getClass().getSimpleName(), Status.STARTED
                 );
 
                 if (existingStartedWorkflow != null) {
@@ -147,6 +146,7 @@ public class Maestro {
                     correlationNumber, Status.COMPLETED
             );
             if (existingCompletedActivity != null) {
+                applySignals(workflowContext, existingCompletedActivity.sequenceNumber());
                 if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.outputData();
                 return Json.deserialize(existingCompletedActivity.outputData(), method.getReturnType());
             }
@@ -186,22 +186,7 @@ public class Maestro {
         ) throws SQLException, WorkflowSequenceConflict, InvocationTargetException, IllegalAccessException {
             try {
                 Long nextSequenceNumber = Repo.getNextSequenceNumber(workflowContext.workflowId());
-
-                Object workflow = workflowContext.workflow();
-                List<EventEntity> signals = Repo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
-                for (EventEntity signal : signals) {
-                    Method signalMethod = Arrays.stream(workflow.getClass().getMethods())
-                            .filter(m -> m.getName().equals(signal.functionName()))
-                            .findFirst().get();
-
-                    Object[] finalArgs = Arrays.stream(signalMethod.getParameterTypes())
-                            .findFirst()
-                            .map(paramType -> Json.deserialize(signal.inputData(), paramType))
-                            .map(deserialized -> new Object[]{deserialized})
-                            .orElse(new Object[]{});
-
-                    signalMethod.invoke(workflow, finalArgs);
-                }
+                applySignals(workflowContext, nextSequenceNumber);
 
                 Repo.save(new EventEntity(
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
@@ -213,6 +198,24 @@ public class Maestro {
             } catch (WorkflowCorrelationStatusConflict e) {
                 throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +
                         "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber);
+            }
+        }
+
+        private static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) throws SQLException, InvocationTargetException, IllegalAccessException {
+            Object workflow = workflowContext.workflow();
+            List<EventEntity> signals = Repo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
+            for (EventEntity signal : signals) {
+                Method signalMethod = Arrays.stream(workflow.getClass().getMethods())
+                        .filter(m -> m.getName().equals(signal.functionName()))
+                        .findFirst().get();
+
+                Object[] finalArgs = Arrays.stream(signalMethod.getParameterTypes())
+                        .findFirst()
+                        .map(paramType -> Json.deserialize(signal.inputData(), paramType))
+                        .map(deserialized -> new Object[]{deserialized})
+                        .orElse(new Object[]{});
+
+                signalMethod.invoke(workflow, finalArgs);
             }
         }
     }

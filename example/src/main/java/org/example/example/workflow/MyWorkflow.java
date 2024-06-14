@@ -3,11 +3,11 @@ package org.example.example.workflow;
 import org.example.engine.api.SignalFunction;
 import org.example.engine.api.WorkflowFunction;
 
-public interface MyWorkflow<T> {
+public interface MyWorkflow {
 
     @WorkflowFunction
-    SomeWorkflowOutput execute(T input);
+    SomeWorkflowOutput execute(SomeWorkflowInput input);
 
     @SignalFunction
-    void confirm(T input);
+    void confirm(SomeWorkflowInput input);
 }

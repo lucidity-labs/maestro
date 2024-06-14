@@ -23,7 +23,7 @@ public class Repo {
 
     public static EventEntity get(String workflowId, String className, String functionName, Long correlationNumber, Status status) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT_BY_FN_NAME)) {
 
             preparedStatement.setString(1, workflowId);
             preparedStatement.setString(2, className);
@@ -39,6 +39,27 @@ public class Repo {
             logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
                     + ", className: " + className + ", functionName: " + functionName
                     + ", correlationNumber: " + correlationNumber + ", status: " + status, e);
+
+            throw e;
+        }
+        return null;
+    }
+
+    public static EventEntity get(String workflowId, String className, Status status) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT)) {
+
+            preparedStatement.setString(1, workflowId);
+            preparedStatement.setString(2, className);
+            preparedStatement.setString(3, status.name());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return map(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
+                    + ", className: " + className + ", status: " + status, e);
 
             throw e;
         }

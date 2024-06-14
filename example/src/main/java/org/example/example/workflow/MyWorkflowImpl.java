@@ -3,7 +3,7 @@ package org.example.example.workflow;
 import org.example.engine.api.Activity;
 import org.example.example.activity.MyActivity;
 
-public class MyWorkflowImpl implements MyWorkflow<SomeWorkflowInput> {
+public class MyWorkflowImpl implements MyWorkflow {
 
     @Activity
     private MyActivity myActivity;
@@ -19,6 +19,6 @@ public class MyWorkflowImpl implements MyWorkflow<SomeWorkflowInput> {
 
     @Override
     public void confirm(SomeWorkflowInput input) {
-
+        System.out.println("signalling workflow");
     }
 }

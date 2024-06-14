@@ -22,9 +22,11 @@ public class Util {
     }
 
     public static Method findWorkflowMethod(Class<?> clazz) {
-        for (Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(WorkflowFunction.class)) {
-                return method;
+        for (Class<?> iface : clazz.getInterfaces()) {
+            for (Method method : iface.getMethods()) {
+                if (method.isAnnotationPresent(WorkflowFunction.class)) {
+                    return method;
+                }
             }
         }
         return null;
