@@ -1,7 +1,7 @@
-package org.example.mymarketingapp.workflow;
+package org.example.example.workflow;
 
 import org.example.engine.api.Activity;
-import org.example.mymarketingapp.activity.MyActivity;
+import org.example.example.activity.MyActivity;
 
 public class MyWorkflowImpl implements MyWorkflow<SomeWorkflowInput> {
 

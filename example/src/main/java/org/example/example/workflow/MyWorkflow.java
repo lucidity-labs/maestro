@@ -1,4 +1,4 @@
-package org.example.mymarketingapp.workflow;
+package org.example.example.workflow;
 
 import org.example.engine.api.SignalFunction;
 import org.example.engine.api.WorkflowFunction;
