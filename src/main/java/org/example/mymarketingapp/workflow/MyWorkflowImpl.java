@@ -9,12 +9,12 @@ public class MyWorkflowImpl implements MyWorkflow<SomeWorkflowInput> {
     private MyActivity myActivity;
 
     @Override
-    public SomeWorkflowOutput start(SomeWorkflowInput input) {
+    public SomeWorkflowOutput execute(SomeWorkflowInput input) {
         System.out.println("started workflow");
 
         myActivity.doSomething();
 
-        return new SomeWorkflowOutput("someString");
+        return new SomeWorkflowOutput("someOutput");
     }
 
     @Override

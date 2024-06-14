@@ -2,11 +2,15 @@ package org.example.engine.internal;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.example.engine.internal.Datasource.initializeDataSource;
+import static org.example.engine.internal.SqlQueries.INSERT_QUERY;
 
 public class Repo {
 
@@ -31,9 +35,9 @@ public class Repo {
         return null;
     }
 
-    public static EventEntity get(String workflowId, String className, String functionName, Long sequenceNumber, Status status) {
-        String query = "SELECT id, workflow_id, sequence_number, run_id, entity, class_name, function_name, input_data, output_data, status, created_at " +
-                "FROM event WHERE workflow_id = ? AND class_name= ? AND function_name= ? AND sequence_number= ?::bigint AND status = ?::status";
+    public static EventEntity get(String workflowId, String className, String functionName, Long correlationNumber, Status status) {
+        String query = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, entity, class_name, function_name, input_data, output_data, status, created_at " +
+                "FROM event WHERE workflow_id = ? AND class_name= ? AND function_name= ? AND correlation_number= ?::bigint AND status = ?::status";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -41,7 +45,7 @@ public class Repo {
             preparedStatement.setString(1, workflowId);
             preparedStatement.setString(2, className);
             preparedStatement.setString(3, functionName);
-            preparedStatement.setLong(4, sequenceNumber);
+            preparedStatement.setLong(4, correlationNumber);
             preparedStatement.setString(5, status.name());
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -51,23 +55,17 @@ public class Repo {
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
                     + ", className: " + className + ", functionName: " + functionName
-                    + ", sequenceNumber: " + sequenceNumber + ", status: " + status, e);
+                    + ", correlationNumber: " + correlationNumber + ", status: " + status, e);
         }
         return null;
     }
 
     public static void save(EventEntity event) throws SQLException {
-        String query = "INSERT INTO event (id, workflow_id, sequence_number, run_id, entity, class_name, function_name, input_data, output_data, status) " +
-                "VALUES (?, ?, ?::bigint, ?, ?::entity, ?, ?, ?::json, ?::json, ?::status);";
-
-        save(event, query);
+        save(event, INSERT_QUERY);
     }
 
     public static void saveIgnoringConflict(EventEntity event) throws SQLException {
-        String query = "INSERT INTO event (id, workflow_id, sequence_number, run_id, entity, class_name, function_name, input_data, output_data, status) " +
-                "VALUES (?, ?, ?::bigint, ?, ?::entity, ?, ?, ?::json, ?::json, ?::status) ON CONFLICT DO NOTHING;";
-
-        save(event, query);
+        save(event, INSERT_QUERY + " ON CONFLICT DO NOTHING");
     }
 
     private static void save(EventEntity event, String query) throws SQLException {
@@ -76,14 +74,15 @@ public class Repo {
 
             preparedStatement.setString(1, event.id());
             preparedStatement.setString(2, event.workflowId());
-            preparedStatement.setLong(3, event.sequenceNumber());
-            preparedStatement.setString(4, event.runId());
-            preparedStatement.setString(5, event.entity().name());
-            preparedStatement.setString(6, event.className());
-            preparedStatement.setString(7, event.functionName());
-            preparedStatement.setString(8, event.inputData());
-            preparedStatement.setString(9, event.outputData());
-            preparedStatement.setString(10, event.status().name());
+            preparedStatement.setObject(3, event.correlationNumber(), java.sql.Types.BIGINT);
+            preparedStatement.setLong(4, event.sequenceNumber());
+            preparedStatement.setString(5, event.runId());
+            preparedStatement.setString(6, event.entity().name());
+            preparedStatement.setString(7, event.className());
+            preparedStatement.setString(8, event.functionName());
+            preparedStatement.setString(9, event.inputData());
+            preparedStatement.setString(10, event.outputData());
+            preparedStatement.setString(11, event.status().name());
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -96,6 +95,7 @@ public class Repo {
         return new EventEntity(
                 resultSet.getString("id"),
                 resultSet.getString("workflow_id"),
+                resultSet.getLong("correlation_number"),
                 resultSet.getLong("sequence_number"),
                 resultSet.getString("run_id"),
                 Entity.valueOf(resultSet.getString("entity")),

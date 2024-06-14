@@ -4,11 +4,11 @@ public class WorkflowContextManager {
 
     private static final ThreadLocal<WorkflowContext> workflowContextThreadLocal = new ThreadLocal<>();
 
-    public static Long incrementAndGetSequenceNumber() {
+    public static Long incrementAndGetCorrelationNumber() {
         WorkflowContext currentContext = workflowContextThreadLocal.get();
-        WorkflowContext newContext = currentContext.incrementSequenceNumber();
+        WorkflowContext newContext = currentContext.incrementCorrelationNumber();
         workflowContextThreadLocal.set(newContext);
-        return newContext.sequenceNumber();
+        return newContext.correlationNumber();
     }
 
     public static WorkflowContext get() {

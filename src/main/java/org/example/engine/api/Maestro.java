@@ -1,7 +1,6 @@
 package org.example.engine.api;
 
 import org.example.engine.internal.*;
-import org.example.mymarketingapp.workflow.MyWorkflow;
 import org.postgresql.util.PSQLException;
 
 import java.util.concurrent.ExecutorService;
@@ -81,11 +80,11 @@ public class Maestro {
                 String input = Json.serializeFirst(args);
 
                 WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
-                Long sequenceNumber = WorkflowContextManager.incrementAndGetSequenceNumber();
+                Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        sequenceNumber, runId,
+                        correlationNumber, null, runId, // TODO: set sequence number
                         Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, null, Status.STARTED, null
                 ));
@@ -94,7 +93,7 @@ public class Maestro {
 
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        sequenceNumber, runId,
+                        correlationNumber, null, runId, // TODO: set sequence number
                         Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
@@ -105,7 +104,7 @@ public class Maestro {
             if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
                 Repo.saveIgnoringConflict(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        null, null,
+                        null, null, null, // TODO: set sequence number
                         Entity.SIGNAL, target.getClass().getSimpleName(), method.getName(),
                         Json.serializeFirst(args), null, Status.RECEIVED, null
                 ));
@@ -139,11 +138,11 @@ public class Maestro {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             WorkflowContext workflowContext = WorkflowContextManager.get();
-            Long sequenceNumber = WorkflowContextManager.incrementAndGetSequenceNumber();
+            Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
             EventEntity existingCompletedActivity = Repo.get(
                     workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                    sequenceNumber, Status.COMPLETED
+                    correlationNumber, Status.COMPLETED
             );
             if (existingCompletedActivity != null) {
                 if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.outputData();
@@ -152,14 +151,14 @@ public class Maestro {
 
             Repo.saveIgnoringConflict(new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    sequenceNumber, workflowContext.runId(),
+                    correlationNumber, null, workflowContext.runId(), // TODO: set sequence number
                     Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
                     Json.serializeFirst(args), null, Status.STARTED, null
             ));
 
             EventEntity existingStartedActivity = Repo.get(
                     workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                    sequenceNumber, Status.STARTED
+                    correlationNumber, Status.STARTED
             );
 
             Object[] finalArgs = Arrays.stream(method.getParameterTypes())
@@ -173,7 +172,7 @@ public class Maestro {
             try {
                 Repo.save(new EventEntity(
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
-                        sequenceNumber, workflowContext.runId(),
+                        correlationNumber, null, workflowContext.runId(), // TODO: set sequence number
                         Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
                         existingStartedActivity.inputData(), Json.serialize(output),
                         Status.COMPLETED, null
@@ -181,7 +180,7 @@ public class Maestro {
             } catch (PSQLException e) {
                 if ("23505".equals(e.getSQLState())) {
                     throw new ConflictException("Abandoning workflow execution because of conflict with completed activity " +
-                            "with workflowId: " + workflowContext.workflowId() + ", sequenceNumber " + sequenceNumber
+                            "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber
                             + ", className: " + target.getClass().getSimpleName() + ", functionName: " + method.getName());
                 }
             }

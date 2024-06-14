@@ -3,11 +3,11 @@ package org.example.engine.internal;
 public record WorkflowContext(
         String workflowId,
         String runId,
-        Long sequenceNumber,
+        Long correlationNumber,
         Object workflow
 ) {
 
-    public WorkflowContext incrementSequenceNumber() {
-        return new WorkflowContext(workflowId, runId, sequenceNumber + 1, workflow);
+    public WorkflowContext incrementCorrelationNumber() {
+        return new WorkflowContext(workflowId, runId, correlationNumber + 1, workflow);
     }
 }

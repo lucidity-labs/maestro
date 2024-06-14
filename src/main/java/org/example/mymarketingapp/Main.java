@@ -18,7 +18,7 @@ public class Main {
 
         MyWorkflow<SomeWorkflowInput> workflow = Maestro.newWorkflow(MyWorkflowImpl.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
 
-        SomeWorkflowOutput output = workflow.start(new SomeWorkflowInput("something"));
+        SomeWorkflowOutput output = workflow.execute(new SomeWorkflowInput("someInput"));
         System.out.println(output);
     }
 }
