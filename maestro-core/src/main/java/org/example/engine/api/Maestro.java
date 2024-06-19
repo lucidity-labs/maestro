@@ -201,7 +201,7 @@ public class Maestro {
             }
         }
 
-        private static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) throws SQLException, InvocationTargetException, IllegalAccessException {
+        private static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) throws InvocationTargetException, IllegalAccessException {
             Object workflow = workflowContext.workflow();
             List<EventEntity> signals = Repo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
             for (EventEntity signal : signals) {
