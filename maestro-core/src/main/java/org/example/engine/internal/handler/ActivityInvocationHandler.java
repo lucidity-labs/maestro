@@ -1,4 +1,6 @@
-package org.example.engine.internal;
+package org.example.engine.internal.handler;
+
+import org.example.engine.internal.*;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -18,7 +20,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
-        EventEntity existingCompletedActivity = Repo.get(
+        EventEntity existingCompletedActivity = EventRepo.get(
                 workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
                 correlationNumber, Status.COMPLETED
         );
@@ -29,9 +31,9 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
         }
 
         try {
-            Repo.saveWithRetry(new EventEntity(
+            EventRepo.saveWithRetry(new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, Repo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
+                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                     Category.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
                     Json.serializeFirst(args), null, Status.STARTED, null
             ));
@@ -39,7 +41,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
             logger.info(e.getMessage());
         }
 
-        EventEntity existingStartedActivity = Repo.get(
+        EventEntity existingStartedActivity = EventRepo.get(
                 workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
                 correlationNumber, Status.STARTED
         );
@@ -61,11 +63,11 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
             WorkflowContext workflowContext, Long correlationNumber, Object target,
             Method method, Object output, EventEntity existingStartedActivity
     ) throws SQLException, WorkflowSequenceConflict, InvocationTargetException, IllegalAccessException {
-        Long nextSequenceNumber = Repo.getNextSequenceNumber(workflowContext.workflowId());
+        Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowContext.workflowId());
         applySignals(workflowContext, nextSequenceNumber);
 
         try {
-            Repo.save(new EventEntity(
+            EventRepo.save(new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, nextSequenceNumber, workflowContext.runId(),
                     Category.ACTIVITY, target.getClass().getSimpleName(), method.getName(),

@@ -1,9 +1,9 @@
 package org.example.engine.internal;
 
-import com.zaxxer.hikari.HikariDataSource;
 import io.github.resilience4j.retry.Retry;
 import org.postgresql.util.PSQLException;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.example.engine.internal.Datasource.initializeDataSource;
+import static org.example.engine.internal.Datasource.getDataSource;
 import static org.example.engine.internal.SqlQueries.*;
 
-public class Repo {
+public class EventRepo {
 
-    private static final Logger logger = Logger.getLogger(Repo.class.getName());
-    private static final HikariDataSource dataSource = initializeDataSource();
+    private static final Logger logger = Logger.getLogger(EventRepo.class.getName());
+    private static final DataSource dataSource = getDataSource();
 
     public static EventEntity get(String workflowId, String className, String functionName, Long correlationNumber, Status status) throws SQLException {
         try (Connection connection = dataSource.getConnection();

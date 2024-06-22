@@ -1,7 +1,7 @@
 package org.example.example.workflow;
 
 import org.example.engine.api.Activity;
-import org.example.engine.api.Maestro;
+import org.example.engine.internal.handler.Await;
 import org.example.example.activity.MyActivity;
 
 public class MyWorkflowImpl implements MyWorkflow {
@@ -13,7 +13,7 @@ public class MyWorkflowImpl implements MyWorkflow {
     public SomeWorkflowOutput execute(SomeWorkflowInput input) throws Throwable {
         System.out.println("started workflow");
 
-        Maestro.await(() -> true);
+        Await.await(() -> true);
 
         myActivity.doSomething();
 

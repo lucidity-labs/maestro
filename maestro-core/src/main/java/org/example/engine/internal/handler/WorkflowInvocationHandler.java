@@ -1,8 +1,9 @@
-package org.example.engine.internal;
+package org.example.engine.internal.handler;
 
 import org.example.engine.api.SignalFunction;
 import org.example.engine.api.WorkflowFunction;
 import org.example.engine.api.WorkflowOptions;
+import org.example.engine.internal.*;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -26,9 +27,9 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
             try {
-                Repo.saveWithRetry(new EventEntity(
+                EventRepo.saveWithRetry(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
+                        correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
                         Category.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, null, Status.STARTED, null
                 ));
@@ -39,9 +40,9 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             Object output = method.invoke(target, args);
 
             try {
-                Repo.saveWithRetry(new EventEntity(
+                EventRepo.saveWithRetry(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
+                        correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
                         Category.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
@@ -53,14 +54,14 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
 
             return output;
         } else if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
-            Repo.saveWithRetry(new EventEntity(
+            EventRepo.saveWithRetry(new EventEntity(
                     UUID.randomUUID().toString(), options.workflowId(),
-                    null, Repo.getNextSequenceNumber(options.workflowId()), null,
+                    null, EventRepo.getNextSequenceNumber(options.workflowId()), null,
                     Category.SIGNAL, target.getClass().getSimpleName(), method.getName(),
                     Json.serializeFirst(args), null, Status.RECEIVED, null
             ));
 
-            EventEntity existingStartedWorkflow = Repo.get(
+            EventEntity existingStartedWorkflow = EventRepo.get(
                     options.workflowId(), target.getClass().getSimpleName(), Status.STARTED
             );
 

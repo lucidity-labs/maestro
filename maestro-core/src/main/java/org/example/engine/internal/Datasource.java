@@ -3,9 +3,17 @@ package org.example.engine.internal;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import javax.sql.DataSource;
+
 public class Datasource {
 
-    public static HikariDataSource initializeDataSource() {
+    private static final HikariDataSource dataSource = initializeDataSource();
+
+    public static DataSource getDataSource() {
+        return dataSource;
+    }
+
+    private static HikariDataSource initializeDataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:postgresql://localhost:5432/application_db");
         config.setUsername("postgres");

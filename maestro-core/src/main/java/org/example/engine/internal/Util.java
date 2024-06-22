@@ -37,7 +37,7 @@ public class Util {
 
     public static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) throws InvocationTargetException, IllegalAccessException {
         Object workflow = workflowContext.workflow();
-        List<EventEntity> signals = Repo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
+        List<EventEntity> signals = EventRepo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
         for (EventEntity signal : signals) {
             Method signalMethod = Arrays.stream(workflow.getClass().getMethods())
                     .filter(m -> m.getName().equals(signal.functionName()))
