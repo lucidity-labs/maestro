@@ -3,14 +3,10 @@ package org.example.engine.api;
 import org.example.engine.internal.*;
 
 import java.lang.reflect.*;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public class Maestro {
-    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
     private static final java.util.logging.Logger logger = Logger.getLogger(Maestro.class.getName());
 
@@ -61,161 +57,6 @@ public class Maestro {
             if (field.isAnnotationPresent(Activity.class)) {
                 field.setAccessible(true);
                 field.set(instance, getActivity(field.getType()));
-            }
-        }
-    }
-
-    private record WorkflowInvocationHandler(Object target, WorkflowOptions options) implements InvocationHandler {
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
-                String runId = UUID.randomUUID().toString();
-                String input = Json.serializeFirst(args);
-
-                WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
-                Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
-
-                try {
-                    Repo.saveWithRetry(new EventEntity(
-                            UUID.randomUUID().toString(), options.workflowId(),
-                            correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
-                            Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
-                            input, null, Status.STARTED, null
-                    ));
-                } catch (WorkflowCorrelationStatusConflict e) {
-                    logger.info(e.getMessage());
-                }
-
-                Object output = method.invoke(target, args);
-
-                try {
-                    Repo.saveWithRetry(new EventEntity(
-                            UUID.randomUUID().toString(), options.workflowId(),
-                            correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
-                            Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
-                            input, Json.serialize(output), Status.COMPLETED, null
-                    ));
-                } catch (WorkflowCorrelationStatusConflict e) {
-                    logger.info(e.getMessage());
-                } finally {
-                    WorkflowContextManager.clear();
-                }
-
-                return output;
-            } else if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
-                Repo.saveWithRetry(new EventEntity(
-                        UUID.randomUUID().toString(), options.workflowId(),
-                        null, Repo.getNextSequenceNumber(options.workflowId()), null,
-                        Entity.SIGNAL, target.getClass().getSimpleName(), method.getName(),
-                        Json.serializeFirst(args), null, Status.RECEIVED, null
-                ));
-
-                EventEntity existingStartedWorkflow = Repo.get(
-                        options.workflowId(), target.getClass().getSimpleName(), Status.STARTED
-                );
-
-                if (existingStartedWorkflow != null) {
-                    Method workflowMethod = Util.findWorkflowMethod(proxy.getClass());
-
-                    Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
-                            .findFirst()
-                            .map(paramType -> Json.deserialize(existingStartedWorkflow.inputData(), paramType))
-                            .map(deserialized -> new Object[]{deserialized})
-                            .orElse(new Object[]{});
-
-                    executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
-                }
-
-                return null;
-            } else {
-                return method.invoke(target, args);
-            }
-        }
-    }
-
-    private record ActivityInvocationHandler(Object target) implements InvocationHandler {
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            WorkflowContext workflowContext = WorkflowContextManager.get();
-            Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
-
-            EventEntity existingCompletedActivity = Repo.get(
-                    workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                    correlationNumber, Status.COMPLETED
-            );
-            if (existingCompletedActivity != null) {
-                applySignals(workflowContext, existingCompletedActivity.sequenceNumber());
-                if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.outputData();
-                return Json.deserialize(existingCompletedActivity.outputData(), method.getReturnType());
-            }
-
-            try {
-                Repo.saveWithRetry(new EventEntity(
-                        UUID.randomUUID().toString(), workflowContext.workflowId(),
-                        correlationNumber, Repo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
-                        Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
-                        Json.serializeFirst(args), null, Status.STARTED, null
-                ));
-            } catch (WorkflowCorrelationStatusConflict e) {
-                logger.info(e.getMessage());
-            }
-
-            EventEntity existingStartedActivity = Repo.get(
-                    workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                    correlationNumber, Status.STARTED
-            );
-
-            Object[] finalArgs = Arrays.stream(method.getParameterTypes())
-                    .findFirst()
-                    .map(paramType -> Json.deserialize(existingStartedActivity.inputData(), paramType))
-                    .map(deserialized -> new Object[]{deserialized})
-                    .orElse(new Object[]{});
-
-            Object output = method.invoke(target, finalArgs);
-
-            applySignalsAndCompleteActivity(workflowContext, correlationNumber, target, method, output, existingStartedActivity);
-
-            return output;
-        }
-
-        private static void applySignalsAndCompleteActivity(
-                WorkflowContext workflowContext, Long correlationNumber, Object target,
-                Method method, Object output, EventEntity existingStartedActivity
-        ) throws SQLException, WorkflowSequenceConflict, InvocationTargetException, IllegalAccessException {
-            try {
-                Long nextSequenceNumber = Repo.getNextSequenceNumber(workflowContext.workflowId());
-                applySignals(workflowContext, nextSequenceNumber);
-
-                Repo.save(new EventEntity(
-                        UUID.randomUUID().toString(), workflowContext.workflowId(),
-                        correlationNumber, nextSequenceNumber, workflowContext.runId(),
-                        Entity.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
-                        existingStartedActivity.inputData(), Json.serialize(output),
-                        Status.COMPLETED, null
-                ));
-            } catch (WorkflowCorrelationStatusConflict e) {
-                throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +
-                        "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber);
-            }
-        }
-
-        private static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) throws InvocationTargetException, IllegalAccessException {
-            Object workflow = workflowContext.workflow();
-            List<EventEntity> signals = Repo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
-            for (EventEntity signal : signals) {
-                Method signalMethod = Arrays.stream(workflow.getClass().getMethods())
-                        .filter(m -> m.getName().equals(signal.functionName()))
-                        .findFirst().get();
-
-                Object[] finalArgs = Arrays.stream(signalMethod.getParameterTypes())
-                        .findFirst()
-                        .map(paramType -> Json.deserialize(signal.inputData(), paramType))
-                        .map(deserialized -> new Object[]{deserialized})
-                        .orElse(new Object[]{});
-
-                signalMethod.invoke(workflow, finalArgs);
             }
         }
     }
