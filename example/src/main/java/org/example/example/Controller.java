@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
 
     @PostMapping("/execute")
-    public SomeWorkflowOutput executeWorkflow() throws Exception {
+    public SomeWorkflowOutput executeWorkflow() throws Throwable {
         MyWorkflow workflow = Maestro.newWorkflow(MyWorkflowImpl.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
 
         return workflow.execute(new SomeWorkflowInput("someInput"));

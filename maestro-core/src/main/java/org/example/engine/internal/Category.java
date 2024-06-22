@@ -1,7 +1,8 @@
 package org.example.engine.internal;
 
-public enum Entity {
+public enum Category {
     WORKFLOW,
     ACTIVITY,
-    SIGNAL
+    SIGNAL,
+    AWAIT
 }

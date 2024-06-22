@@ -117,7 +117,7 @@ public class Repo {
             preparedStatement.setObject(3, event.correlationNumber(), java.sql.Types.BIGINT);
             preparedStatement.setLong(4, event.sequenceNumber());
             preparedStatement.setString(5, event.runId());
-            preparedStatement.setString(6, event.entity().name());
+            preparedStatement.setString(6, event.category().name());
             preparedStatement.setString(7, event.className());
             preparedStatement.setString(8, event.functionName());
             preparedStatement.setString(9, event.inputData());
@@ -152,7 +152,7 @@ public class Repo {
                 resultSet.getLong("correlation_number"),
                 resultSet.getLong("sequence_number"),
                 resultSet.getString("run_id"),
-                Entity.valueOf(resultSet.getString("entity")),
+                Category.valueOf(resultSet.getString("category")),
                 resultSet.getString("class_name"),
                 resultSet.getString("function_name"),
                 resultSet.getString("input_data"),

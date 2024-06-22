@@ -29,7 +29,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                 Repo.saveWithRetry(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
-                        Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
+                        Category.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, null, Status.STARTED, null
                 ));
             } catch (WorkflowCorrelationStatusConflict e) {
@@ -42,7 +42,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                 Repo.saveWithRetry(new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         correlationNumber, Repo.getNextSequenceNumber(options.workflowId()), runId,
-                        Entity.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
+                        Category.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
                         input, Json.serialize(output), Status.COMPLETED, null
                 ));
             } catch (WorkflowCorrelationStatusConflict e) {
@@ -56,7 +56,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             Repo.saveWithRetry(new EventEntity(
                     UUID.randomUUID().toString(), options.workflowId(),
                     null, Repo.getNextSequenceNumber(options.workflowId()), null,
-                    Entity.SIGNAL, target.getClass().getSimpleName(), method.getName(),
+                    Category.SIGNAL, target.getClass().getSimpleName(), method.getName(),
                     Json.serializeFirst(args), null, Status.RECEIVED, null
             ));
 

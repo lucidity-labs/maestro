@@ -6,7 +6,7 @@ import org.example.engine.api.WorkflowFunction;
 public interface MyWorkflow {
 
     @WorkflowFunction
-    SomeWorkflowOutput execute(SomeWorkflowInput input);
+    SomeWorkflowOutput execute(SomeWorkflowInput input) throws Throwable;
 
     @SignalFunction
     void confirm(SomeWorkflowInput input);
