@@ -2,7 +2,10 @@ package org.example.example.workflow;
 
 import org.example.engine.api.Activity;
 import org.example.engine.internal.handler.Await;
+import org.example.engine.internal.handler.Sleep;
 import org.example.example.activity.MyActivity;
+
+import java.time.Duration;
 
 public class MyWorkflowImpl implements MyWorkflow {
 
@@ -14,6 +17,8 @@ public class MyWorkflowImpl implements MyWorkflow {
         System.out.println("started workflow");
 
         Await.await(() -> true);
+
+        Sleep.sleep(Duration.ofSeconds(2));
 
         myActivity.doSomething();
 

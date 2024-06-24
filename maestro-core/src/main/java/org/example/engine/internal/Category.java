@@ -4,5 +4,6 @@ public enum Category {
     WORKFLOW,
     ACTIVITY,
     SIGNAL,
-    AWAIT
+    AWAIT,
+    SLEEP
 }

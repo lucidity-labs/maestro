@@ -21,23 +21,18 @@ public class EventRepo {
     private static final Logger logger = Logger.getLogger(EventRepo.class.getName());
     private static final DataSource dataSource = getDataSource();
 
-    public static EventEntity get(String workflowId, String className, String functionName, Long correlationNumber, Status status) throws SQLException {
+    public static EventEntity get(String workflowId, Long correlationNumber, Status status) throws SQLException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT_BY_FN_NAME)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT_BY_CORRELATION_NO)) {
 
             preparedStatement.setString(1, workflowId);
-            preparedStatement.setString(2, className);
-            preparedStatement.setString(3, functionName);
-            preparedStatement.setLong(4, correlationNumber);
-            preparedStatement.setString(5, status.name());
+            preparedStatement.setLong(2, correlationNumber);
+            preparedStatement.setString(3, status.name());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
-                return map(resultSet);
-            }
+            if (resultSet.next()) return map(resultSet);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
-                    + ", className: " + className + ", functionName: " + functionName
                     + ", correlationNumber: " + correlationNumber + ", status: " + status, e);
 
             throw e;
@@ -45,21 +40,19 @@ public class EventRepo {
         return null;
     }
 
-    public static EventEntity get(String workflowId, String className, Status status) throws SQLException {
+    public static EventEntity get(String workflowId, Category category, Status status) throws SQLException {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT)) {
 
             preparedStatement.setString(1, workflowId);
-            preparedStatement.setString(2, className);
+            preparedStatement.setString(2, category.name());
             preparedStatement.setString(3, status.name());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
-                return map(resultSet);
-            }
+            if (resultSet.next()) return map(resultSet);
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
-                    + ", className: " + className + ", status: " + status, e);
+                    + ", status: " + status, e);
 
             throw e;
         }
@@ -94,9 +87,7 @@ public class EventRepo {
             preparedStatement.setString(1, workflowId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
-                return resultSet.getLong(1) + 1;
-            }
+            if (resultSet.next()) return resultSet.getLong(1) + 1;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while fetching max sequence_number with workflowId: " + workflowId);
             throw e;

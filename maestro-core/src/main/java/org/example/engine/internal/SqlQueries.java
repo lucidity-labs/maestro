@@ -8,11 +8,11 @@ public class SqlQueries {
 
     //language=SQL
     public static final String SELECT_EVENT = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, input_data, output_data, status, created_at " +
-            "FROM event WHERE workflow_id = ? AND class_name= ? AND status = ?::status";
+            "FROM event WHERE workflow_id = ? AND category = ?::category AND status = ?::status";
 
     //language=SQL
-    public static final String SELECT_EVENT_BY_FN_NAME = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, input_data, output_data, status, created_at " +
-            "FROM event WHERE workflow_id = ? AND class_name= ? AND function_name= ? AND correlation_number= ?::bigint AND status = ?::status";
+    public static final String SELECT_EVENT_BY_CORRELATION_NO = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, input_data, output_data, status, created_at " +
+            "FROM event WHERE workflow_id = ? AND correlation_number= ?::bigint AND status = ?::status";
 
     //language=SQL
     public static final String MAX_SEQUENCE_NUMBER = "SELECT max(sequence_number) FROM event WHERE workflow_id = ?";

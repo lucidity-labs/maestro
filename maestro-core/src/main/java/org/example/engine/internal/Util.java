@@ -7,8 +7,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Util {
+
+    private static final Set<String> METHODS_TO_BYPASS = Set.of(
+            "toString",
+            "hashCode",
+            "equals"
+    );
+
+    public static boolean shouldBypass(Method method) {
+        return METHODS_TO_BYPASS.contains(method.getName());
+    }
 
     public static boolean isAnnotatedWith(Method method, Object target, Class<? extends Annotation> annotationClass) {
         for (Class<?> iface : target.getClass().getInterfaces()) {

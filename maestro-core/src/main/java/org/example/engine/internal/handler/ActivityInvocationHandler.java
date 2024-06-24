@@ -17,13 +17,13 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (Util.shouldBypass(method)) return method.invoke(target, args);
+
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
-        EventEntity existingCompletedActivity = EventRepo.get(
-                workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                correlationNumber, Status.COMPLETED
-        );
+        EventEntity existingCompletedActivity = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.COMPLETED);
+
         if (existingCompletedActivity != null) {
             applySignals(workflowContext, existingCompletedActivity.sequenceNumber());
             if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.outputData();
@@ -34,17 +34,14 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
             EventRepo.saveWithRetry(new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
-                    Category.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
+                    Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
                     Json.serializeFirst(args), null, Status.STARTED, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
         }
 
-        EventEntity existingStartedActivity = EventRepo.get(
-                workflowContext.workflowId(), target.getClass().getSimpleName(), method.getName(),
-                correlationNumber, Status.STARTED
-        );
+        EventEntity existingStartedActivity = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.STARTED);
 
         Object[] finalArgs = Arrays.stream(method.getParameterTypes())
                 .findFirst()
@@ -70,7 +67,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
             EventRepo.save(new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, nextSequenceNumber, workflowContext.runId(),
-                    Category.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
+                    Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
                     existingStartedActivity.inputData(), Json.serialize(output),
                     Status.COMPLETED, null
             ));

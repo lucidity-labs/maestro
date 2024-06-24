@@ -15,10 +15,7 @@ public class Await {
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
 
-        EventEntity existingCompletedAwait = EventRepo.get(
-                workflowContext.workflowId(), null, null,
-                correlationNumber, Status.COMPLETED
-        );
+        EventEntity existingCompletedAwait = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.COMPLETED);
         if (existingCompletedAwait != null) {
             applySignals(workflowContext, existingCompletedAwait.sequenceNumber());
             return;
