@@ -49,20 +49,20 @@ public class Sleep {
         }
 
         String id = workflowContext.workflowId() + "-" + correlationNumber;
-        scheduler.schedule(task.instance(id, new SleepData(workflowContext.workflowId(), correlationNumber)), Instant.now().plus(duration));
+        scheduler.schedule(task.instance(id, new SleepData(workflowContext.workflowId(), workflowContext.runId(), correlationNumber)), Instant.now().plus(duration));
 
         WorkflowContextManager.clear();
         throw new AbortWorkflowExecutionError("Scheduled Sleep");
     }
 
-    private static void completeSleep(String workflowId, Long correlationNumber) {
+    private static void completeSleep(String workflowId, String runId, Long correlationNumber) {
         try {
             Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowId);
 
             try {
                 EventRepo.save(new EventEntity(
                         UUID.randomUUID().toString(), workflowId,
-                        correlationNumber, nextSequenceNumber, null,
+                        correlationNumber, nextSequenceNumber, runId,
                         Category.SLEEP, null, null, null,
                         null, Status.COMPLETED, null
                 ));
@@ -98,7 +98,7 @@ public class Sleep {
                 .execute((inst, ctx) -> {
                     logger.info("completing sleep");
                     SleepData sleepData = inst.getData();
-                    completeSleep(sleepData.workflowId(), sleepData.correlationNumber());
+                    completeSleep(sleepData.workflowId(), sleepData.runId(), sleepData.correlationNumber());
                 });
     }
 
@@ -113,6 +113,6 @@ public class Sleep {
         return scheduler;
     }
 
-    private record SleepData(String workflowId, Long correlationNumber) implements Serializable {
+    private record SleepData(String workflowId, String runId, Long correlationNumber) implements Serializable {
     }
 }
