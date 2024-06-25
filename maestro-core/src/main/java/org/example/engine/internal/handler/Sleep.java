@@ -8,9 +8,7 @@ import org.example.engine.api.WorkflowOptions;
 import org.example.engine.internal.*;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -27,7 +25,7 @@ public class Sleep {
     private static final OneTimeTask<SleepData> task = initializeTask();
     private static final Scheduler scheduler = initializeScheduler();
 
-    public static void sleep(Duration duration) throws InvocationTargetException, IllegalAccessException, SQLException {
+    public static void sleep(Duration duration) throws Throwable {
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
@@ -38,13 +36,13 @@ public class Sleep {
         }
 
         try {
-            EventRepo.saveWithRetry(new EventEntity(
+            EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                     Category.SLEEP, null, null,
                     null, null, Status.STARTED, null
             ));
-        } catch (Throwable e) {
+        } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
         }
 
@@ -60,7 +58,7 @@ public class Sleep {
             Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowId);
 
             try {
-                EventRepo.save(new EventEntity(
+                EventRepo.saveWithRetry(() -> new EventEntity(
                         UUID.randomUUID().toString(), workflowId,
                         correlationNumber, nextSequenceNumber, runId,
                         Category.SLEEP, null, null, null,
@@ -87,10 +85,10 @@ public class Sleep {
             Object proxy = Maestro.newWorkflow(workflowClass, new WorkflowOptions(workflowId));
 
             executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        }
+        } catch (Throwable t) {
+            logger.severe(t.getMessage());
+            // converting all to unchecked should fine here because we control all the stack frames
+            throw new RuntimeException(t);}
     }
 
     private static OneTimeTask<SleepData> initializeTask() {

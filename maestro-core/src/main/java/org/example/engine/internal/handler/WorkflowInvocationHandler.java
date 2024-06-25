@@ -29,7 +29,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
             try {
-                EventRepo.saveWithRetry(new EventEntity(
+                EventRepo.saveWithRetry(() -> new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
                         Category.WORKFLOW, target.getClass().getCanonicalName(), method.getName(),
@@ -42,7 +42,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             Object output = method.invoke(target, args);
 
             try {
-                EventRepo.saveWithRetry(new EventEntity(
+                EventRepo.saveWithRetry(() -> new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
                         correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
                         Category.WORKFLOW, target.getClass().getCanonicalName(), method.getName(),
@@ -56,7 +56,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
 
             return output;
         } else if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
-            EventRepo.saveWithRetry(new EventEntity(
+            EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), options.workflowId(),
                     null, EventRepo.getNextSequenceNumber(options.workflowId()), null,
                     Category.SIGNAL, target.getClass().getCanonicalName(), method.getName(),

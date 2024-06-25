@@ -3,9 +3,7 @@ package org.example.engine.internal.handler;
 import org.example.engine.internal.*;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -31,7 +29,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
         }
 
         try {
-            EventRepo.saveWithRetry(new EventEntity(
+            EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                     Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
@@ -59,18 +57,24 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
     private static void applySignalsAndCompleteActivity(
             WorkflowContext workflowContext, Long correlationNumber, Object target,
             Method method, Object output, EventEntity existingStartedActivity
-    ) throws SQLException, WorkflowSequenceConflict, InvocationTargetException, IllegalAccessException {
-        Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowContext.workflowId());
-        applySignals(workflowContext, nextSequenceNumber);
+    ) throws Throwable {
 
         try {
-            EventRepo.save(new EventEntity(
-                    UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, nextSequenceNumber, workflowContext.runId(),
-                    Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
-                    existingStartedActivity.inputData(), Json.serialize(output),
-                    Status.COMPLETED, null
-            ));
+            EventRepo.saveWithRetry(() -> {
+                Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowContext.workflowId());
+
+                EventEntity eventEntity = new EventEntity(
+                        UUID.randomUUID().toString(), workflowContext.workflowId(),
+                        correlationNumber, nextSequenceNumber, workflowContext.runId(),
+                        Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
+                        existingStartedActivity.inputData(), Json.serialize(output),
+                        Status.COMPLETED, null
+                );
+
+                applySignals(workflowContext, nextSequenceNumber);
+
+                return eventEntity;
+            });
         } catch (WorkflowCorrelationStatusConflict e) {
             throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +
                     "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber);

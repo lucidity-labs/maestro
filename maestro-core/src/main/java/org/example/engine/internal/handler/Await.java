@@ -22,7 +22,7 @@ public class Await {
         }
 
         try {
-            EventRepo.saveWithRetry(new EventEntity(
+            EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                     Category.AWAIT, null, null,
@@ -42,7 +42,7 @@ public class Await {
         }
 
         try {
-            EventRepo.save(new EventEntity(
+            EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, nextSequenceNumber, workflowContext.runId(),
                     Category.AWAIT, null, null, null,

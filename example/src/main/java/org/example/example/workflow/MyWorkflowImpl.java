@@ -22,11 +22,15 @@ public class MyWorkflowImpl implements MyWorkflow {
 
         Sleep.sleep(Duration.ofSeconds(2));
 
-        CompletableFuture<String> function = Async.function(() -> myActivity.doSomething());
-        String activityOutput = function.get();
-        System.out.println(activityOutput);
+        CompletableFuture<String> async1 = Async.function(() -> myActivity.doSomething());
+        CompletableFuture<String> async2 = Async.function(() -> myActivity.doSomething());
+        CompletableFuture<Void> asyncBoth = CompletableFuture.allOf(async1, async2);
+        asyncBoth.get();
 
-        return new SomeWorkflowOutput(activityOutput);
+        System.out.println("first activity returned: " + async1.get());
+        System.out.println("second activity returned: " + async2.get());
+
+        return new SomeWorkflowOutput(async1.get());
     }
 
     @Override

@@ -46,7 +46,7 @@ public class Util {
         return null;
     }
 
-    public static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) throws InvocationTargetException, IllegalAccessException {
+    public static void applySignals(WorkflowContext workflowContext, Long nextSequenceNumber) {
         Object workflow = workflowContext.workflow();
         List<EventEntity> signals = EventRepo.getSignals(workflowContext.workflowId(), nextSequenceNumber);
         for (EventEntity signal : signals) {
@@ -60,7 +60,13 @@ public class Util {
                     .map(deserialized -> new Object[]{deserialized})
                     .orElse(new Object[]{});
 
-            signalMethod.invoke(workflow, finalArgs);
+            try {
+                signalMethod.invoke(workflow, finalArgs);
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

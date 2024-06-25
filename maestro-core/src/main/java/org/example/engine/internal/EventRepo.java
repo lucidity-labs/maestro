@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,7 +81,7 @@ public class EventRepo {
         return signals;
     }
 
-    public static Long getNextSequenceNumber(String workflowId) throws SQLException {
+    public static Long getNextSequenceNumber(String workflowId) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(MAX_SEQUENCE_NUMBER)) {
 
@@ -90,16 +91,22 @@ public class EventRepo {
             if (resultSet.next()) return resultSet.getLong(1) + 1;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Database access error while fetching max sequence_number with workflowId: " + workflowId);
-            throw e;
+            throw new RuntimeException(e);
         }
         return 1L;
     }
 
-    public static void saveWithRetry(EventEntity event) throws Throwable {
-        Retry.decorateCheckedRunnable(RetryConfiguration.getRetry(), () -> save(event)).run();
+    public static void saveWithRetry(Supplier<EventEntity> eventSupplier) throws Throwable {
+        try {
+            Retry.decorateCheckedRunnable(RetryConfiguration.getRetry(), () -> save(eventSupplier.get())).run();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void save(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict, WorkflowSequenceConflict {
+    private static void save(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict, WorkflowSequenceConflict {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_EVENT)) {
 
