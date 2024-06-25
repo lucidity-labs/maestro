@@ -1,11 +1,13 @@
 package org.example.example.workflow;
 
 import org.example.engine.api.Activity;
+import org.example.engine.internal.handler.Async;
 import org.example.engine.internal.handler.Await;
 import org.example.engine.internal.handler.Sleep;
 import org.example.example.activity.MyActivity;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 public class MyWorkflowImpl implements MyWorkflow {
 
@@ -20,9 +22,11 @@ public class MyWorkflowImpl implements MyWorkflow {
 
         Sleep.sleep(Duration.ofSeconds(2));
 
-        myActivity.doSomething();
+        CompletableFuture<String> function = Async.function(() -> myActivity.doSomething());
+        String activityOutput = function.get();
+        System.out.println(activityOutput);
 
-        return new SomeWorkflowOutput("someOutput");
+        return new SomeWorkflowOutput(activityOutput);
     }
 
     @Override

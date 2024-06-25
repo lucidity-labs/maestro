@@ -29,7 +29,7 @@ public class Sleep {
 
     public static void sleep(Duration duration) throws InvocationTargetException, IllegalAccessException, SQLException {
         WorkflowContext workflowContext = WorkflowContextManager.get();
-        Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
+        Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
         EventEntity existingCompletedSleep = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.COMPLETED);
         if (existingCompletedSleep != null) {

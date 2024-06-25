@@ -20,7 +20,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
         if (Util.shouldBypass(method)) return method.invoke(target, args);
 
         WorkflowContext workflowContext = WorkflowContextManager.get();
-        Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
+        Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
         EventEntity existingCompletedActivity = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.COMPLETED);
 

@@ -4,11 +4,10 @@ public class WorkflowContextManager {
 
     private static final ThreadLocal<WorkflowContext> workflowContextThreadLocal = new ThreadLocal<>();
 
-    public static Long incrementAndGetCorrelationNumber() {
-        WorkflowContext currentContext = workflowContextThreadLocal.get();
-        WorkflowContext newContext = currentContext.incrementCorrelationNumber();
-        workflowContextThreadLocal.set(newContext);
-        return newContext.correlationNumber();
+    public static Long getCorrelationNumber() {
+        WorkflowContext workflowContext = workflowContextThreadLocal.get();
+        if (workflowContext.staticCorrelationNumber() != null) return workflowContext.staticCorrelationNumber();
+        return incrementAndGetCorrelationNumber();
     }
 
     public static WorkflowContext get() {
@@ -21,5 +20,12 @@ public class WorkflowContextManager {
 
     public static void clear() {
         workflowContextThreadLocal.remove();
+    }
+
+    private static Long incrementAndGetCorrelationNumber() {
+        WorkflowContext currentContext = workflowContextThreadLocal.get();
+        WorkflowContext newContext = currentContext.incrementCorrelationNumber();
+        workflowContextThreadLocal.set(newContext);
+        return newContext.mutableCorrelationNumber();
     }
 }

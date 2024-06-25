@@ -8,7 +8,8 @@ public class MyActivityImpl implements MyActivity {
         this.foo = foo;
     }
 
-    public void doSomething() {
+    public String doSomething() {
         System.out.println(this + " is interacting with " + foo);
+        return "foo is: " + foo.toString();
     }
 }

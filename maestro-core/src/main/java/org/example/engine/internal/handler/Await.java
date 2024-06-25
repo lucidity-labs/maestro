@@ -13,7 +13,7 @@ public class Await {
 
     public static void await(Supplier<Boolean> condition) throws Throwable {
         WorkflowContext workflowContext = WorkflowContextManager.get();
-        Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
+        Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
         EventEntity existingCompletedAwait = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.COMPLETED);
         if (existingCompletedAwait != null) {

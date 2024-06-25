@@ -25,8 +25,8 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             String runId = UUID.randomUUID().toString();
             String input = Json.serializeFirst(args);
 
-            WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, target));
-            Long correlationNumber = WorkflowContextManager.incrementAndGetCorrelationNumber();
+            WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, null, target));
+            Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
             try {
                 EventRepo.saveWithRetry(new EventEntity(
