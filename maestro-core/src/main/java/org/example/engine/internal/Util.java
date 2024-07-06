@@ -3,7 +3,6 @@ package org.example.engine.internal;
 import org.example.engine.api.WorkflowFunction;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
