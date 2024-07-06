@@ -20,16 +20,22 @@ public class Maestro {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) throws Exception {
-        T instance = clazz.getDeclaredConstructor().newInstance();
-        populateAnnotatedFields(instance);
-        Class<?> interfaceClass = Arrays.stream(clazz.getInterfaces()).findFirst().get();
+    public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) {
+        try {
+            T instance = clazz.getDeclaredConstructor().newInstance();
+            populateAnnotatedFields(instance);
+            Class<?> interfaceClass = Arrays.stream(clazz.getInterfaces()).findFirst().get();
 
-        return (T) Proxy.newProxyInstance(
-                clazz.getClassLoader(),
-                new Class<?>[]{interfaceClass},
-                new WorkflowInvocationHandler(instance, options)
-        );
+            return (T) Proxy.newProxyInstance(
+                    clazz.getClassLoader(),
+                    new Class<?>[]{interfaceClass},
+                    new WorkflowInvocationHandler(instance, options)
+            );
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static <T> T getActivity(Class<T> activityType) {

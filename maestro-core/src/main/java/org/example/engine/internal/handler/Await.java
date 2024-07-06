@@ -11,7 +11,7 @@ import static org.example.engine.internal.Util.applySignals;
 public class Await {
     private static final java.util.logging.Logger logger = Logger.getLogger(Await.class.getName());
 
-    public static void await(Supplier<Boolean> condition) throws Throwable {
+    public static void await(Supplier<Boolean> condition) {
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 

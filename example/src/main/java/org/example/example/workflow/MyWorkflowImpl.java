@@ -8,6 +8,7 @@ import org.example.example.activity.MyActivity;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MyWorkflowImpl implements MyWorkflow {
 
@@ -15,7 +16,7 @@ public class MyWorkflowImpl implements MyWorkflow {
     private MyActivity myActivity;
 
     @Override
-    public SomeWorkflowOutput execute(SomeWorkflowInput input) throws Throwable {
+    public SomeWorkflowOutput execute(SomeWorkflowInput input) throws ExecutionException, InterruptedException {
         System.out.println("started workflow");
 
         Await.await(() -> true);

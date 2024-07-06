@@ -25,7 +25,7 @@ public class Sleep {
     private static final OneTimeTask<SleepData> task = initializeTask();
     private static final Scheduler scheduler = initializeScheduler();
 
-    public static void sleep(Duration duration) throws Throwable {
+    public static void sleep(Duration duration) {
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 

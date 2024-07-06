@@ -22,7 +22,7 @@ public class EventRepo {
     private static final Logger logger = Logger.getLogger(EventRepo.class.getName());
     private static final DataSource dataSource = getDataSource();
 
-    public static EventEntity get(String workflowId, Long correlationNumber, Status status) throws SQLException {
+    public static EventEntity get(String workflowId, Long correlationNumber, Status status) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT_BY_CORRELATION_NO)) {
 
@@ -36,7 +36,7 @@ public class EventRepo {
             logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
                     + ", correlationNumber: " + correlationNumber + ", status: " + status, e);
 
-            throw e;
+            throw new RuntimeException(e);
         }
         return null;
     }
@@ -96,13 +96,15 @@ public class EventRepo {
         return 1L;
     }
 
-    public static void saveWithRetry(Supplier<EventEntity> eventSupplier) throws Throwable {
+    public static void saveWithRetry(Supplier<EventEntity> eventSupplier) {
         try {
             Retry.decorateCheckedRunnable(RetryConfiguration.getRetry(), () -> save(eventSupplier.get())).run();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } catch (Throwable t) {
+            throw new Error(t);
         }
     }
 
