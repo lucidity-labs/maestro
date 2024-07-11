@@ -2,8 +2,6 @@
 
 ### Need something like Temporal but simpler?
 
-### Get Maestro
-
 - durably persists workflows and its constituent activities
 - automatically retries failed activities
 - requires only 2 Postgres tables
