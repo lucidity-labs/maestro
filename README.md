@@ -2,7 +2,7 @@
 
 ### Need something like Temporal but simpler?
 
-### Introducing Maestro:
+### Get Maestro
 
 - durably persists workflows and its constituent activities
 - automatically retries failed activities
