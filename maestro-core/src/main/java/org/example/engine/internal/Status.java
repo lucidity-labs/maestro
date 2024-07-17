@@ -4,5 +4,6 @@ public enum Status {
     STARTED,
     COMPLETED,
     FAILED,
-    RECEIVED
+    RECEIVED,
+    UNSATISFIED
 }

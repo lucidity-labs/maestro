@@ -36,7 +36,13 @@ public class Await {
         applySignals(workflowContext, nextSequenceNumber);
 
         if (!condition.get()) {
-            // TODO: insert event indicating condition wasn't satisfied so that poll doesn't pick it up as abandoned workflow
+            EventRepo.saveWithRetry(() -> new EventEntity(
+                    UUID.randomUUID().toString(), workflowContext.workflowId(),
+                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
+                    Category.AWAIT, null, null,
+                    null, null, Status.UNSATISFIED, null
+            ));
+
             throw new AbortWorkflowExecutionError("Abandoning workflow execution because of await condition wasn't satisfied " +
                     "with workflowId: " + workflowContext.workflowId() + ", correlationNumber " + correlationNumber);
         }

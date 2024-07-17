@@ -127,7 +127,7 @@ public class EventRepo {
 
         } catch (PSQLException e) {
             if ("23505".equals(e.getSQLState())) {
-                String message = e.getMessage(); // TODO: needs null check?
+                String message = e.getMessage();
                 logger.warning(message);
 
                 if (message.contains("event_unique_workflow_correlation_status")) {
