@@ -52,13 +52,11 @@ public class Maestro {
     }
 
     private static Class<?> getInterface(Class<?> clazz) {
-        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> iface : clazz.getInterfaces()) {
+            if (iface.isAnnotationPresent(ActivityInterface.class)) return iface;
+        }
 
-        // TODO: let's instead require the user annotate the activity interface with our custom annotation
-        if (interfaces.length != 1)
-            throw new IllegalArgumentException("The class must implement exactly one interface");
-
-        return interfaces[0];
+        throw new IllegalArgumentException("The class must implement an interface annotated with @" + ActivityInterface.class.getSimpleName());
     }
 
     private static void populateAnnotatedFields(Object instance) throws IllegalAccessException {
