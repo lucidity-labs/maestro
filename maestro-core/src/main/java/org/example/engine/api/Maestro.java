@@ -1,5 +1,6 @@
 package org.example.engine.api;
 
+import org.example.engine.internal.Initializer;
 import org.example.engine.internal.handler.ActivityInvocationHandler;
 import org.example.engine.internal.handler.WorkflowInvocationHandler;
 
@@ -12,10 +13,12 @@ import java.util.logging.Logger;
 
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
-    private static final java.util.logging.Logger logger = Logger.getLogger(Maestro.class.getName());
+    private static final Logger logger = Logger.getLogger(Maestro.class.getName());
 
     // TODO: maybe expose another method accepting activity options as second param
     public static void registerActivity(Object activity) {
+        Initializer.initialize();
+
         typeToActivity.put(getInterface(activity.getClass()), proxyActivity(activity));
     }
 

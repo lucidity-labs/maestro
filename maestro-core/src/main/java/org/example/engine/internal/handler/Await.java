@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import static org.example.engine.internal.Util.applySignals;
 
 public class Await {
-    private static final java.util.logging.Logger logger = Logger.getLogger(Await.class.getName());
+    private static final Logger logger = Logger.getLogger(Await.class.getName());
 
     public static void await(Supplier<Boolean> condition) {
         WorkflowContext workflowContext = WorkflowContextManager.get();

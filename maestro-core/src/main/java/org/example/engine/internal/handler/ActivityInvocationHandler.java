@@ -11,11 +11,11 @@ import java.util.logging.Logger;
 import static org.example.engine.internal.Util.applySignals;
 
 public record ActivityInvocationHandler(Object target) implements InvocationHandler {
-    private static final java.util.logging.Logger logger = Logger.getLogger(ActivityInvocationHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(ActivityInvocationHandler.class.getName());
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (Util.shouldBypass(method)) return method.invoke(target, args);
+        if (Util.shouldSkip(method)) return method.invoke(target, args);
 
         WorkflowContext workflowContext = WorkflowContextManager.get();
         Long correlationNumber = WorkflowContextManager.getCorrelationNumber();

@@ -15,13 +15,13 @@ import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 public record WorkflowInvocationHandler(Object target, WorkflowOptions options) implements InvocationHandler {
-    private static final java.util.logging.Logger logger = Logger.getLogger(WorkflowInvocationHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(WorkflowInvocationHandler.class.getName());
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
-            if (Util.shouldBypass(method)) return method.invoke(target, args);
+            if (Util.shouldSkip(method)) return method.invoke(target, args);
 
             if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
                 String runId = UUID.randomUUID().toString();

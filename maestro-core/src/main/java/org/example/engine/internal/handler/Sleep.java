@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import static org.example.engine.internal.Util.applySignals;
 
 public class Sleep {
-    private static final java.util.logging.Logger logger = Logger.getLogger(Sleep.class.getName());
+    private static final Logger logger = Logger.getLogger(Sleep.class.getName());
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final OneTimeTask<SleepData> task = initializeTask();
     private static final Scheduler scheduler = initializeScheduler();
@@ -72,23 +72,12 @@ public class Sleep {
                     workflowId, Category.WORKFLOW, Status.STARTED
             );
 
-            Class<?> workflowClass = Class.forName(existingStartedWorkflow.className());
-            Method workflowMethod = Util.findWorkflowMethod(workflowClass);
-
-            Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
-                    .findFirst()
-                    .map(paramType -> Json.deserialize(existingStartedWorkflow.inputData(), paramType))
-                    .map(deserialized -> new Object[]{deserialized})
-                    .orElse(new Object[]{});
-
-            //maybe WorkflowOptions should be serialized and stored durably so we can pass the full options here?
-            Object proxy = Maestro.newWorkflow(workflowClass, new WorkflowOptions(workflowId));
-
-            executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
+            Util.replayWorkflow(existingStartedWorkflow);
         } catch (Throwable t) {
             logger.severe(t.getMessage());
-            // converting all to unchecked should fine here because we control all the stack frames
-            throw new RuntimeException(t);}
+            // converting all to unchecked should be fine here because we control all the stack frames
+            throw new RuntimeException(t);
+        }
     }
 
     private static OneTimeTask<SleepData> initializeTask() {

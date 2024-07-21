@@ -71,7 +71,7 @@ public class EventRepo {
             preparedStatement.setLong(4, sequenceNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 EventEntity eventEntity = map(resultSet);
                 signals.add(eventEntity);
             }
@@ -79,6 +79,23 @@ public class EventRepo {
             logger.log(Level.SEVERE, "Database access error while fetching signals with workflowId: " + workflowId + " and sequenceNumber: " + sequenceNumber, e);
         }
         return signals;
+    }
+
+    public static List<EventEntity> getAbandonedWorkflows() {
+        List<EventEntity> events = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ABANDONED_WORKFLOWS)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                EventEntity eventEntity = map(resultSet);
+                events.add(eventEntity);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Database access error while fetching abandoned workflows", e);
+        }
+        return events;
     }
 
     public static Long getNextSequenceNumber(String workflowId) {

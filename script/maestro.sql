@@ -14,10 +14,11 @@ CREATE TABLE event
     class_name         VARCHAR,
     function_name      VARCHAR,
     input_data         JSON,
-    output_data        JSON,
+    output_data        JSON, --TODO: consolidate input_data and output_data into just data?
     status             status    NOT NULL,
     created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+--TODO: add metadata column allowing us to store necessary data for each event such as serialized WorkflowOptions for WORKFLOW STARTED?
 
 CREATE UNIQUE INDEX event_unique_workflow_correlation_status
     ON event (workflow_id, correlation_number, status);

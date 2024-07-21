@@ -18,7 +18,7 @@ public class SqlQueries {
     public static final String MAX_SEQUENCE_NUMBER = "SELECT max(sequence_number) FROM event WHERE workflow_id = ?";
 
     //language=SQL
-    public static final String SELECT_SIGNALS = "SELECT * from event " +
+    public static final String SELECT_SIGNALS = "SELECT * FROM event " +
             "WHERE workflow_id = ? " +
             "AND category = 'SIGNAL' " +
             "AND sequence_number > (" +
@@ -28,4 +28,16 @@ public class SqlQueries {
             "AND workflow_id = ? " +
             "AND sequence_number < ?) " +
             "AND sequence_number < ?";
+
+    //language=SQL
+    public static final String SELECT_ABANDONED_WORKFLOWS =
+            "SELECT DISTINCT ON (e1.workflow_id) e1.* " +
+                    "FROM event e1 " +
+                    "WHERE e1.category = 'WORKFLOW' AND e1.status = 'STARTED' " +
+                    "  AND NOT EXISTS ( " +
+                    "    SELECT 1 " +
+                    "    FROM event e2 " +
+                    "    WHERE e1.workflow_id = e2.workflow_id " +
+                    "      AND ((e2.category = 'WORKFLOW' AND e2.status = 'COMPLETED') OR e2.created_at > CURRENT_TIMESTAMP - INTERVAL '1 hour') " + // TODO: make this interval customizable
+                    ");";
 }
