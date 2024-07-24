@@ -4,6 +4,8 @@ import org.example.engine.api.SignalFunction;
 import org.example.engine.api.WorkflowFunction;
 import org.example.engine.api.WorkflowOptions;
 import org.example.engine.internal.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -12,10 +14,9 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 public record WorkflowInvocationHandler(Object target, WorkflowOptions options) implements InvocationHandler {
-    private static final Logger logger = Logger.getLogger(WorkflowInvocationHandler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowInvocationHandler.class);
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     @Override
@@ -38,7 +39,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                             input, null, Status.STARTED, null
                     ));
                 } catch (WorkflowCorrelationStatusConflict e) {
-                    logger.info(e.getMessage());
+                    logger.debug(e.getMessage());
                 }
 
                 Object output = method.invoke(target, args);
@@ -51,7 +52,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                             input, Json.serialize(output), Status.COMPLETED, null
                     ));
                 } catch (WorkflowCorrelationStatusConflict e) {
-                    logger.info(e.getMessage());
+                    logger.debug(e.getMessage());
                 } finally {
                     WorkflowContextManager.clear();
                 }

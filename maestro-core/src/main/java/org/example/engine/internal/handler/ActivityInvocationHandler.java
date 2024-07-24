@@ -1,17 +1,18 @@
 package org.example.engine.internal.handler;
 
 import org.example.engine.internal.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import static org.example.engine.internal.Util.applySignals;
 
 public record ActivityInvocationHandler(Object target) implements InvocationHandler {
-    private static final Logger logger = Logger.getLogger(ActivityInvocationHandler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ActivityInvocationHandler.class);
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

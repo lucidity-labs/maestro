@@ -2,13 +2,12 @@ package org.example.engine.internal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Json {
 
-    private static final Logger logger = Logger.getLogger(Json.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Json.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static <T> String serializeFirst(T[] args) {
@@ -21,7 +20,7 @@ public class Json {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            logger.log(Level.SEVERE, "Error serializing object: " + object, e);
+            logger.error("Error serializing object: {}", object, e);
             return null;
         }
     }
@@ -30,7 +29,7 @@ public class Json {
         try {
             return objectMapper.readValue(jsonString, clazz);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error deserializing string: " + jsonString, e);
+            logger.error("Error deserializing string: {}", jsonString, e);
             return null;
         }
     }

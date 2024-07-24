@@ -3,17 +3,18 @@ package org.example.engine.api;
 import org.example.engine.internal.Initializer;
 import org.example.engine.internal.handler.ActivityInvocationHandler;
 import org.example.engine.internal.handler.WorkflowInvocationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
-    private static final Logger logger = Logger.getLogger(Maestro.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Maestro.class);
 
     // TODO: maybe expose another method accepting activity options as second param
     public static void registerActivity(Object activity) {

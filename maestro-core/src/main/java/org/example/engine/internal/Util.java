@@ -3,6 +3,8 @@ package org.example.engine.internal;
 import org.example.engine.api.Maestro;
 import org.example.engine.api.WorkflowFunction;
 import org.example.engine.api.WorkflowOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -11,10 +13,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 public class Util {
-    private static final Logger logger = Logger.getLogger(Util.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final Set<String> METHODS_TO_SKIP = Set.of(
             "toString",
@@ -91,7 +92,7 @@ public class Util {
 
             executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
         } catch (Throwable t) {
-            logger.severe(t.getMessage());
+            logger.error(t.getMessage());
             // converting all to unchecked should be fine here because we control all the stack frames
             throw new RuntimeException(t);
         }

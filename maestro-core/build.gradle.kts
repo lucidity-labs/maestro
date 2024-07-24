@@ -9,6 +9,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
 	implementation("io.github.resilience4j:resilience4j-retry:2.2.0")
 	implementation("com.github.kagkarlsson:db-scheduler:14.0.1")
+	implementation("ch.qos.logback:logback-classic:1.5.6")
 
 	testImplementation(platform("org.junit:junit-bom:5.10.0"))
 	testImplementation("org.junit.jupiter:junit-jupiter")

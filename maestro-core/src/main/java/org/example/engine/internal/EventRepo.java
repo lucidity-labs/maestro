@@ -2,6 +2,8 @@ package org.example.engine.internal;
 
 import io.github.resilience4j.retry.Retry;
 import org.postgresql.util.PSQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -11,15 +13,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.example.engine.internal.Datasource.getDataSource;
 import static org.example.engine.internal.SqlQueries.*;
 
 public class EventRepo {
 
-    private static final Logger logger = Logger.getLogger(EventRepo.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(EventRepo.class);
     private static final DataSource dataSource = getDataSource();
 
     public static EventEntity get(String workflowId, Long correlationNumber, Status status) {
@@ -33,8 +33,7 @@ public class EventRepo {
 
             if (resultSet.next()) return map(resultSet);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
-                    + ", correlationNumber: " + correlationNumber + ", status: " + status, e);
+            logger.error("Database access error while fetching event with workflowId: {}, correlationNumber: {}, status: {}", workflowId, correlationNumber, status, e);
 
             throw new RuntimeException(e);
         }
@@ -52,8 +51,7 @@ public class EventRepo {
 
             if (resultSet.next()) return map(resultSet);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while fetching event with workflowId: " + workflowId
-                    + ", status: " + status, e);
+            logger.error("Database access error while fetching event with workflowId: {}, status: {}", workflowId, status, e);
 
             throw e;
         }
@@ -76,7 +74,7 @@ public class EventRepo {
                 signals.add(eventEntity);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while fetching signals with workflowId: " + workflowId + " and sequenceNumber: " + sequenceNumber, e);
+            logger.error("Database access error while fetching signals with workflowId: {} and sequenceNumber: {}", workflowId, sequenceNumber, e);
         }
         return signals;
     }
@@ -93,7 +91,7 @@ public class EventRepo {
                 events.add(eventEntity);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while fetching abandoned workflows", e);
+            logger.error("Database access error while fetching abandoned workflows", e);
         }
         return events;
     }
@@ -107,7 +105,7 @@ public class EventRepo {
 
             if (resultSet.next()) return resultSet.getLong(1) + 1;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while fetching max sequence_number with workflowId: " + workflowId);
+            logger.error("Database access error while fetching max sequence_number with workflowId: {}", workflowId);
             throw new RuntimeException(e);
         }
         return 1L;
@@ -145,19 +143,19 @@ public class EventRepo {
         } catch (PSQLException e) {
             if ("23505".equals(e.getSQLState())) {
                 String message = e.getMessage();
-                logger.warning(message);
+                logger.debug(message);
 
                 if (message.contains("event_unique_workflow_correlation_status")) {
-                    logger.info("Violation of unique index: event_unique_workflow_correlation_status");
+                    logger.debug("Violation of unique index: event_unique_workflow_correlation_status");
                     throw new WorkflowCorrelationStatusConflict(message);
                 } else if (message.contains("event_unique_workflow_sequence")) {
-                    logger.info("Violation of unique index: event_unique_workflow_sequence");
+                    logger.debug("Violation of unique index: event_unique_workflow_sequence");
                     throw new WorkflowSequenceConflict(message);
-                } else logger.severe("Unknown unique index violation");
+                } else logger.error("Unknown unique index violation");
             }
             throw e;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Database access error while inserting event with id: " + event.id(), e);
+            logger.error("Database access error while inserting event with id: {}", event.id(), e);
             throw e;
         }
     }
