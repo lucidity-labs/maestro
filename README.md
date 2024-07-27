@@ -31,6 +31,16 @@
     </dependency>
     ```
    
-2. Execute [maestro.sql](./script/maestro.sql) against your Postgres database to create the necessary schema. If you instead wish to start a Dockerized Postgres instance locally, execute `docker compose -f ./script/docker-compose.yml up --build`. In this case, [maestro.sql](./script/maestro.sql) will automatically be applied. 
+2. Execute [maestro.sql](./script/maestro.sql) against your Postgres database to create the necessary schema. If you instead wish to start a Dockerized Postgres instance locally with [maestro.sql](./script/maestro.sql) already applied, just execute: 
+   ```bash 
+   docker compose -f ./script/docker-compose.yml up --build
+   ```
 
-3. See [the example app in this repo](./example) for an example of how to create your first durable workflow! Start the app with `./gradlew -p ./example bootRun`. Make sure you've already started the Dockerized Postgres instance from step 2! Then, send the app some HTTP requests using [requests.http](./example/script/requests.http).
+3. Write your durable workflow!
+
+### Example app
+Take a look at [the example app](./example) for an example of how to create your first durable workflow! 
+
+Start the app with `./gradlew -p ./example bootRun`. (Make sure you've already started the Dockerized Postgres instance!)
+
+Then, send the app some HTTP requests using [requests.http](./example/script/requests.http).
