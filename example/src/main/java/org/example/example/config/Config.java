@@ -1,4 +1,4 @@
-package org.example.example;
+package org.example.example.config;
 
 import org.example.engine.api.Maestro;
 import org.example.example.activity.Foo;

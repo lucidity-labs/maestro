@@ -1,4 +1,4 @@
-package org.example.example;
+package org.example.example.api;
 
 import org.example.engine.api.Maestro;
 import org.example.engine.api.WorkflowOptions;
