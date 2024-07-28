@@ -34,7 +34,7 @@ public class Sleep {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                     Category.SLEEP, null, null,
-                    null, null, Status.STARTED, null
+                    null, Status.STARTED, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
@@ -55,7 +55,7 @@ public class Sleep {
                 EventRepo.saveWithRetry(() -> new EventEntity(
                         UUID.randomUUID().toString(), workflowId,
                         correlationNumber, nextSequenceNumber, runId,
-                        Category.SLEEP, null, null, null,
+                        Category.SLEEP, null, null,
                         null, Status.COMPLETED, null
                 ));
             } catch (WorkflowCorrelationStatusConflict e) {

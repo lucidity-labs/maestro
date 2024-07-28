@@ -3,15 +3,15 @@ package org.example.engine.internal;
 public class SqlQueries {
     //language=SQL
     public static final String INSERT_EVENT = "INSERT INTO event " +
-            "(id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, input_data, output_data, status) " +
-            "VALUES (?, ?, ?::bigint, ?::bigint, ?, ?::category, ?, ?, ?::json, ?::json, ?::status)";
+            "(id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, data, status) " +
+            "VALUES (?, ?, ?::bigint, ?::bigint, ?, ?::category, ?, ?, ?::json, ?::status)";
 
     //language=SQL
-    public static final String SELECT_EVENT = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, input_data, output_data, status, created_at " +
+    public static final String SELECT_EVENT = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, data, status, timestamp " +
             "FROM event WHERE workflow_id = ? AND category = ?::category AND status = ?::status";
 
     //language=SQL
-    public static final String SELECT_EVENT_BY_CORRELATION_NO = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, input_data, output_data, status, created_at " +
+    public static final String SELECT_EVENT_BY_CORRELATION_NO = "SELECT id, workflow_id, correlation_number, sequence_number, run_id, category, class_name, function_name, data, status, timestamp " +
             "FROM event WHERE workflow_id = ? AND correlation_number= ?::bigint AND status = ?::status";
 
     //language=SQL
@@ -38,6 +38,6 @@ public class SqlQueries {
                     "    SELECT 1 " +
                     "    FROM event e2 " +
                     "    WHERE e1.workflow_id = e2.workflow_id " +
-                    "      AND ((e2.category = 'WORKFLOW' AND e2.status = 'COMPLETED') OR e2.created_at > CURRENT_TIMESTAMP - INTERVAL '1 hour') " + // TODO: make this interval customizable
+                    "      AND ((e2.category = 'WORKFLOW' AND e2.status = 'COMPLETED') OR e2.timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour') " + // TODO: make this interval customizable
                     ");";
 }

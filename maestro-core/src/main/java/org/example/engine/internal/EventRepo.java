@@ -135,9 +135,8 @@ public class EventRepo {
             preparedStatement.setString(6, event.category().name());
             preparedStatement.setString(7, event.className());
             preparedStatement.setString(8, event.functionName());
-            preparedStatement.setString(9, event.inputData());
-            preparedStatement.setString(10, event.outputData());
-            preparedStatement.setString(11, event.status().name());
+            preparedStatement.setString(9, event.data());
+            preparedStatement.setString(10, event.status().name());
             preparedStatement.executeUpdate();
 
         } catch (PSQLException e) {
@@ -170,10 +169,9 @@ public class EventRepo {
                 Category.valueOf(resultSet.getString("category")),
                 resultSet.getString("class_name"),
                 resultSet.getString("function_name"),
-                resultSet.getString("input_data"),
-                resultSet.getString("output_data"),
+                resultSet.getString("data"),
                 Status.valueOf(resultSet.getString("status")),
-                resultSet.getString("created_at")
+                resultSet.getString("timestamp")
         );
     }
 }

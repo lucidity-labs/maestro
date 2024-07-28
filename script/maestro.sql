@@ -13,10 +13,9 @@ CREATE TABLE event
     category           category    NOT NULL,
     class_name         VARCHAR,
     function_name      VARCHAR,
-    input_data         JSON,
-    output_data        JSON, --TODO: consolidate input_data and output_data into just data?
+    data               JSON,
     status             status    NOT NULL,
-    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    timestamp         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 --TODO: add metadata column allowing us to store necessary data for each event such as serialized WorkflowOptions for WORKFLOW STARTED?
 

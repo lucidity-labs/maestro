@@ -62,7 +62,7 @@ public class Util {
 
             Object[] finalArgs = Arrays.stream(signalMethod.getParameterTypes())
                     .findFirst()
-                    .map(paramType -> Json.deserialize(signal.inputData(), paramType))
+                    .map(paramType -> Json.deserialize(signal.data(), paramType))
                     .map(deserialized -> new Object[]{deserialized})
                     .orElse(new Object[]{});
 
@@ -83,7 +83,7 @@ public class Util {
 
             Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
                     .findFirst()
-                    .map(paramType -> Json.deserialize(workflowStartedEvent.inputData(), paramType))
+                    .map(paramType -> Json.deserialize(workflowStartedEvent.data(), paramType))
                     .map(deserialized -> new Object[]{deserialized})
                     .orElse(new Object[]{});
 

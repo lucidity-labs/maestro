@@ -36,7 +36,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                             UUID.randomUUID().toString(), options.workflowId(),
                             correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
                             Category.WORKFLOW, target.getClass().getCanonicalName(), method.getName(),
-                            input, null, Status.STARTED, null
+                            input, Status.STARTED, null
                     ));
                 } catch (WorkflowCorrelationStatusConflict e) {
                     logger.debug(e.getMessage());
@@ -49,7 +49,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                             UUID.randomUUID().toString(), options.workflowId(),
                             correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
                             Category.WORKFLOW, target.getClass().getCanonicalName(), method.getName(),
-                            input, Json.serialize(output), Status.COMPLETED, null
+                            Json.serialize(output), Status.COMPLETED, null
                     ));
                 } catch (WorkflowCorrelationStatusConflict e) {
                     logger.debug(e.getMessage());
@@ -63,7 +63,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                         UUID.randomUUID().toString(), options.workflowId(),
                         null, EventRepo.getNextSequenceNumber(options.workflowId()), null,
                         Category.SIGNAL, target.getClass().getCanonicalName(), method.getName(),
-                        Json.serializeFirst(args), null, Status.RECEIVED, null
+                        Json.serializeFirst(args), Status.RECEIVED, null
                 ));
 
                 EventEntity existingStartedWorkflow = EventRepo.get(
@@ -75,7 +75,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
 
                     Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
                             .findFirst()
-                            .map(paramType -> Json.deserialize(existingStartedWorkflow.inputData(), paramType))
+                            .map(paramType -> Json.deserialize(existingStartedWorkflow.data(), paramType))
                             .map(deserialized -> new Object[]{deserialized})
                             .orElse(new Object[]{});
 

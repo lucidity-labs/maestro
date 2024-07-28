@@ -25,8 +25,8 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
 
         if (existingCompletedActivity != null) {
             applySignals(workflowContext, existingCompletedActivity.sequenceNumber());
-            if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.outputData();
-            return Json.deserialize(existingCompletedActivity.outputData(), method.getReturnType());
+            if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.data();
+            return Json.deserialize(existingCompletedActivity.data(), method.getReturnType());
         }
 
         try {
@@ -34,7 +34,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
                     Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
-                    Json.serializeFirst(args), null, Status.STARTED, null
+                    Json.serializeFirst(args), Status.STARTED, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
@@ -44,7 +44,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
 
         Object[] finalArgs = Arrays.stream(method.getParameterTypes())
                 .findFirst()
-                .map(paramType -> Json.deserialize(existingStartedActivity.inputData(), paramType))
+                .map(paramType -> Json.deserialize(existingStartedActivity.data(), paramType))
                 .map(deserialized -> new Object[]{deserialized})
                 .orElse(new Object[]{});
 
@@ -68,8 +68,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
                         correlationNumber, nextSequenceNumber, workflowContext.runId(),
                         Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
-                        existingStartedActivity.inputData(), Json.serialize(output),
-                        Status.COMPLETED, null
+                        Json.serialize(output), Status.COMPLETED, null
                 );
 
                 applySignals(workflowContext, nextSequenceNumber);
