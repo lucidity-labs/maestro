@@ -41,7 +41,7 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         System.out.println("response to sending order shipped email is: " + orderShippedEmailFuture.get());
         System.out.println("new inventory level is: " + newInventoryFuture.get());
 
-        Sleep.sleep(Duration.ofSeconds(10)); // this can be much longer
+        Sleep.sleep(Duration.ofSeconds(10)); // this can be much, much longer if you wish
 
         notificationActivity.sendSpecialOfferEmail();
 
