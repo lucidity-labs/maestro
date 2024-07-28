@@ -25,7 +25,7 @@ public class Await {
         try {
             EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
+                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.AWAIT, null, null,
                     null, Status.STARTED, null
             ));
@@ -39,7 +39,7 @@ public class Await {
         if (!condition.get()) {
             EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
+                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.AWAIT, null, null,
                     null, Status.UNSATISFIED, null
             ));
@@ -51,9 +51,9 @@ public class Await {
         try {
             EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, nextSequenceNumber, workflowContext.runId(),
-                    Category.AWAIT, null, null,
-                    null, Status.COMPLETED, null
+                    correlationNumber, nextSequenceNumber, Category.AWAIT,
+                    null, null, null,
+                    Status.COMPLETED, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +

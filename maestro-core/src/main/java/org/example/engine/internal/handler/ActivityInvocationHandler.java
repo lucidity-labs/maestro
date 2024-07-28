@@ -32,7 +32,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
         try {
             EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
-                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()), workflowContext.runId(),
+                    correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
                     Json.serializeFirst(args), Status.STARTED, null
             ));
@@ -66,8 +66,8 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
 
                 EventEntity eventEntity = new EventEntity(
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
-                        correlationNumber, nextSequenceNumber, workflowContext.runId(),
-                        Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
+                        correlationNumber, nextSequenceNumber, Category.ACTIVITY,
+                        target.getClass().getCanonicalName(), method.getName(),
                         Json.serialize(output), Status.COMPLETED, null
                 );
 

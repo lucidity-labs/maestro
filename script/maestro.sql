@@ -9,7 +9,6 @@ CREATE TABLE event
     workflow_id        VARCHAR   NOT NULL,
     correlation_number BIGINT,
     sequence_number    BIGINT    NOT NULL,
-    run_id             VARCHAR,
     category           category    NOT NULL,
     class_name         VARCHAR,
     function_name      VARCHAR,

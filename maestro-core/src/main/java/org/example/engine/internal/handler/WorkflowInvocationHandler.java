@@ -25,16 +25,15 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             if (Util.shouldSkip(method)) return method.invoke(target, args);
 
             if (Util.isAnnotatedWith(method, target, WorkflowFunction.class)) {
-                String runId = UUID.randomUUID().toString();
                 String input = Json.serializeFirst(args);
 
-                WorkflowContextManager.set(new WorkflowContext(options.workflowId(), runId, 0L, null, target));
+                WorkflowContextManager.set(new WorkflowContext(options.workflowId(), 0L, null, target));
                 Long correlationNumber = WorkflowContextManager.getCorrelationNumber();
 
                 try {
                     EventRepo.saveWithRetry(() -> new EventEntity(
                             UUID.randomUUID().toString(), options.workflowId(),
-                            correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
+                            correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()),
                             Category.WORKFLOW, target.getClass().getCanonicalName(), method.getName(),
                             input, Status.STARTED, null
                     ));
@@ -47,7 +46,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                 try {
                     EventRepo.saveWithRetry(() -> new EventEntity(
                             UUID.randomUUID().toString(), options.workflowId(),
-                            correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()), runId,
+                            correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()),
                             Category.WORKFLOW, target.getClass().getCanonicalName(), method.getName(),
                             Json.serialize(output), Status.COMPLETED, null
                     ));
@@ -61,7 +60,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
             } else if (Util.isAnnotatedWith(method, target, SignalFunction.class)) {
                 EventRepo.saveWithRetry(() -> new EventEntity(
                         UUID.randomUUID().toString(), options.workflowId(),
-                        null, EventRepo.getNextSequenceNumber(options.workflowId()), null,
+                        null, EventRepo.getNextSequenceNumber(options.workflowId()),
                         Category.SIGNAL, target.getClass().getCanonicalName(), method.getName(),
                         Json.serializeFirst(args), Status.RECEIVED, null
                 ));

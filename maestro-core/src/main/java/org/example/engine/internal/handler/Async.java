@@ -12,7 +12,7 @@ public class Async {
         WorkflowContext existingWorkflowContext = WorkflowContextManager.get();
 
         WorkflowContext newWorkflowContext = new WorkflowContext(
-                existingWorkflowContext.workflowId(), existingWorkflowContext.runId(), null,
+                existingWorkflowContext.workflowId(), null,
                 WorkflowContextManager.getCorrelationNumber(), existingWorkflowContext.workflow()
         );
 
