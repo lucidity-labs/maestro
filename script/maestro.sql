@@ -7,14 +7,14 @@ CREATE TABLE event
 (
     id                 VARCHAR PRIMARY KEY,
     workflow_id        VARCHAR   NOT NULL,
-    correlation_number BIGINT,
-    sequence_number    BIGINT    NOT NULL,
     category           category    NOT NULL,
+    status             status    NOT NULL,
+    data               JSON,
+    timestamp         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     class_name         VARCHAR,
     function_name      VARCHAR,
-    data               JSON,
-    status             status    NOT NULL,
-    timestamp         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    correlation_number BIGINT,
+    sequence_number    BIGINT    NOT NULL
 );
 --TODO: add metadata column allowing us to store necessary data for each event such as serialized WorkflowOptions for WORKFLOW STARTED?
 
