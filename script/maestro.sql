@@ -18,13 +18,14 @@ CREATE TABLE event
 );
 --TODO: add metadata column allowing us to store necessary data for each event such as serialized WorkflowOptions for WORKFLOW STARTED?
 
-CREATE UNIQUE INDEX event_unique_workflow_correlation_status
-    ON event (workflow_id, correlation_number, status);
+CREATE UNIQUE INDEX event_unique_workflow_correlation_status ON event (workflow_id, correlation_number, status);
+CREATE UNIQUE INDEX event_unique_workflow_sequence ON event (workflow_id, sequence_number);
+CREATE INDEX idx_workflow_category_status ON event (workflow_id, category, status);
+CREATE INDEX idx_workflow_correlation_status ON event (workflow_id, correlation_number, status);
+CREATE INDEX idx_workflow_status_sequence ON event (workflow_id, status, sequence_number);
+CREATE INDEX idx_workflow_category_sequence ON event (workflow_id, category, sequence_number);
+CREATE INDEX idx_workflow_category_status_timestamp ON event (workflow_id, category, status, timestamp);
 
-CREATE UNIQUE INDEX event_unique_workflow_sequence
-    ON event (workflow_id, sequence_number);
-
--- TODO: add indexes
 
 
 -- table required by db-scheduler
