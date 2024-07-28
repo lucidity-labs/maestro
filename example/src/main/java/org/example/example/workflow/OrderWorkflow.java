@@ -7,11 +7,11 @@ import org.example.engine.api.WorkflowInterface;
 import java.util.concurrent.ExecutionException;
 
 @WorkflowInterface
-public interface MyWorkflow {
+public interface OrderWorkflow {
 
     @WorkflowFunction
-    SomeWorkflowOutput execute(SomeWorkflowInput input) throws ExecutionException, InterruptedException;
+    OrderFinalized submitOrder(OrderInput input) throws ExecutionException, InterruptedException;
 
     @SignalFunction
-    void confirm(SomeWorkflowInput input);
+    void confirmShipped(OrderInput input);
 }

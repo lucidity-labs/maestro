@@ -2,10 +2,10 @@ package org.example.example.api;
 
 import org.example.engine.api.Maestro;
 import org.example.engine.api.WorkflowOptions;
-import org.example.example.workflow.MyWorkflow;
-import org.example.example.workflow.MyWorkflowImpl;
-import org.example.example.workflow.SomeWorkflowInput;
-import org.example.example.workflow.SomeWorkflowOutput;
+import org.example.example.workflow.OrderWorkflow;
+import org.example.example.workflow.OrderWorkflowImpl;
+import org.example.example.workflow.OrderInput;
+import org.example.example.workflow.OrderFinalized;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,16 +17,16 @@ import java.util.concurrent.ExecutionException;
 public class Controller {
 
     @PostMapping("/execute")
-    public SomeWorkflowOutput executeWorkflow() throws ExecutionException, InterruptedException {
-        MyWorkflow workflow = Maestro.newWorkflow(MyWorkflowImpl.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
+    public OrderFinalized executeWorkflow() throws ExecutionException, InterruptedException {
+        OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
 
-        return workflow.execute(new SomeWorkflowInput("someInput"));
+        return workflow.submitOrder(new OrderInput("someInput"));
     }
 
     @PostMapping("/signal")
     public void signalWorkflow() {
-        MyWorkflow workflow = Maestro.newWorkflow(MyWorkflowImpl.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
+        OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions("ac1ade8e-1b7b-4784-a15c-724403a77b5b"));
 
-        workflow.confirm(new SomeWorkflowInput("someSignalInput"));
+        workflow.confirmShipped(new OrderInput("someSignalInput"));
     }
 }

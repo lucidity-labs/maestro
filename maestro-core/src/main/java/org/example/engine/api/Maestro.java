@@ -16,6 +16,10 @@ public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(Maestro.class);
 
+    public static void registerActivities(Object... activity) {
+        Arrays.stream(activity).forEach(Maestro::registerActivity);
+    }
+
     // TODO: maybe expose another method accepting activity options as second param
     public static void registerActivity(Object activity) {
         Initializer.initialize();
