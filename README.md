@@ -41,6 +41,14 @@
 ### Example app
 Take a look at [the example app](./example) for an example of how to create your first durable workflow! 
 
-Start the app with `./gradlew -p ./example bootRun`. (Make sure you've already started the Dockerized Postgres instance!)
+Start the app with:
+```bash
+export MAESTRO_DB_URL=jdbc:postgresql://localhost:5432/application_db
+export MAESTRO_DB_USERNAME=postgres
+export MAESTRO_DB_PASSWORD=password
+
+./gradlew -p ./example bootRun
+```
+Note: this requires the Dockerized Postgres instance from step 2 above.
 
 Then, send the app some HTTP requests using [requests.http](./example/script/requests.http).
