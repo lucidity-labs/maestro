@@ -1,5 +1,6 @@
 package org.example.engine.internal.worker;
 
+import org.example.engine.internal.EventEntity;
 import org.example.engine.internal.EventRepo;
 import org.example.engine.internal.Util;
 import org.slf4j.Logger;
@@ -24,12 +25,7 @@ public class AbandonedWorkflowWorker {
 
     public static void poll() {
         while (true) {
-
-            EventRepo.getAbandonedWorkflows()
-                    .forEach(w -> {
-                        logger.info("replaying workflow with id: {}", w.workflowId());
-                        Util.replayWorkflow(w);
-                    });
+            EventRepo.getAbandonedWorkflows().forEach(AbandonedWorkflowWorker::logAndReplay);
 
             try {
                 Thread.sleep(1000);
@@ -37,5 +33,10 @@ public class AbandonedWorkflowWorker {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static void logAndReplay(EventEntity workflow) {
+        logger.info("replaying workflow with id: {}", workflow.workflowId());
+        Util.replayWorkflow(workflow);
     }
 }

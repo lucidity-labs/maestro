@@ -1,5 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ExampleApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <envs>
+      <env name="MAESTRO_DB_URL" value="jdbc:postgresql://localhost:5432/application_db" />
+      <env name="MAESTRO_DB_USERNAME" value="postgres" />
+      <env name="MAESTRO_DB_PASSWORD" value="password" />
+    </envs>
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="maestro.example.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.example.ExampleApplication" />

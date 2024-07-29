@@ -32,15 +32,15 @@ public class EventRepo {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) return map(resultSet);
+            else return null;
         } catch (SQLException e) {
             logger.error("Database access error while fetching event with workflowId: {}, correlationNumber: {}, status: {}", workflowId, correlationNumber, status, e);
 
             throw new RuntimeException(e);
         }
-        return null;
     }
 
-    public static EventEntity get(String workflowId, Category category, Status status) throws SQLException {
+    public static EventEntity get(String workflowId, Category category, Status status) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENT)) {
 
@@ -50,12 +50,12 @@ public class EventRepo {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) return map(resultSet);
+            else return null;
         } catch (SQLException e) {
             logger.error("Database access error while fetching event with workflowId: {}, status: {}", workflowId, status, e);
 
-            throw e;
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     public static List<EventEntity> getSignals(String workflowId, Long sequenceNumber) {
@@ -75,6 +75,7 @@ public class EventRepo {
             }
         } catch (SQLException e) {
             logger.error("Database access error while fetching signals with workflowId: {} and sequenceNumber: {}", workflowId, sequenceNumber, e);
+            throw new RuntimeException(e);
         }
         return signals;
     }

@@ -48,30 +48,24 @@ public class Sleep {
     }
 
     private static void completeSleep(String workflowId, Long correlationNumber) {
+        Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowId);
+
         try {
-            Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowId);
-
-            try {
-                EventRepo.saveWithRetry(() -> new EventEntity(
-                        UUID.randomUUID().toString(), workflowId,
-                        correlationNumber, nextSequenceNumber, Category.SLEEP,
-                        null, null, null,
-                        Status.COMPLETED, null
-                ));
-            } catch (WorkflowCorrelationStatusConflict e) {
-                logger.info(e.getMessage());
-            }
-
-            EventEntity existingStartedWorkflow = EventRepo.get(
-                    workflowId, Category.WORKFLOW, Status.STARTED
-            );
-
-            Util.replayWorkflow(existingStartedWorkflow);
-        } catch (Throwable t) {
-            logger.error(t.getMessage());
-            // converting all to unchecked should be fine here because we control all the stack frames
-            throw new RuntimeException(t);
+            EventRepo.saveWithRetry(() -> new EventEntity(
+                    UUID.randomUUID().toString(), workflowId,
+                    correlationNumber, nextSequenceNumber, Category.SLEEP,
+                    null, null, null,
+                    Status.COMPLETED, null
+            ));
+        } catch (WorkflowCorrelationStatusConflict e) {
+            logger.info(e.getMessage());
         }
+
+        EventEntity existingStartedWorkflow = EventRepo.get(
+                workflowId, Category.WORKFLOW, Status.STARTED
+        );
+
+        Util.replayWorkflow(existingStartedWorkflow);
     }
 
     private static OneTimeTask<SleepData> initializeTask() {

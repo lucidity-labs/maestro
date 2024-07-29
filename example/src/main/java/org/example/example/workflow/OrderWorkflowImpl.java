@@ -27,8 +27,6 @@ public class OrderWorkflowImpl implements OrderWorkflow {
 
     @Override
     public OrderFinalized submitOrder(OrderInput input) throws ExecutionException, InterruptedException {
-        System.out.println("submitted order");
-
         inventoryActivity.reserveInventory();
         paymentActivity.processPayment();
         notificationActivity.sendOrderConfirmedEmail();
@@ -38,14 +36,11 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         CompletableFuture<String> orderShippedEmailFuture = Async.function(() -> notificationActivity.sendOrderShippedEmail());
         CompletableFuture<Integer> newInventoryFuture = Async.function(() -> inventoryActivity.decreaseInventory());
 
-        System.out.println("response to sending order shipped email is: " + orderShippedEmailFuture.get());
-        System.out.println("new inventory level is: " + newInventoryFuture.get());
-
         Sleep.sleep(Duration.ofSeconds(10)); // this can be much, much longer if you wish
 
         notificationActivity.sendSpecialOfferEmail();
 
-        return new OrderFinalized(orderShippedEmailFuture.get());
+        return new OrderFinalized(orderShippedEmailFuture.get(), newInventoryFuture.get());
     }
 
     @Override

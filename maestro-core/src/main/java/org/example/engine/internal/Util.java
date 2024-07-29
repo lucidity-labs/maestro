@@ -77,24 +77,26 @@ public class Util {
     }
 
     public static void replayWorkflow(EventEntity workflowStartedEvent) {
+        Class<?> workflowClass = getClass(workflowStartedEvent.className());
+        Method workflowMethod = Util.findWorkflowMethod(workflowClass);
+
+        Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
+                .findFirst()
+                .map(paramType -> Json.deserialize(workflowStartedEvent.data(), paramType))
+                .map(deserialized -> new Object[]{deserialized})
+                .orElse(new Object[]{});
+
+        //TODO: maybe WorkflowOptions should be serialized and stored durably so we can pass the full options here?
+        Object proxy = Maestro.newWorkflow(workflowClass, new WorkflowOptions(workflowStartedEvent.workflowId()));
+
+        executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
+    }
+
+    private static Class<?> getClass(String className) {
         try {
-            Class<?> workflowClass = Class.forName(workflowStartedEvent.className());
-            Method workflowMethod = Util.findWorkflowMethod(workflowClass);
-
-            Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
-                    .findFirst()
-                    .map(paramType -> Json.deserialize(workflowStartedEvent.data(), paramType))
-                    .map(deserialized -> new Object[]{deserialized})
-                    .orElse(new Object[]{});
-
-            //TODO: maybe WorkflowOptions should be serialized and stored durably so we can pass the full options here?
-            Object proxy = Maestro.newWorkflow(workflowClass, new WorkflowOptions(workflowStartedEvent.workflowId()));
-
-            executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
-        } catch (Throwable t) {
-            logger.error(t.getMessage());
-            // converting all to unchecked should be fine here because we control all the stack frames
-            throw new RuntimeException(t);
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
