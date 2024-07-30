@@ -18,7 +18,6 @@ import static org.example.engine.internal.Datasource.getDataSource;
 import static org.example.engine.internal.SqlQueries.*;
 
 public class EventRepo {
-
     private static final Logger logger = LoggerFactory.getLogger(EventRepo.class);
     private static final DataSource dataSource = getDataSource();
 
@@ -35,7 +34,6 @@ public class EventRepo {
             else return null;
         } catch (SQLException e) {
             logger.error("Database access error while fetching event with workflowId: {}, correlationNumber: {}, status: {}", workflowId, correlationNumber, status, e);
-
             throw new RuntimeException(e);
         }
     }
@@ -53,7 +51,6 @@ public class EventRepo {
             else return null;
         } catch (SQLException e) {
             logger.error("Database access error while fetching event with workflowId: {}, status: {}", workflowId, status, e);
-
             throw new RuntimeException(e);
         }
     }

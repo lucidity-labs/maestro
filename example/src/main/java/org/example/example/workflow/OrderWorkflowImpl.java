@@ -36,11 +36,14 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         CompletableFuture<String> orderShippedEmailFuture = Async.function(() -> notificationActivity.sendOrderShippedEmail());
         CompletableFuture<Integer> newInventoryFuture = Async.function(() -> inventoryActivity.decreaseInventory());
 
+        String orderShippedEmailResponse = orderShippedEmailFuture.get();
+        Integer newInventoryLevel = newInventoryFuture.get();
+
         Sleep.sleep(Duration.ofSeconds(10)); // this can be much, much longer if you wish
 
         notificationActivity.sendSpecialOfferEmail();
 
-        return new OrderFinalized(orderShippedEmailFuture.get(), newInventoryFuture.get());
+        return new OrderFinalized(orderShippedEmailResponse, newInventoryLevel);
     }
 
     @Override

@@ -1,10 +1,9 @@
 package org.example.engine.api;
 
 import org.example.engine.internal.Initializer;
+import org.example.engine.internal.Util;
 import org.example.engine.internal.handler.ActivityInvocationHandler;
 import org.example.engine.internal.handler.WorkflowInvocationHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
-    private static final Logger logger = LoggerFactory.getLogger(Maestro.class);
 
     public static void registerActivities(Object... activity) {
         Arrays.stream(activity).forEach(Maestro::registerActivity);
@@ -24,55 +22,37 @@ public class Maestro {
     public static void registerActivity(Object activity) {
         Initializer.initialize();
 
-        typeToActivity.put(getInterface(activity.getClass()), proxyActivity(activity));
+        typeToActivity.put(Util.getActivityInterface(activity.getClass()), proxyActivity(activity));
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) {
-        try {
-            T instance = clazz.getDeclaredConstructor().newInstance();
-            populateAnnotatedFields(instance);
-            Class<?> interfaceClass = Arrays.stream(clazz.getInterfaces()).findFirst().get();
+        T instance = Util.createInstance(clazz);
+        populateAnnotatedFields(instance);
+        Class<?> interfaceClass = Arrays.stream(clazz.getInterfaces()).findFirst().get();
 
-            return (T) Proxy.newProxyInstance(
-                    clazz.getClassLoader(),
-                    new Class<?>[]{interfaceClass},
-                    new WorkflowInvocationHandler(instance, options)
-            );
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static <T> T getActivity(Class<T> activityType) {
-        return activityType.cast(typeToActivity.get(activityType));
+        return (T) Proxy.newProxyInstance(
+                clazz.getClassLoader(),
+                new Class<?>[]{interfaceClass},
+                new WorkflowInvocationHandler(instance, options)
+        );
     }
 
     @SuppressWarnings("unchecked")
     private static <T> T proxyActivity(T instance) {
         return (T) Proxy.newProxyInstance(
                 instance.getClass().getClassLoader(),
-                new Class<?>[]{getInterface(instance.getClass())},
+                new Class<?>[]{Util.getActivityInterface(instance.getClass())},
                 new ActivityInvocationHandler(instance)
         );
     }
 
-    private static Class<?> getInterface(Class<?> clazz) {
-        for (Class<?> iface : clazz.getInterfaces()) {
-            if (iface.isAnnotationPresent(ActivityInterface.class)) return iface;
-        }
-
-        throw new IllegalArgumentException("The class must implement an interface annotated with @" + ActivityInterface.class.getSimpleName());
-    }
-
-    private static void populateAnnotatedFields(Object instance) throws IllegalAccessException {
+    private static void populateAnnotatedFields(Object instance) {
         Field[] fields = instance.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Activity.class)) {
-                field.setAccessible(true);
-                field.set(instance, getActivity(field.getType()));
+                Object activity = typeToActivity.get(field.getType());
+                Util.setField(field, instance, activity);
             }
         }
     }

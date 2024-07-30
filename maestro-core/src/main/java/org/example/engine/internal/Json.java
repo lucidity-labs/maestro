@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Json {
-
     private static final Logger logger = LoggerFactory.getLogger(Json.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

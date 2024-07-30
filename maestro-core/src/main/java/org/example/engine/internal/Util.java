@@ -1,12 +1,12 @@
 package org.example.engine.internal;
 
+import org.example.engine.api.ActivityInterface;
 import org.example.engine.api.Maestro;
 import org.example.engine.api.WorkflowFunction;
 import org.example.engine.api.WorkflowOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Util {
-    private static final Logger logger = LoggerFactory.getLogger(Util.class);
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
     private static final Set<String> METHODS_TO_SKIP = Set.of(
             "toString",
@@ -96,6 +95,32 @@ public class Util {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T createInstance(Class<T> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Class<?> getActivityInterface(Class<?> clazz) {
+        for (Class<?> iface : clazz.getInterfaces()) {
+            if (iface.isAnnotationPresent(ActivityInterface.class)) return iface;
+        }
+
+        throw new IllegalArgumentException("The class must implement an interface annotated with @" + ActivityInterface.class.getSimpleName());
+    }
+
+    public static void setField(Field field, Object instance, Object value) {
+        field.setAccessible(true);
+
+        try {
+            field.set(instance, value);
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
