@@ -11,18 +11,28 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-// move some of these methods elsewhere? e.g. make an API class called Workflow?
+// move some of these methods elsewhere? e.g. make an API class called Workflow? Make a clean interface
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
+    private static final Map<String, Class<?>> simpleNameToWorkflowImplType = new HashMap<>();
 
-    public static void registerActivities(Object... activity) {
-        Arrays.stream(activity).forEach(Maestro::registerActivity);
+    public static Class<?> getWorkflowImplType(String simpleName) {
+        return simpleNameToWorkflowImplType.get(simpleName);
+    }
+
+    public static void registerWorkflowImplementationTypes(Class<?>... workflows) {
+        Initializer.initialize();
+
+        Arrays.stream(workflows)
+                .forEach(workflow -> simpleNameToWorkflowImplType.put(workflow.getSimpleName(), workflow));
+    }
+
+    public static void registerActivities(Object... activities) {
+        Arrays.stream(activities).forEach(Maestro::registerActivity);
     }
 
     // TODO: maybe expose another method accepting activity options as second param
     public static void registerActivity(Object activity) {
-        Initializer.initialize();
-
         typeToActivity.put(Util.getActivityInterface(activity.getClass()), proxyActivity(activity));
     }
 

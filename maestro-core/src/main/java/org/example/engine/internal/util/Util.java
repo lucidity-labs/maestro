@@ -76,7 +76,7 @@ public class Util {
     }
 
     public static void replayWorkflow(EventEntity workflowStartedEvent) {
-        Class<?> workflowClass = getClass(workflowStartedEvent.className());
+        Class<?> workflowClass = Maestro.getWorkflowImplType(workflowStartedEvent.className());
         Method workflowMethod = Util.findWorkflowMethod(workflowClass);
 
         Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
@@ -89,15 +89,6 @@ public class Util {
         Object proxy = Maestro.newWorkflow(workflowClass, new WorkflowOptions(workflowStartedEvent.workflowId()));
 
         executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
-    }
-
-    // TODO: make this get the class by simple name so class can be moved
-    private static Class<?> getClass(String className) {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static <T> T createInstance(Class<T> clazz) {

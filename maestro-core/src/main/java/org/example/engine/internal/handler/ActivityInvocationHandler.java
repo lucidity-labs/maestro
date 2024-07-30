@@ -42,7 +42,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
             EventRepo.saveWithRetry(() -> new EventEntity(
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
-                    Category.ACTIVITY, target.getClass().getCanonicalName(), method.getName(),
+                    Category.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
                     Json.serializeFirst(args), Status.STARTED, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
@@ -75,7 +75,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
                 EventEntity eventEntity = new EventEntity(
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
                         correlationNumber, nextSequenceNumber, Category.ACTIVITY,
-                        target.getClass().getCanonicalName(), method.getName(),
+                        target.getClass().getSimpleName(), method.getName(),
                         Json.serialize(output), Status.COMPLETED, null
                 );
 
