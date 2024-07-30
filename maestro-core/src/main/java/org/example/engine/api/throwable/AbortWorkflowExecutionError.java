@@ -1,4 +1,4 @@
-package org.example.engine.internal.throwable;
+package org.example.engine.api.throwable;
 
 public class AbortWorkflowExecutionError extends Error {
     public AbortWorkflowExecutionError(String message) {

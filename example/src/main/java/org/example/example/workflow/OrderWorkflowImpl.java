@@ -1,6 +1,6 @@
 package org.example.example.workflow;
 
-import org.example.engine.api.Activity;
+import org.example.engine.api.annotation.Activity;
 import org.example.engine.internal.handler.Async;
 import org.example.engine.internal.handler.Await;
 import org.example.engine.internal.handler.Sleep;

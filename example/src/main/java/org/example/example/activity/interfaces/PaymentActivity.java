@@ -1,6 +1,6 @@
 package org.example.example.activity.interfaces;
 
-import org.example.engine.api.ActivityInterface;
+import org.example.engine.api.annotation.ActivityInterface;
 
 @ActivityInterface
 public interface PaymentActivity {

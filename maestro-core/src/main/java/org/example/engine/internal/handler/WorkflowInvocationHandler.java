@@ -1,7 +1,7 @@
 package org.example.engine.internal.handler;
 
-import org.example.engine.api.SignalFunction;
-import org.example.engine.api.WorkflowFunction;
+import org.example.engine.api.annotation.SignalFunction;
+import org.example.engine.api.annotation.WorkflowFunction;
 import org.example.engine.api.WorkflowOptions;
 import org.example.engine.internal.dto.WorkflowContext;
 import org.example.engine.internal.dto.WorkflowContextManager;
@@ -9,8 +9,8 @@ import org.example.engine.internal.model.Category;
 import org.example.engine.internal.model.EventEntity;
 import org.example.engine.internal.model.Status;
 import org.example.engine.internal.repo.EventRepo;
-import org.example.engine.internal.throwable.AbortWorkflowExecutionError;
-import org.example.engine.internal.throwable.WorkflowCorrelationStatusConflict;
+import org.example.engine.api.throwable.AbortWorkflowExecutionError;
+import org.example.engine.internal.exception.WorkflowCorrelationStatusConflict;
 import org.example.engine.internal.util.Json;
 import org.example.engine.internal.util.Util;
 import org.slf4j.Logger;

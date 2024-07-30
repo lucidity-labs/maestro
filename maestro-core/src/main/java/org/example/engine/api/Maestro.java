@@ -1,5 +1,7 @@
 package org.example.engine.api;
 
+import org.example.engine.api.annotation.Activity;
+import org.example.engine.api.throwable.UnregisteredWorkflowException;
 import org.example.engine.internal.config.Initializer;
 import org.example.engine.internal.util.Util;
 import org.example.engine.internal.handler.ActivityInvocationHandler;
@@ -38,6 +40,10 @@ public class Maestro {
 
     @SuppressWarnings("unchecked")
     public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) {
+        if (simpleNameToWorkflowImplType.get(clazz.getSimpleName()) == null) {
+            throw new UnregisteredWorkflowException(clazz);
+        }
+
         T instance = Util.createInstance(clazz);
         populateAnnotatedFields(instance);
         Class<?> interfaceClass = Util.getWorkflowInterface(clazz);

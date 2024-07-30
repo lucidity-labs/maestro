@@ -6,8 +6,8 @@ import org.example.engine.internal.model.Category;
 import org.example.engine.internal.model.EventEntity;
 import org.example.engine.internal.model.Status;
 import org.example.engine.internal.repo.EventRepo;
-import org.example.engine.internal.throwable.AbortWorkflowExecutionError;
-import org.example.engine.internal.throwable.WorkflowCorrelationStatusConflict;
+import org.example.engine.api.throwable.AbortWorkflowExecutionError;
+import org.example.engine.internal.exception.WorkflowCorrelationStatusConflict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

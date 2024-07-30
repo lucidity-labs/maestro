@@ -1,6 +1,9 @@
 package org.example.engine.internal.util;
 
 import org.example.engine.api.*;
+import org.example.engine.api.annotation.ActivityInterface;
+import org.example.engine.api.annotation.WorkflowFunction;
+import org.example.engine.api.annotation.WorkflowInterface;
 import org.example.engine.internal.dto.WorkflowContext;
 import org.example.engine.internal.model.EventEntity;
 import org.example.engine.internal.repo.EventRepo;

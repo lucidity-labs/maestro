@@ -4,7 +4,7 @@ import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
-import org.example.engine.internal.throwable.WorkflowSequenceConflict;
+import org.example.engine.internal.exception.WorkflowSequenceConflict;
 
 import java.time.Duration;
 
