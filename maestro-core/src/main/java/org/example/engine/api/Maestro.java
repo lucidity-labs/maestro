@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+// move some of these methods elsewhere? e.g. make an API class called Workflow?
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
 
