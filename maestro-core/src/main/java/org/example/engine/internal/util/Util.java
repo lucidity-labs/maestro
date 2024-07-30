@@ -1,9 +1,6 @@
 package org.example.engine.internal.util;
 
-import org.example.engine.api.ActivityInterface;
-import org.example.engine.api.Maestro;
-import org.example.engine.api.WorkflowFunction;
-import org.example.engine.api.WorkflowOptions;
+import org.example.engine.api.*;
 import org.example.engine.internal.dto.WorkflowContext;
 import org.example.engine.internal.model.EventEntity;
 import org.example.engine.internal.repo.EventRepo;
@@ -111,14 +108,6 @@ public class Util {
         }
     }
 
-    public static Class<?> getActivityInterface(Class<?> clazz) {
-        for (Class<?> iface : clazz.getInterfaces()) {
-            if (iface.isAnnotationPresent(ActivityInterface.class)) return iface;
-        }
-
-        throw new IllegalArgumentException("The class must implement an interface annotated with @" + ActivityInterface.class.getSimpleName());
-    }
-
     public static void setField(Field field, Object instance, Object value) {
         field.setAccessible(true);
 
@@ -127,5 +116,21 @@ public class Util {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Class<?> getActivityInterface(Class<?> clazz) {
+        return getAnnotatedInterfaceOfClass(clazz, ActivityInterface.class);
+    }
+
+    public static Class<?> getWorkflowInterface(Class<?> clazz) {
+        return getAnnotatedInterfaceOfClass(clazz, WorkflowInterface.class);
+    }
+
+    private static Class<?> getAnnotatedInterfaceOfClass(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        for (Class<?> iface : clazz.getInterfaces()) {
+            if (iface.isAnnotationPresent(annotationClass)) return iface;
+        }
+
+        throw new IllegalArgumentException("The class must implement an interface annotated with @" + annotationClass.getSimpleName());
     }
 }

@@ -30,7 +30,7 @@ public class Maestro {
     public static <T> T newWorkflow(Class<T> clazz, WorkflowOptions options) {
         T instance = Util.createInstance(clazz);
         populateAnnotatedFields(instance);
-        Class<?> interfaceClass = Arrays.stream(clazz.getInterfaces()).findFirst().get();
+        Class<?> interfaceClass = Util.getWorkflowInterface(clazz);
 
         return (T) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
