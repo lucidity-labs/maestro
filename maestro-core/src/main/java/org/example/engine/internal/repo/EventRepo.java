@@ -1,6 +1,12 @@
-package org.example.engine.internal;
+package org.example.engine.internal.repo;
 
 import io.github.resilience4j.retry.Retry;
+import org.example.engine.internal.model.Status;
+import org.example.engine.internal.config.RetryConfiguration;
+import org.example.engine.internal.model.Category;
+import org.example.engine.internal.model.EventEntity;
+import org.example.engine.internal.throwable.WorkflowCorrelationStatusConflict;
+import org.example.engine.internal.throwable.WorkflowSequenceConflict;
 import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.example.engine.internal.Datasource.getDataSource;
-import static org.example.engine.internal.SqlQueries.*;
+import static org.example.engine.internal.config.Datasource.getDataSource;
+import static org.example.engine.internal.repo.SqlQueries.*;
 
 public class EventRepo {
     private static final Logger logger = LoggerFactory.getLogger(EventRepo.class);

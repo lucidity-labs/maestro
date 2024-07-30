@@ -1,4 +1,4 @@
-package org.example.engine.internal;
+package org.example.engine.internal.config;
 
 import org.example.engine.internal.worker.AbandonedWorkflowWorker;
 

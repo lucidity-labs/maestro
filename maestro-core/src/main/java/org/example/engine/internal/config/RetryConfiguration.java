@@ -1,9 +1,10 @@
-package org.example.engine.internal;
+package org.example.engine.internal.config;
 
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
+import org.example.engine.internal.throwable.WorkflowSequenceConflict;
 
 import java.time.Duration;
 

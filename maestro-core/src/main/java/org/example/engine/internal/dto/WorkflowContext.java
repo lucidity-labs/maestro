@@ -1,4 +1,4 @@
-package org.example.engine.internal;
+package org.example.engine.internal.dto;
 
 public record WorkflowContext(
         String workflowId,

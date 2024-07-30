@@ -1,7 +1,7 @@
 package org.example.engine.api;
 
-import org.example.engine.internal.Initializer;
-import org.example.engine.internal.Util;
+import org.example.engine.internal.config.Initializer;
+import org.example.engine.internal.util.Util;
 import org.example.engine.internal.handler.ActivityInvocationHandler;
 import org.example.engine.internal.handler.WorkflowInvocationHandler;
 

@@ -1,9 +1,12 @@
-package org.example.engine.internal;
+package org.example.engine.internal.util;
 
 import org.example.engine.api.ActivityInterface;
 import org.example.engine.api.Maestro;
 import org.example.engine.api.WorkflowFunction;
 import org.example.engine.api.WorkflowOptions;
+import org.example.engine.internal.dto.WorkflowContext;
+import org.example.engine.internal.model.EventEntity;
+import org.example.engine.internal.repo.EventRepo;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

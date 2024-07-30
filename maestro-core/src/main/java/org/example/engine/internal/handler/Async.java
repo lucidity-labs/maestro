@@ -1,7 +1,7 @@
 package org.example.engine.internal.handler;
 
-import org.example.engine.internal.WorkflowContext;
-import org.example.engine.internal.WorkflowContextManager;
+import org.example.engine.internal.dto.WorkflowContext;
+import org.example.engine.internal.dto.WorkflowContextManager;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;

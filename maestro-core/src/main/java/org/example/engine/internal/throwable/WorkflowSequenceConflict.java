@@ -1,4 +1,4 @@
-package org.example.engine.internal;
+package org.example.engine.internal.throwable;
 
 public class WorkflowSequenceConflict extends RuntimeException {
     public WorkflowSequenceConflict(String message) {

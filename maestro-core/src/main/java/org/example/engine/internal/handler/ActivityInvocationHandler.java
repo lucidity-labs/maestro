@@ -1,6 +1,15 @@
 package org.example.engine.internal.handler;
 
-import org.example.engine.internal.*;
+import org.example.engine.internal.dto.WorkflowContext;
+import org.example.engine.internal.dto.WorkflowContextManager;
+import org.example.engine.internal.model.Category;
+import org.example.engine.internal.model.EventEntity;
+import org.example.engine.internal.model.Status;
+import org.example.engine.internal.repo.EventRepo;
+import org.example.engine.internal.throwable.AbortWorkflowExecutionError;
+import org.example.engine.internal.throwable.WorkflowCorrelationStatusConflict;
+import org.example.engine.internal.util.Json;
+import org.example.engine.internal.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static org.example.engine.internal.Util.applySignals;
+import static org.example.engine.internal.util.Util.applySignals;
 
 public record ActivityInvocationHandler(Object target) implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(ActivityInvocationHandler.class);
@@ -50,16 +59,15 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
 
         Object output = method.invoke(target, finalArgs);
 
-        applySignalsAndCompleteActivity(workflowContext, correlationNumber, target, method, output, existingStartedActivity);
+        applySignalsAndCompleteActivity(workflowContext, correlationNumber, target, method, output);
 
         return output;
     }
 
     private static void applySignalsAndCompleteActivity(
-            WorkflowContext workflowContext, Long correlationNumber, Object target,
-            Method method, Object output, EventEntity existingStartedActivity
-    ) throws Throwable {
-
+            WorkflowContext workflowContext, Long correlationNumber,
+            Object target, Method method, Object output
+    ) {
         try {
             EventRepo.saveWithRetry(() -> {
                 Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowContext.workflowId());

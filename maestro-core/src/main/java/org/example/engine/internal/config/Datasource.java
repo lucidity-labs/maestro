@@ -1,4 +1,4 @@
-package org.example.engine.internal;
+package org.example.engine.internal.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
