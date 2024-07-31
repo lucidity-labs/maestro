@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
 
 public class Server {
 
@@ -18,6 +19,7 @@ public class Server {
                     os.write(response.getBytes());
                 }
             }));
+            server.setExecutor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()));
             server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);

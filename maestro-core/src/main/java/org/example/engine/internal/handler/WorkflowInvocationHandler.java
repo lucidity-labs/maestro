@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 
 public record WorkflowInvocationHandler(Object target, WorkflowOptions options) implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(WorkflowInvocationHandler.class);
-    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
