@@ -75,14 +75,15 @@ public class SqlQueries {
             """;
 
     //language=SQL
-    public static final String SELECT_ABANDONED_WORKFLOWS =
-            "SELECT DISTINCT ON (e1.workflow_id) e1.* " +
-                    "FROM event e1 " +
-                    "WHERE e1.category = 'WORKFLOW' AND e1.status = 'STARTED' " +
-                    "  AND NOT EXISTS ( " +
-                    "    SELECT 1 " +
-                    "    FROM event e2 " +
-                    "    WHERE e1.workflow_id = e2.workflow_id " +
-                    "      AND ((e2.category = 'WORKFLOW' AND e2.status = 'COMPLETED') OR e2.timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour') " + // TODO: make this interval customizable
-                    ");";
+    public static final String SELECT_ABANDONED_WORKFLOWS = """
+                    SELECT DISTINCT ON (e1.workflow_id) e1.*
+                    FROM event e1
+                    WHERE e1.category = 'WORKFLOW' AND e1.status = 'STARTED'
+                      AND NOT EXISTS (
+                      SELECT 1
+                    FROM event e2
+                    WHERE e1.workflow_id = e2.workflow_id
+                    AND ((e2.category = 'WORKFLOW' AND e2.status = 'COMPLETED') OR e2.timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour')
+                    );
+            """;
 }
