@@ -15,6 +15,14 @@ public class SqlQueries {
             "FROM event WHERE workflow_id = ? AND correlation_number= ?::bigint AND status = ?::status";
 
     //language=SQL
+    public static final String SELECT_WORKFLOWS = "SELECT id, workflow_id, correlation_number, sequence_number, category, class_name, function_name, data, status, timestamp " +
+            "FROM event WHERE category = 'WORKFLOW'";
+
+    //language=SQL
+    public static final String SELECT_EVENTS_BY_WORKFLOW_ID = "SELECT id, workflow_id, correlation_number, sequence_number, category, class_name, function_name, data, status, timestamp " +
+            "FROM event WHERE workflow_id = ?";
+
+    //language=SQL
     public static final String MAX_SEQUENCE_NUMBER = "SELECT max(sequence_number) FROM event WHERE workflow_id = ?";
 
     //language=SQL

@@ -1,6 +1,6 @@
 package org.example.engine.internal.worker;
 
-import org.example.engine.internal.model.EventEntity;
+import org.example.engine.internal.entity.EventEntity;
 import org.example.engine.internal.repo.EventRepo;
 import org.example.engine.internal.util.Util;
 import org.slf4j.Logger;

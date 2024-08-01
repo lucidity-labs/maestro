@@ -1,4 +1,4 @@
-package org.example.engine.internal.model;
+package org.example.engine.internal.entity;
 
 public record EventEntity(String id, String workflowId, Long correlationNumber,
                           Long sequenceNumber, Category category, String className,

@@ -37,6 +37,7 @@ const eventColumns: ColumnDef<Event>[] = [
     },
 ]
 
+// TODO: ackshually it needs to have start time and end time and input data and output data
 export const workflowColumns: ColumnDef<Workflow>[] = [
     {
         accessorKey: "workflowId",

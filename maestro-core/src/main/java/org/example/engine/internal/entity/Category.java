@@ -1,4 +1,4 @@
-package org.example.engine.internal.model;
+package org.example.engine.internal.entity;
 
 public enum Category {
     WORKFLOW,

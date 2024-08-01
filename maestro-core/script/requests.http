@@ -1,0 +1,5 @@
+###
+GET http://localhost:8000/api/workflows
+
+###
+GET http://localhost:8000/api/workflows/b5647c7b-5e16-40dd-8726-48bd0ad40cac
