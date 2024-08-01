@@ -1,10 +1,8 @@
 package org.example.engine.internal.repo;
 
 import io.github.resilience4j.retry.Retry;
-import org.example.engine.internal.entity.Status;
+import org.example.engine.internal.entity.*;
 import org.example.engine.internal.config.RetryConfiguration;
-import org.example.engine.internal.entity.Category;
-import org.example.engine.internal.entity.EventEntity;
 import org.example.engine.internal.exception.WorkflowCorrelationStatusConflict;
 import org.example.engine.internal.exception.WorkflowSequenceConflict;
 import org.postgresql.util.PSQLException;
@@ -27,27 +25,41 @@ public class EventRepo {
     private static final Logger logger = LoggerFactory.getLogger(EventRepo.class);
     private static final DataSource dataSource = getDataSource();
 
-    public static List<EventEntity> getWorkflows() {
-        return getEventBatch(SELECT_WORKFLOWS);
-    }
-
-    public static List<EventEntity> get(String workflowId) {
-        List<EventEntity> events = new ArrayList<>();
+    public static List<WorkflowModel> getWorkflows() {
+        List<WorkflowModel> workflowModels = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENTS_BY_WORKFLOW_ID)) {
-
-            preparedStatement.setString(1, workflowId);
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_WORKFLOWS)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                EventEntity eventEntity = map(resultSet);
-                events.add(eventEntity);
+                WorkflowModel workflowModel = mapToWorkflow(resultSet);
+                workflowModels.add(workflowModel);
+            }
+        } catch (SQLException e) {
+            logger.error("Database access error while fetching event batch", e);
+        }
+        return workflowModels;
+    }
+
+    public static List<EventModel> get(String workflowId) {
+        List<EventModel> eventModels = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_EVENTS_BY_WORKFLOW_ID)) {
+
+            preparedStatement.setString(1, workflowId);
+            preparedStatement.setString(2, workflowId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                EventModel eventEntity = mapToEventModel(resultSet);
+                eventModels.add(eventEntity);
             }
         } catch (SQLException e) {
             logger.error("Database access error while fetching workflows by id", e);
         }
-        return events;
+        return eventModels;
     }
 
     public static EventEntity get(String workflowId, Long correlationNumber, Status status) {
@@ -59,7 +71,7 @@ public class EventRepo {
             preparedStatement.setString(3, status.name());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) return map(resultSet);
+            if (resultSet.next()) return mapToEvent(resultSet);
             else return null;
         } catch (SQLException e) {
             logger.error("Database access error while fetching event with workflowId: {}, correlationNumber: {}, status: {}", workflowId, correlationNumber, status, e);
@@ -76,7 +88,7 @@ public class EventRepo {
             preparedStatement.setString(3, status.name());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) return map(resultSet);
+            if (resultSet.next()) return mapToEvent(resultSet);
             else return null;
         } catch (SQLException e) {
             logger.error("Database access error while fetching event with workflowId: {}, status: {}", workflowId, status, e);
@@ -96,7 +108,7 @@ public class EventRepo {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                EventEntity eventEntity = map(resultSet);
+                EventEntity eventEntity = mapToEvent(resultSet);
                 signals.add(eventEntity);
             }
         } catch (SQLException e) {
@@ -107,7 +119,20 @@ public class EventRepo {
     }
 
     public static List<EventEntity> getAbandonedWorkflows() {
-        return getEventBatch(SELECT_ABANDONED_WORKFLOWS);
+        List<EventEntity> eventEntities = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ABANDONED_WORKFLOWS)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                EventEntity eventEntity = mapToEvent(resultSet);
+                eventEntities.add(eventEntity);
+            }
+        } catch (SQLException e) {
+            logger.error("Database access error while fetching event batch", e);
+        }
+        return eventEntities;
     }
 
     public static Long getNextSequenceNumber(String workflowId) {
@@ -137,36 +162,19 @@ public class EventRepo {
         }
     }
 
-    private static List<EventEntity> getEventBatch(String query) {
-        List<EventEntity> events = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                EventEntity eventEntity = map(resultSet);
-                events.add(eventEntity);
-            }
-        } catch (SQLException e) {
-            logger.error("Database access error while fetching event batch", e);
-        }
-        return events;
-    }
-
-    private static void save(EventEntity event) throws SQLException, WorkflowCorrelationStatusConflict, WorkflowSequenceConflict {
+    private static void save(EventEntity eventEntity) throws SQLException, WorkflowCorrelationStatusConflict, WorkflowSequenceConflict {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_EVENT)) {
 
-            preparedStatement.setString(1, event.id());
-            preparedStatement.setString(2, event.workflowId());
-            preparedStatement.setObject(3, event.correlationNumber(), java.sql.Types.BIGINT);
-            preparedStatement.setLong(4, event.sequenceNumber());
-            preparedStatement.setString(5, event.category().name());
-            preparedStatement.setString(6, event.className());
-            preparedStatement.setString(7, event.functionName());
-            preparedStatement.setString(8, event.data());
-            preparedStatement.setString(9, event.status().name());
+            preparedStatement.setString(1, eventEntity.id());
+            preparedStatement.setString(2, eventEntity.workflowId());
+            preparedStatement.setObject(3, eventEntity.correlationNumber(), java.sql.Types.BIGINT);
+            preparedStatement.setLong(4, eventEntity.sequenceNumber());
+            preparedStatement.setString(5, eventEntity.category().name());
+            preparedStatement.setString(6, eventEntity.className());
+            preparedStatement.setString(7, eventEntity.functionName());
+            preparedStatement.setString(8, eventEntity.data());
+            preparedStatement.setString(9, eventEntity.status().name());
             preparedStatement.executeUpdate();
 
         } catch (PSQLException e) {
@@ -184,12 +192,12 @@ public class EventRepo {
             }
             throw e;
         } catch (SQLException e) {
-            logger.error("Database access error while inserting event with id: {}", event.id(), e);
+            logger.error("Database access error while inserting event with id: {}", eventEntity.id(), e);
             throw e;
         }
     }
 
-    private static EventEntity map(ResultSet resultSet) throws SQLException {
+    private static EventEntity mapToEvent(ResultSet resultSet) throws SQLException {
         return new EventEntity(
                 resultSet.getString("id"),
                 resultSet.getString("workflow_id"),
@@ -201,6 +209,30 @@ public class EventRepo {
                 resultSet.getString("data"),
                 Status.valueOf(resultSet.getString("status")),
                 resultSet.getString("timestamp")
+        );
+    }
+
+    private static WorkflowModel mapToWorkflow(ResultSet resultSet) throws SQLException {
+        return new WorkflowModel(
+                resultSet.getString("workflow_id"),
+                resultSet.getString("class_name"),
+                resultSet.getString("function_name"),
+                resultSet.getString("start_timestamp"),
+                resultSet.getString("end_timestamp"),
+                resultSet.getString("input"),
+                resultSet.getString("output")
+        );
+    }
+
+    private static EventModel mapToEventModel(ResultSet resultSet) throws SQLException {
+        return new EventModel(
+                resultSet.getString("workflow_id"),
+                resultSet.getString("class_name"),
+                resultSet.getString("function_name"),
+                resultSet.getString("start_timestamp"),
+                resultSet.getString("end_timestamp"),
+                resultSet.getString("input"),
+                resultSet.getString("output")
         );
     }
 }

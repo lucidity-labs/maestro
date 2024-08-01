@@ -2,7 +2,8 @@ package org.example.engine.internal.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import org.example.engine.internal.entity.EventEntity;
+import org.example.engine.internal.entity.EventModel;
+import org.example.engine.internal.entity.WorkflowModel;
 import org.example.engine.internal.repo.EventRepo;
 import org.example.engine.internal.util.Json;
 
@@ -39,14 +40,14 @@ public class Server {
     }
 
     private static void handleGetAllWorkflows(HttpExchange exchange) throws IOException {
-        List<EventEntity> workflows = EventRepo.getWorkflows();
-        String json = Json.serialize(workflows);
+        List<WorkflowModel> workflowModels = EventRepo.getWorkflows();
+        String json = Json.serialize(workflowModels);
         sendJsonResponse(exchange, 200, json);
     }
 
     private static void handleGetWorkflowById(HttpExchange exchange, String id) throws IOException {
-        List<EventEntity> events = EventRepo.get(id);
-        String json = Json.serialize(events);
+        List<EventModel> eventModels = EventRepo.get(id);
+        String json = Json.serialize(eventModels);
         sendJsonResponse(exchange, 200, json);
     }
 
