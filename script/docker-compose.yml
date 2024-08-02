@@ -1,5 +1,13 @@
-version: '3.8'
 services:
+  app:
+    environment:
+      MAESTRO_DB_URL: jdbc:postgresql://postgres:5432/application_db
+      MAESTRO_DB_USERNAME: postgres
+      MAESTRO_DB_PASSWORD: password
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+
   postgres:
     image: postgres:latest
     environment:
