@@ -54,7 +54,7 @@ public class SqlQueries {
                      AND completed.workflow_id = ?
                      AND completed.status = 'COMPLETED'
             WHERE started.workflow_id = ?
-              AND started.status in ('STARTED', 'UNSATISFIED', 'RECEIVED');
+              AND started.status in ('STARTED', 'RECEIVED');
             """;
 
     //language=SQL
