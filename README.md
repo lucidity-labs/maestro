@@ -9,7 +9,7 @@
 
 ### Use Maestro
 
-- durably persists workflows and their activities (steps)
+- durably persists workflows and their activities (workflow steps)
 - automatically retries failed activities
 - requires only 2 Postgres tables
 - packaged as a library that can be included as a simple dependency via Gradle or Maven
