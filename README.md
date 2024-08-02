@@ -20,7 +20,7 @@
 
 Access the UI simply by navigating to port `3000` after starting your application. There is no separate deployment needed!
 
-<img width="1726" alt="Screenshot 2024-08-01 at 20 48 14" src="https://github.com/user-attachments/assets/4237695b-e472-41db-bc77-339d27646197">
+<img width="1471" alt="Screenshot 2024-08-01 at 22 22 13" src="https://github.com/user-attachments/assets/83138f77-5a7e-48eb-b4ad-d81cc1655a64">
 
 
 ### Usage Instructions
