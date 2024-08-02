@@ -18,6 +18,8 @@
 
 ### UI
 
+Access the UI simply by navigating to port `3000` after starting your application.
+
 <img width="1726" alt="Screenshot 2024-08-01 at 20 48 14" src="https://github.com/user-attachments/assets/4237695b-e472-41db-bc77-339d27646197">
 
 
