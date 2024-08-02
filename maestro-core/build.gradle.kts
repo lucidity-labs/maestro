@@ -21,10 +21,24 @@ dependencies {
 }
 
 tasks.jar {
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	dependsOn("copyNextJsFiles")
 	from("src/main/resources") {
 		include("nextjs-app/**")
 	}
+}
+
+tasks.register<Copy>("copyNextJsFiles") {
+	from(layout.projectDirectory.dir("../ui/out"))
+	into(layout.projectDirectory.dir("src/main/resources/nextjs-app"))
+}
+
+tasks.named("processResources") {
+	dependsOn("copyNextJsFiles")
+}
+
+tasks.named("sourcesJar") {
+	dependsOn("copyNextJsFiles")
 }
 
 tasks.withType<Test> {
