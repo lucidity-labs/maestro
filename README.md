@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/8fae3969-aa77-461c-9b29-0908aa3e1248" alt="Maestro">
+  <img src="https://github.com/user-attachments/assets/976f0950-3e2c-4672-8616-eebc209dea96" alt="Maestro">
 </p>
+
+
 
 
 ### Need something like Temporal but simpler?
