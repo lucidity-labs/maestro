@@ -18,7 +18,7 @@
 
 ### UI
 
-Access the UI simply by navigating to port `3000` after starting your application. There is no separate deployment needed!
+Access the UI simply by navigating to port `3000` after starting your application. No separate deployment needed!
 
 <img width="1471" alt="Screenshot 2024-08-01 at 22 22 13" src="https://github.com/user-attachments/assets/83138f77-5a7e-48eb-b4ad-d81cc1655a64">
 
