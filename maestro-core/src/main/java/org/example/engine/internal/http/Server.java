@@ -20,6 +20,10 @@ public class Server {
             HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
 
             server.createContext("/api/workflows", exchange -> {
+                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
                 if ("GET".equals(exchange.getRequestMethod())) handleGetWorkflows(exchange);
                 else sendMethodNotAllowedResponse(exchange);
             });

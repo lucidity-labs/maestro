@@ -227,6 +227,7 @@ public class EventRepo {
     private static EventModel mapToEventModel(ResultSet resultSet) throws SQLException {
         return new EventModel(
                 resultSet.getString("workflow_id"),
+                Category.valueOf(resultSet.getString("category")),
                 resultSet.getString("class_name"),
                 resultSet.getString("function_name"),
                 resultSet.getString("start_timestamp"),

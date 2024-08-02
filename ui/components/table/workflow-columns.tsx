@@ -1,28 +1,27 @@
 import {ColumnDef} from "@tanstack/react-table";
 
-type Event = {
-    status: string
-    data: string
+export type Event = {
+    workflowId: string
+    category: string
     className: string
     functionName: string
-    timestamp: string
+    startTimestamp: string
+    endTimestamp: string
+    input: string
+    output: string
 }
 
-export type Activity = Event
-
-export type Workflow = Event & {
+export type Workflow = {
     workflowId: string
+    className: string
+    functionName: string
+    startTimestamp: string
+    endTimestamp: string
+    input: string
+    output: string
 }
 
-const eventColumns: ColumnDef<Event>[] = [
-    {
-        accessorKey: "status",
-        header: "Status",
-    },
-    {
-        accessorKey: "data",
-        header: "Data",
-    },
+const commonColumns = [
     {
         accessorKey: "className",
         header: "Class Name",
@@ -32,18 +31,35 @@ const eventColumns: ColumnDef<Event>[] = [
         header: "Function Name",
     },
     {
-        accessorKey: "timestamp",
-        header: "Timestamp",
+        accessorKey: "startTimestamp",
+        header: "Start Timestamp",
+    },
+    {
+        accessorKey: "endTimestamp",
+        header: "End Timestamp",
+    },
+    {
+        accessorKey: "input",
+        header: "Input",
+    },
+    {
+        accessorKey: "output",
+        header: "Output",
     },
 ]
 
-// TODO: ackshually it needs to have start time and end time and input data and output data
+export const eventColumns: ColumnDef<Event>[] = [
+    {
+        accessorKey: "category",
+        header: "Category",
+    },
+    ...(commonColumns as ColumnDef<Event>[])
+]
+
 export const workflowColumns: ColumnDef<Workflow>[] = [
     {
         accessorKey: "workflowId",
         header: "Workflow ID",
     },
-    ...(eventColumns as ColumnDef<Workflow>[])
+    ...(commonColumns as ColumnDef<Workflow>[])
 ]
-
-export const activityColumns: ColumnDef<Activity>[] = eventColumns
