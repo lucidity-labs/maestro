@@ -1,5 +1,8 @@
 services:
   app:
+    build:
+      context: ..
+      dockerfile: script/Dockerfile
     environment:
       MAESTRO_DB_URL: jdbc:postgresql://postgres:5432/application_db
       MAESTRO_DB_USERNAME: postgres
