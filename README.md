@@ -39,7 +39,7 @@ Access the UI simply by navigating to port `3000` after starting your applicatio
    
 2. Execute [maestro.sql](./script/maestro.sql) against your Postgres database to create the necessary schema. If you instead wish to start a Dockerized Postgres instance locally with [maestro.sql](./script/maestro.sql) already applied, just execute: 
    ```bash 
-   docker compose -f script/docker-compose.yml up --build
+   docker compose -f script/docker-compose.yml up --build postgres
    ```
 
 3. Write your durable workflow!
