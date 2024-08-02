@@ -2,9 +2,6 @@
   <img src="https://github.com/user-attachments/assets/fc1169d0-6a38-45a8-88a7-016b3a7d0567" alt="Maestro">
 </p>
 
-
-
-
 ### Need something like Temporal but simpler?
 
 ### Use Maestro
