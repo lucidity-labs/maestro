@@ -29,12 +29,12 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="relative mb-4">
+            <div className="relative mb-8">
                 {title && (
                     <h2 className="text-2xl text-center mb-2">{title}</h2>
-                    )}
+                )}
                 {subtitle && (
-                    <p className="text-sm text-gray-500 absolute right-0 bottom-0">{subtitle}</p>
+                    <p className="text-sm text-muted-foreground absolute right-0 -bottom-4">{subtitle}</p>
                 )}
             </div>
             <div className="rounded-md border">
@@ -44,7 +44,7 @@ export function DataTable<TData, TValue>({
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
                                     <TableHead key={header.id}>
-                                        {header.isPlaceholder
+                                    {header.isPlaceholder
                                             ? null
                                             : flexRender(
                                                 header.column.columnDef.header,
@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                     onClick={() => onRowClick ? onRowClick(row.original) : null}
-                                    className="cursor-pointer hover:bg-gray-100"
+                                    className="cursor-pointer hover:bg-muted"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>

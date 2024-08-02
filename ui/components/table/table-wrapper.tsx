@@ -29,11 +29,11 @@ export default function TableWrapper() {
 
     if (selectedWorkflow) {
         return (
-            <div className="flex flex-col items-center space-y-6">
+            <div className="flex flex-col items-center space-y-8">
                 <div className="w-full">
                     <DataTable title={"Events"} subtitle={"Workflow ID: " + selectedWorkflow.workflowId} columns={eventColumns} data={workflowEvents}/>
                 </div>
-                <Button onClick={handleBack} variant="outline">
+                <Button onClick={handleBack} variant="outline" className="mt-4">
                     Back to All Workflows
                 </Button>
             </div>
