@@ -24,19 +24,11 @@ export type Workflow = {
 const commonColumns = [
     {
         accessorKey: "className",
-        header: "Class Name",
+        header: "Class",
     },
     {
         accessorKey: "functionName",
-        header: "Function Name",
-    },
-    {
-        accessorKey: "startTimestamp",
-        header: "Start Timestamp",
-    },
-    {
-        accessorKey: "endTimestamp",
-        header: "End Timestamp",
+        header: "Function",
     },
     {
         accessorKey: "input",
@@ -45,6 +37,14 @@ const commonColumns = [
     {
         accessorKey: "output",
         header: "Output",
+    },
+    {
+        accessorKey: "startTimestamp",
+        header: "Start",
+    },
+    {
+        accessorKey: "endTimestamp",
+        header: "End",
     },
 ]
 
