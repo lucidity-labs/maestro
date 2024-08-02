@@ -4,8 +4,11 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.example.engine.internal.entity.EventModel;
 import org.example.engine.internal.entity.WorkflowModel;
+import org.example.engine.internal.handler.Await;
 import org.example.engine.internal.repo.EventRepo;
 import org.example.engine.internal.util.Json;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class Server {
+    private static final Logger logger = LoggerFactory.getLogger(Await.class);
 
     public static void serve() {
         try {
@@ -50,7 +54,7 @@ public class Server {
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                     exchange.sendResponseHeaders(500, 0);
                 }
             });
