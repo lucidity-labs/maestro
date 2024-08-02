@@ -8,6 +8,7 @@ import org.example.engine.internal.repo.EventRepo;
 import org.example.engine.internal.util.Json;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -28,11 +29,58 @@ public class Server {
                 else sendMethodNotAllowedResponse(exchange);
             });
 
+            server.createContext("/", exchange -> {
+                String requestPath = exchange.getRequestURI().getPath();
+                String filePath;
+
+                if (requestPath.equals("/")) {
+                    filePath = "/nextjs-app/index.html";
+                } else if (requestPath.startsWith("/_next/")) {
+                    // Handle Next.js generated files
+                    filePath = "/nextjs-app" + requestPath;
+                } else {
+                    // Handle other static files or app routes
+                    filePath = "/nextjs-app/" + requestPath;
+                }
+
+                try (InputStream is = Server.class.getResourceAsStream(filePath)) {
+                    if (is != null) {
+                        byte[] bytes = is.readAllBytes();
+                        String contentType = getContentType(filePath);
+                        exchange.getResponseHeaders().set("Content-Type", contentType);
+                        exchange.sendResponseHeaders(200, bytes.length);
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(bytes);
+                        }
+                    } else {
+                        String response = "404 (Not Found)";
+                        exchange.sendResponseHeaders(404, response.length());
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(response.getBytes());
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    exchange.sendResponseHeaders(500, 0);
+                }
+            });
+
             server.setExecutor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()));
             server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static String getContentType(String filePath) {
+        if (filePath.endsWith(".html")) return "text/html";
+        if (filePath.endsWith(".js")) return "application/javascript";
+        if (filePath.endsWith(".css")) return "text/css";
+        if (filePath.endsWith(".json")) return "application/json";
+        if (filePath.endsWith(".png")) return "image/png";
+        if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg")) return "image/jpeg";
+        if (filePath.endsWith(".gif")) return "image/gif";
+        return "application/octet-stream";
     }
 
     private static void handleGetWorkflows(HttpExchange exchange) throws IOException {

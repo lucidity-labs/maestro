@@ -1,6 +1,11 @@
 plugins {
-	java
+	id("java-library")
 	id("com.vanniktech.maven.publish") version "0.29.0"
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
 }
 
 dependencies {
@@ -13,6 +18,13 @@ dependencies {
 
 	testImplementation(platform("org.junit:junit-bom:5.10.0"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.jar {
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	from("src/main/resources") {
+		include("nextjs-app/**")
+	}
 }
 
 tasks.withType<Test> {
