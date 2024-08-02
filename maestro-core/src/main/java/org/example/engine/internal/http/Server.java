@@ -31,17 +31,7 @@ public class Server {
 
             server.createContext("/", exchange -> {
                 String requestPath = exchange.getRequestURI().getPath();
-                String filePath;
-
-                if (requestPath.equals("/")) {
-                    filePath = "/nextjs-app/index.html";
-                } else if (requestPath.startsWith("/_next/")) {
-                    // Handle Next.js generated files
-                    filePath = "/nextjs-app" + requestPath;
-                } else {
-                    // Handle other static files or app routes
-                    filePath = "/nextjs-app/" + requestPath;
-                }
+                String filePath = "/nextjs-app" + (requestPath.equals("/") ? "/index.html" : requestPath);
 
                 try (InputStream is = Server.class.getResourceAsStream(filePath)) {
                     if (is != null) {
