@@ -16,6 +16,11 @@
 - no separate server deployment
 - simple, readable codebase
 
+### UI
+
+<img width="1726" alt="Screenshot 2024-08-01 at 20 48 14" src="https://github.com/user-attachments/assets/4237695b-e472-41db-bc77-339d27646197">
+
+
 ### Usage Instructions
 
 1. include `maestro-core` as a dependency in your `build.gradle.kts`:
