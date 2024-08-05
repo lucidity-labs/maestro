@@ -14,7 +14,8 @@ CREATE TABLE event
     function_name      VARCHAR,
     timestamp          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     correlation_number BIGINT,
-    sequence_number    BIGINT    NOT NULL
+    sequence_number    BIGINT    NOT NULL,
+    metadata           JSON
 );
 --TODO: add metadata column allowing us to store necessary data for each event such as serialized WorkflowOptions for WORKFLOW STARTED?
 

@@ -13,14 +13,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-// move some of these methods elsewhere? e.g. make an API class called Workflow? Make a clean interface
+// TODO: move some of these methods elsewhere? e.g. make an API class called Workflow? Make a clean interface
 public class Maestro {
     private static final Map<Class<?>, Object> typeToActivity = new HashMap<>();
     private static final Map<String, Class<?>> simpleNameToWorkflowImplType = new HashMap<>();
-
-    public static Class<?> getWorkflowImplType(String simpleName) {
-        return simpleNameToWorkflowImplType.get(simpleName);
-    }
 
     public static void registerWorkflowImplementationTypes(Class<?>... workflows) {
         Initializer.initialize();
@@ -53,6 +49,10 @@ public class Maestro {
                 new Class<?>[]{interfaceClass},
                 new WorkflowInvocationHandler(instance, options)
         );
+    }
+
+    public static Class<?> getWorkflowImplType(String simpleName) {
+        return simpleNameToWorkflowImplType.get(simpleName);
     }
 
     @SuppressWarnings("unchecked")
