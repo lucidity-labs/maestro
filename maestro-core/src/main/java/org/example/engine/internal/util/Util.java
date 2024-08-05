@@ -1,9 +1,11 @@
 package org.example.engine.internal.util;
 
-import org.example.engine.api.*;
+import org.example.engine.api.Maestro;
+import org.example.engine.api.WorkflowOptions;
 import org.example.engine.api.annotation.ActivityInterface;
 import org.example.engine.api.annotation.WorkflowFunction;
 import org.example.engine.api.annotation.WorkflowInterface;
+import org.example.engine.internal.MaestroImpl;
 import org.example.engine.internal.dto.WorkflowContext;
 import org.example.engine.internal.entity.EventEntity;
 import org.example.engine.internal.repo.EventRepo;
@@ -79,7 +81,7 @@ public class Util {
     }
 
     public static void replayWorkflow(EventEntity workflowStartedEvent) {
-        Class<?> workflowClass = Maestro.getWorkflowImplType(workflowStartedEvent.className());
+        Class<?> workflowClass = MaestroImpl.getWorkflowImplType(workflowStartedEvent.className());
         Method workflowMethod = Util.findWorkflowMethod(workflowClass);
 
         Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
