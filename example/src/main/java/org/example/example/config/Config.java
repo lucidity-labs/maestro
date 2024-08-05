@@ -26,9 +26,9 @@ public class Config {
         Maestro.registerWorkflowImplementationTypes(OrderWorkflowImpl.class);
 
         Maestro.registerActivity(new InventoryActivityImpl());
-        Maestro.registerActivity(new PaymentActivityImpl());
+        Maestro.registerActivity(new NotificationActivityImpl(emailService));
         Maestro.registerActivity(
-                new NotificationActivityImpl(emailService),
+                new PaymentActivityImpl(),
                 new ActivityOptions(Duration.ofMinutes(1)) // Activity will be retried if it hasn't completed one minute after starting
         );
     }
