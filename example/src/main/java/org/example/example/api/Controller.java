@@ -1,7 +1,7 @@
 package org.example.example.api;
 
 import org.example.engine.api.Maestro;
-import org.example.engine.api.WorkflowOptions;
+import org.example.engine.api.workflow.WorkflowOptions;
 import org.example.example.workflow.OrderWorkflow;
 import org.example.example.workflow.OrderWorkflowImpl;
 import org.example.example.workflow.OrderInput;

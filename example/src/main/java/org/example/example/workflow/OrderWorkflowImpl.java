@@ -1,9 +1,8 @@
 package org.example.example.workflow;
 
-import org.example.engine.api.annotation.Activity;
+import org.example.engine.api.workflow.Workflow;
+import org.example.engine.api.activity.Activity;
 import org.example.engine.internal.handler.Async;
-import org.example.engine.internal.handler.Await;
-import org.example.engine.internal.handler.Sleep;
 import org.example.example.activity.interfaces.InventoryActivity;
 import org.example.example.activity.interfaces.NotificationActivity;
 import org.example.example.activity.interfaces.PaymentActivity;
@@ -31,7 +30,7 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         paymentActivity.processPayment();
         notificationActivity.sendOrderConfirmedEmail();
 
-        Await.await(() -> orderShipped);
+        Workflow.await(() -> orderShipped);
 
         CompletableFuture<String> orderShippedEmailFuture = Async.function(() -> notificationActivity.sendOrderShippedEmail());
         CompletableFuture<Integer> newInventoryFuture = Async.function(() -> inventoryActivity.decreaseInventory());
@@ -39,7 +38,7 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         String orderShippedEmailResponse = orderShippedEmailFuture.get();
         Integer newInventoryLevel = newInventoryFuture.get();
 
-        Sleep.sleep(Duration.ofSeconds(10)); // this can be much, much longer if you wish
+        Workflow.sleep(Duration.ofSeconds(10)); // this can be much, much longer if you wish
 
         notificationActivity.sendSpecialOfferEmail();
 

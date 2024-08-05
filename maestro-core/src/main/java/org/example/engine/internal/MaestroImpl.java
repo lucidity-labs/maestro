@@ -1,8 +1,8 @@
 package org.example.engine.internal;
 
 import org.example.engine.api.Maestro;
-import org.example.engine.api.WorkflowOptions;
-import org.example.engine.api.annotation.Activity;
+import org.example.engine.api.workflow.WorkflowOptions;
+import org.example.engine.api.activity.Activity;
 import org.example.engine.api.throwable.UnregisteredWorkflowException;
 import org.example.engine.internal.config.Initializer;
 import org.example.engine.internal.handler.ActivityInvocationHandler;

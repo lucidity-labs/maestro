@@ -1,8 +1,8 @@
 package org.example.engine.internal.handler;
 
-import org.example.engine.api.annotation.SignalFunction;
-import org.example.engine.api.annotation.WorkflowFunction;
-import org.example.engine.api.WorkflowOptions;
+import org.example.engine.api.signal.SignalFunction;
+import org.example.engine.api.workflow.WorkflowFunction;
+import org.example.engine.api.workflow.WorkflowOptions;
 import org.example.engine.internal.dto.WorkflowContext;
 import org.example.engine.internal.dto.WorkflowContextManager;
 import org.example.engine.internal.entity.Category;

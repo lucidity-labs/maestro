@@ -1,8 +1,8 @@
 package org.example.example.workflow;
 
-import org.example.engine.api.annotation.SignalFunction;
-import org.example.engine.api.annotation.WorkflowFunction;
-import org.example.engine.api.annotation.WorkflowInterface;
+import org.example.engine.api.signal.SignalFunction;
+import org.example.engine.api.workflow.WorkflowFunction;
+import org.example.engine.api.workflow.WorkflowInterface;
 
 import java.util.concurrent.ExecutionException;
 

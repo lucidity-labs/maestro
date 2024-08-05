@@ -1,8 +1,8 @@
 package org.example.engine.api;
 
+import org.example.engine.api.workflow.WorkflowOptions;
 import org.example.engine.internal.MaestroImpl;
 
-// TODO: move some of these methods elsewhere? e.g. make an API class called Workflow?
 public class Maestro {
 
     public static void registerWorkflowImplementationTypes(Class<?>... workflows) {

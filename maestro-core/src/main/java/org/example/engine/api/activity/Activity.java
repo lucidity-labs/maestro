@@ -1,8 +1,8 @@
-package org.example.engine.api.annotation;
+package org.example.engine.api.activity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ActivityInterface {
+public @interface Activity {
 }
