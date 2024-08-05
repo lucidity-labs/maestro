@@ -1,6 +1,5 @@
 package org.example.engine.internal;
 
-import org.example.engine.api.Maestro;
 import org.example.engine.api.activity.Activity;
 import org.example.engine.api.activity.ActivityOptions;
 import org.example.engine.api.throwable.UnregisteredWorkflowException;
@@ -25,10 +24,6 @@ public class MaestroImpl {
 
         Arrays.stream(workflows)
                 .forEach(workflow -> simpleNameToWorkflowImplType.put(workflow.getSimpleName(), workflow));
-    }
-
-    public static void registerActivities(Object... activities) {
-        Arrays.stream(activities).forEach(Maestro::registerActivity);
     }
 
     public static void registerActivity(Object activity, ActivityOptions activityOptions) {
