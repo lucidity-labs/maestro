@@ -1,5 +1,6 @@
 package org.example.engine.api.activity;
 
-// TODO: add configurable StartToCompletedTimeout
-public record ActivityOptions() {
+import java.time.Duration;
+
+public record ActivityOptions(Duration startedToCompletedTimeout) {
 }

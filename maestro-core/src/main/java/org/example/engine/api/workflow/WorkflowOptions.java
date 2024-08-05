@@ -1,5 +1,10 @@
 package org.example.engine.api.workflow;
 
-// TODO: add configurable StartToCompletedTimeout
-public record WorkflowOptions(String workflowId) {
+import java.time.Duration;
+
+public record WorkflowOptions(String workflowId, Duration startedToCompletedTimeout) {
+
+    public WorkflowOptions(String workflowId) {
+        this(workflowId, Duration.ofHours(1));
+    }
 }

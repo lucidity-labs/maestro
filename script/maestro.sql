@@ -8,7 +8,7 @@ CREATE TABLE event
     id                 VARCHAR PRIMARY KEY,
     workflow_id        VARCHAR   NOT NULL,
     category           category  NOT NULL,
-    status             status    NOT NULL, -- TODO: rename to "state"?
+    status             status    NOT NULL,
     data               JSON,
     class_name         VARCHAR,
     function_name      VARCHAR,
@@ -17,7 +17,6 @@ CREATE TABLE event
     sequence_number    BIGINT    NOT NULL,
     metadata           JSON
 );
---TODO: add metadata column allowing us to store necessary data for each event such as serialized WorkflowOptions for WORKFLOW STARTED?
 
 CREATE UNIQUE INDEX event_unique_workflow_correlation_status ON event (workflow_id, correlation_number, status);
 CREATE UNIQUE INDEX event_unique_workflow_sequence ON event (workflow_id, sequence_number);

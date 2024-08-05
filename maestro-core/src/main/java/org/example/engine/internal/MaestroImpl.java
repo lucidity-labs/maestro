@@ -1,9 +1,10 @@
 package org.example.engine.internal;
 
 import org.example.engine.api.Maestro;
-import org.example.engine.api.workflow.WorkflowOptions;
 import org.example.engine.api.activity.Activity;
+import org.example.engine.api.activity.ActivityOptions;
 import org.example.engine.api.throwable.UnregisteredWorkflowException;
+import org.example.engine.api.workflow.WorkflowOptions;
 import org.example.engine.internal.config.Initializer;
 import org.example.engine.internal.handler.ActivityInvocationHandler;
 import org.example.engine.internal.handler.WorkflowInvocationHandler;
@@ -30,8 +31,8 @@ public class MaestroImpl {
         Arrays.stream(activities).forEach(Maestro::registerActivity);
     }
 
-    // TODO: maybe expose another method accepting activity options as second param
-    public static void registerActivity(Object activity) {
+    public static void registerActivity(Object activity, ActivityOptions activityOptions) {
+        // TODO: use activityOptions
         typeToActivity.put(Util.getActivityInterface(activity.getClass()), proxyActivity(activity));
     }
 
