@@ -90,8 +90,8 @@ public class Util {
                 .map(deserialized -> new Object[]{deserialized})
                 .orElse(new Object[]{});
 
-        //TODO: maybe WorkflowOptions should be serialized and stored durably so we can pass the full options here?
-        Object proxy = Maestro.newWorkflow(workflowClass, new WorkflowOptions(workflowStartedEvent.workflowId()));
+        WorkflowOptions workflowOptions = Json.deserialize(workflowStartedEvent.metadata(), WorkflowOptions.class);
+        Object proxy = Maestro.newWorkflow(workflowClass, workflowOptions);
 
         executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
     }
