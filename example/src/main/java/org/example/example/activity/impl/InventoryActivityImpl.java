@@ -1,20 +1,25 @@
 package org.example.example.activity.impl;
 
 import org.example.example.activity.interfaces.InventoryActivity;
+import org.example.example.activity.model.ProductInventory;
 import org.example.example.workflow.model.OrderedProduct;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryActivityImpl implements InventoryActivity {
     @Override
-    public Integer reserveInventory(List<OrderedProduct> orderedProducts) {
+    public List<OrderedProduct> reserveInventory(List<OrderedProduct> orderedProducts) {
         System.out.println("reserving inventory");
-        return 5;
+        return new ArrayList<>(orderedProducts);
     }
 
     @Override
-    public Integer decreaseInventory(List<OrderedProduct> orderedProducts) {
+    public List<ProductInventory> decreaseInventory(List<OrderedProduct> orderedProducts) {
         System.out.println("decreasing inventory");
-        return 8;
+
+        return orderedProducts.stream()
+                .map(orderedProduct -> new ProductInventory(orderedProduct.name(), 5))
+                .toList();
     }
 }

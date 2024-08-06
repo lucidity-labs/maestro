@@ -1,4 +1,8 @@
 package org.example.example.workflow.model;
 
-public record OrderFinalized(String orderShippedResponse, Integer newInventoryLevel) {
+import org.example.example.activity.model.ProductInventory;
+
+import java.util.List;
+
+public record OrderFinalized(String orderShippedResponse, List<ProductInventory> newInventory) {
 }

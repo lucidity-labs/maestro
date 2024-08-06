@@ -6,7 +6,7 @@ import org.example.engine.internal.dto.WorkflowContextManager;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-public class Async {
+public class AsyncImpl {
 
     public static <T> CompletableFuture<T> function(Supplier<T> supplier) {
         WorkflowContext existingWorkflowContext = WorkflowContextManager.get();
