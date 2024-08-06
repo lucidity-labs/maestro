@@ -34,7 +34,7 @@ public class Await {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.AWAIT, null, null,
-                    null, Status.STARTED, null
+                    null, Status.STARTED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
@@ -48,7 +48,7 @@ public class Await {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.AWAIT, null, null,
-                    null, Status.UNSATISFIED, null
+                    null, Status.UNSATISFIED, null, null
             ));
 
             throw new AbortWorkflowExecutionError("Abandoning workflow execution because of await condition wasn't satisfied " +
@@ -60,7 +60,7 @@ public class Await {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, nextSequenceNumber, Category.AWAIT,
                     null, null, null,
-                    Status.COMPLETED, null
+                    Status.COMPLETED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             throw new AbortWorkflowExecutionError("Abandoning workflow execution because of conflict with completed activity " +

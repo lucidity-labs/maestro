@@ -43,7 +43,7 @@ public class Sleep {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.SLEEP, null, null,
-                    null, Status.STARTED, null
+                    null, Status.STARTED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
@@ -64,7 +64,7 @@ public class Sleep {
                     UUID.randomUUID().toString(), workflowId,
                     correlationNumber, nextSequenceNumber, Category.SLEEP,
                     null, null, null,
-                    Status.COMPLETED, null
+                    Status.COMPLETED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());

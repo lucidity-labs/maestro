@@ -175,6 +175,7 @@ public class EventRepo {
             preparedStatement.setString(7, eventEntity.functionName());
             preparedStatement.setString(8, eventEntity.data());
             preparedStatement.setString(9, eventEntity.status().name());
+            preparedStatement.setString(10, eventEntity.metadata());
             preparedStatement.executeUpdate();
 
         } catch (PSQLException e) {
@@ -208,7 +209,8 @@ public class EventRepo {
                 resultSet.getString("function_name"),
                 resultSet.getString("data"),
                 Status.valueOf(resultSet.getString("status")),
-                resultSet.getString("timestamp")
+                resultSet.getString("timestamp"),
+                resultSet.getString("metadata")
         );
     }
 

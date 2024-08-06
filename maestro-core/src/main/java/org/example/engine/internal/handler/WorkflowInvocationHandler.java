@@ -44,7 +44,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                             UUID.randomUUID().toString(), options.workflowId(),
                             correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()),
                             Category.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
-                            input, Status.STARTED, null
+                            input, Status.STARTED, null, Json.serialize(options)
                     ));
                 } catch (WorkflowCorrelationStatusConflict e) {
                     logger.debug(e.getMessage());
@@ -57,7 +57,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                             UUID.randomUUID().toString(), options.workflowId(),
                             correlationNumber, EventRepo.getNextSequenceNumber(options.workflowId()),
                             Category.WORKFLOW, target.getClass().getSimpleName(), method.getName(),
-                            Json.serialize(output), Status.COMPLETED, null
+                            Json.serialize(output), Status.COMPLETED, null, null
                     ));
                 } catch (WorkflowCorrelationStatusConflict e) {
                     logger.debug(e.getMessage());
@@ -71,7 +71,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                         UUID.randomUUID().toString(), options.workflowId(),
                         null, EventRepo.getNextSequenceNumber(options.workflowId()),
                         Category.SIGNAL, target.getClass().getSimpleName(), method.getName(),
-                        Json.serializeFirst(args), Status.RECEIVED, null
+                        Json.serializeFirst(args), Status.RECEIVED, null, null
                 ));
 
                 EventEntity existingStartedWorkflow = EventRepo.get(

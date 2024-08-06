@@ -4,20 +4,18 @@ public class SqlQueries {
     //language=SQL
     public static final String INSERT_EVENT = """
             INSERT INTO event
-                        (id, workflow_id, correlation_number, sequence_number, category, class_name, function_name, data, status)
-                        VALUES (?, ?, ?::bigint, ?::bigint, ?::category, ?, ?, ?::json, ?::status)
+                        (id, workflow_id, correlation_number, sequence_number, category, class_name, function_name, data, status, metadata)
+                        VALUES (?, ?, ?::bigint, ?::bigint, ?::category, ?, ?, ?::json, ?::status, ?::json)
             """;
 
     //language=SQL
     public static final String SELECT_EVENT = """
-            SELECT id, workflow_id, correlation_number, sequence_number, category, class_name, function_name, data, status, timestamp
-                        FROM event WHERE workflow_id = ? AND category = ?::category AND status = ?::status
+            SELECT * FROM event WHERE workflow_id = ? AND category = ?::category AND status = ?::status
             """;
 
     //language=SQL
     public static final String SELECT_EVENT_BY_CORRELATION_NO = """
-            SELECT id, workflow_id, correlation_number, sequence_number, category, class_name, function_name, data, status, timestamp
-                        FROM event WHERE workflow_id = ? AND correlation_number= ?::bigint AND status = ?::status
+            SELECT * FROM event WHERE workflow_id = ? AND correlation_number= ?::bigint AND status = ?::status
             """;
 
     //language=SQL

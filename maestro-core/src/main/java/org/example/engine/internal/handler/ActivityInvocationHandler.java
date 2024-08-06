@@ -1,5 +1,6 @@
 package org.example.engine.internal.handler;
 
+import org.example.engine.api.activity.ActivityOptions;
 import org.example.engine.internal.dto.WorkflowContext;
 import org.example.engine.internal.dto.WorkflowContextManager;
 import org.example.engine.internal.entity.Category;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 import static org.example.engine.internal.util.Util.applySignals;
 
-public record ActivityInvocationHandler(Object target) implements InvocationHandler {
+public record ActivityInvocationHandler(Object target, ActivityOptions options) implements InvocationHandler {
     private static final Logger logger = LoggerFactory.getLogger(ActivityInvocationHandler.class);
 
     @Override
@@ -43,7 +44,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.ACTIVITY, target.getClass().getSimpleName(), method.getName(),
-                    Json.serializeFirst(args), Status.STARTED, null
+                    Json.serializeFirst(args), Status.STARTED, null, Json.serialize(options)
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.info(e.getMessage());
@@ -76,7 +77,7 @@ public record ActivityInvocationHandler(Object target) implements InvocationHand
                         UUID.randomUUID().toString(), workflowContext.workflowId(),
                         correlationNumber, nextSequenceNumber, Category.ACTIVITY,
                         target.getClass().getSimpleName(), method.getName(),
-                        Json.serialize(output), Status.COMPLETED, null
+                        Json.serialize(output), Status.COMPLETED, null, null
                 );
 
                 applySignals(workflowContext, nextSequenceNumber);
