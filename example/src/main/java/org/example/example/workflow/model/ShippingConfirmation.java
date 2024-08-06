@@ -1,4 +1,4 @@
 package org.example.example.workflow.model;
 
-public record ShippingConfirmation(String confirmationId) {
+public record ShippingConfirmation(String trackingNumber) {
 }
