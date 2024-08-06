@@ -15,7 +15,7 @@
 
 ### UI
 
-Access the UI simply by navigating to port `3000` after starting your application. No separate deployment needed!
+Access the UI simply by navigating to port `8000` after starting your application. No separate deployment needed!
 
 <img width="1471" alt="Screenshot 2024-08-01 at 22 22 13" src="https://github.com/user-attachments/assets/83138f77-5a7e-48eb-b4ad-d81cc1655a64">
 
@@ -53,3 +53,5 @@ docker compose -f script/docker-compose.yml up --build
 ```
 
 Then, send the app some HTTP requests using [requests.http](./example/script/requests.http).
+
+You can access the UI by navigating to http://localhost:8000!
