@@ -73,15 +73,14 @@ public class SqlQueries {
             """;
 
     //language=SQL
-    public static final String SELECT_ABANDONED_WORKFLOWS = """
+    public static final String SELECT_TIMED_OUT_EVENTS = """
                     SELECT DISTINCT ON (e1.workflow_id) e1.*
                     FROM event e1
-                    WHERE e1.category = 'WORKFLOW' AND e1.status = 'STARTED'
+                    WHERE e1.status = 'STARTED' AND e1.category in ('WORKFLOW', 'ACTIVITY') AND (e1.timestamp < CURRENT_TIMESTAMP - (e1.metadata->>'startedToCompletedTimeout')::interval)
                       AND NOT EXISTS (
-                      SELECT 1
-                    FROM event e2
-                    WHERE e1.workflow_id = e2.workflow_id
-                    AND ((e2.category = 'WORKFLOW' AND e2.status = 'COMPLETED') OR e2.timestamp > CURRENT_TIMESTAMP - INTERVAL '1 hour')
-                    );
+                        SELECT 1
+                        FROM event e2
+                        WHERE e1.workflow_id = e2.workflow_id AND e1.correlation_number = e2.correlation_number
+                          AND e2.status = 'COMPLETED');
             """;
 }

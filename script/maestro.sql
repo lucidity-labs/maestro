@@ -12,7 +12,7 @@ CREATE TABLE event
     data               JSON,
     class_name         VARCHAR,
     function_name      VARCHAR,
-    timestamp          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    timestamp          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     correlation_number BIGINT,
     sequence_number    BIGINT    NOT NULL,
     metadata           JSON

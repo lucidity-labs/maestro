@@ -8,10 +8,13 @@ java {
 	withJavadocJar()
 }
 
+val jacksonVersion = "2.17.2"
+
 dependencies {
 	implementation("org.postgresql:postgresql:42.7.3")
 	implementation("com.zaxxer:HikariCP:5.1.0")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+	implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 	implementation("io.github.resilience4j:resilience4j-retry:2.2.0")
 	implementation("com.github.kagkarlsson:db-scheduler:14.0.1")
 	implementation("ch.qos.logback:logback-classic:1.5.6")

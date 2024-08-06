@@ -118,11 +118,10 @@ public class EventRepo {
         return signals;
     }
 
-    public static List<EventEntity> getAbandonedWorkflows() {
+    public static List<EventEntity> getTimedOutEvents() {
         List<EventEntity> eventEntities = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ABANDONED_WORKFLOWS)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_TIMED_OUT_EVENTS)) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

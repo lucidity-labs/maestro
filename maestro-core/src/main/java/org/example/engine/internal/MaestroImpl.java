@@ -26,9 +26,8 @@ public class MaestroImpl {
                 .forEach(workflow -> simpleNameToWorkflowImplType.put(workflow.getSimpleName(), workflow));
     }
 
-    public static void registerActivity(Object activity, ActivityOptions activityOptions) {
-        // TODO: use activityOptions
-        typeToActivity.put(Util.getActivityInterface(activity.getClass()), proxyActivity(activity));
+    public static void registerActivity(Object activity, ActivityOptions options) {
+        typeToActivity.put(Util.getActivityInterface(activity.getClass()), proxyActivity(activity, options));
     }
 
     @SuppressWarnings("unchecked")
@@ -53,11 +52,11 @@ public class MaestroImpl {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T proxyActivity(T instance) {
+    private static <T> T proxyActivity(T instance, ActivityOptions options) {
         return (T) Proxy.newProxyInstance(
                 instance.getClass().getClassLoader(),
                 new Class<?>[]{Util.getActivityInterface(instance.getClass())},
-                new ActivityInvocationHandler(instance)
+                new ActivityInvocationHandler(instance, options)
         );
     }
 

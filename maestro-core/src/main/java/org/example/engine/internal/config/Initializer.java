@@ -1,7 +1,7 @@
 package org.example.engine.internal.config;
 
 import org.example.engine.internal.http.Server;
-import org.example.engine.internal.worker.AbandonedWorkflowWorker;
+import org.example.engine.internal.worker.TimedOutWorkflowWorker;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -12,7 +12,7 @@ public class Initializer {
     public static void initialize() {
         if (configured.get()) return;
 
-        AbandonedWorkflowWorker.startPoll();
+        TimedOutWorkflowWorker.startPoll();
         Server.serve();
 
         configured.set(true);
