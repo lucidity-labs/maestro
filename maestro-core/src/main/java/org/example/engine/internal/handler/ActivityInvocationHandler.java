@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -52,11 +53,12 @@ public record ActivityInvocationHandler(Object target, ActivityOptions options) 
 
         EventEntity existingStartedActivity = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.STARTED);
 
-        Object[] finalArgs = Arrays.stream(method.getGenericParameterTypes())
+        Type[] paramTypes = method.getGenericParameterTypes();
+        Object[] finalArgs = Arrays.stream(paramTypes)
                 .findFirst()
                 .map(paramType -> Json.deserialize(existingStartedActivity.data(), paramType))
                 .map(deserialized -> new Object[]{deserialized})
-                .orElse(new Object[]{});
+                .orElse(Util.getDefaultArgs(paramTypes.length));
 
         Object output = method.invoke(target, finalArgs);
 

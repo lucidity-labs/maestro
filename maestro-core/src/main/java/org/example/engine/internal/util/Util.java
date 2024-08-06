@@ -13,6 +13,7 @@ import org.example.engine.internal.repo.EventRepo;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -64,11 +65,12 @@ public class Util {
                     .filter(m -> m.getName().equals(signal.functionName()))
                     .findFirst().get();
 
-            Object[] finalArgs = Arrays.stream(signalMethod.getGenericParameterTypes())
+            Type[] paramTypes = signalMethod.getGenericParameterTypes();
+            Object[] finalArgs = Arrays.stream(paramTypes)
                     .findFirst()
                     .map(paramType -> Json.deserialize(signal.data(), paramType))
                     .map(deserialized -> new Object[]{deserialized})
-                    .orElse(new Object[]{});
+                    .orElse(Util.getDefaultArgs(paramTypes.length));
 
             try {
                 signalMethod.invoke(workflow, finalArgs);
@@ -84,16 +86,27 @@ public class Util {
         Class<?> workflowClass = MaestroImpl.getWorkflowImplType(workflowStartedEvent.className());
         Method workflowMethod = Util.findWorkflowMethod(workflowClass);
 
-        Object[] finalArgs = Arrays.stream(workflowMethod.getGenericParameterTypes())
+        Type[] paramTypes = workflowMethod.getGenericParameterTypes();
+        Object[] finalArgs = Arrays.stream(paramTypes)
                 .findFirst()
                 .map(paramType -> Json.deserialize(workflowStartedEvent.data(), paramType))
                 .map(deserialized -> new Object[]{deserialized})
-                .orElse(new Object[]{});
+                .orElse(getDefaultArgs(paramTypes.length));
 
         WorkflowOptions workflowOptions = Json.deserialize(workflowStartedEvent.metadata(), WorkflowOptions.class);
         Object proxy = Maestro.newWorkflow(workflowClass, workflowOptions);
 
         executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
+    }
+
+    public static Object[] getDefaultArgs(Integer numberOfParameters) {
+        if (numberOfParameters == null || numberOfParameters < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (numberOfParameters == 0) {
+            return new Object[]{};
+        }
+        return new Object[]{null};
     }
 
     public static <T> T createInstance(Class<T> clazz) {

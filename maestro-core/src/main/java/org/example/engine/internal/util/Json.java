@@ -30,6 +30,7 @@ public class Json {
     }
 
     public static <T> T deserialize(String jsonString, Class<T> clazz) {
+        if (jsonString == null) return null;
         try {
             return mapper.readValue(jsonString, clazz);
         } catch (Exception e) {
@@ -39,6 +40,7 @@ public class Json {
     }
 
     public static <T> T deserialize(String jsonString, Type type) {
+        if (jsonString == null) return null;
         try {
             JavaType javaType = mapper.getTypeFactory().constructType(type);
             return mapper.readValue(jsonString, javaType);

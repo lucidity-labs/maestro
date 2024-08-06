@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -81,11 +82,12 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                 if (existingStartedWorkflow != null) {
                     Method workflowMethod = Util.findWorkflowMethod(proxy.getClass());
 
-                    Object[] finalArgs = Arrays.stream(workflowMethod.getGenericParameterTypes())
+                    Type[] paramTypes = workflowMethod.getGenericParameterTypes();
+                    Object[] finalArgs = Arrays.stream(paramTypes)
                             .findFirst()
                             .map(paramType -> Json.deserialize(existingStartedWorkflow.data(), paramType))
                             .map(deserialized -> new Object[]{deserialized})
-                            .orElse(new Object[]{});
+                            .orElse(Util.getDefaultArgs(paramTypes.length));
 
                     executor.submit(() -> workflowMethod.invoke(proxy, finalArgs));
                 }
