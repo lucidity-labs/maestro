@@ -19,7 +19,7 @@ public class InventoryActivityImpl implements InventoryActivity {
         System.out.println("decreasing inventory");
 
         return orderedProducts.stream()
-                .map(orderedProduct -> new ProductInventory(orderedProduct.name(), 5))
+                .map(orderedProduct -> new ProductInventory(orderedProduct.name(), (int) (Math.random() * 100)))
                 .toList();
     }
 }

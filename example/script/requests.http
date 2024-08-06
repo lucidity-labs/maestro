@@ -1,5 +1,21 @@
 ###
 POST http://localhost:8080/api/execute/b5647c7b-5e16-40dd-8726-48bd0ad40cab
+Content-Type: application/json
+
+{
+  "total": 127.95,
+  "orderedProducts": [
+    {
+      "name": "model car",
+      "quantity": 2
+    }
+  ]
+}
 
 ###
 POST http://localhost:8080/api/signal/b5647c7b-5e16-40dd-8726-48bd0ad40cab
+Content-Type: application/json
+
+{
+  "trackingNumber": "bfb272f4d95a1d51"
+}
