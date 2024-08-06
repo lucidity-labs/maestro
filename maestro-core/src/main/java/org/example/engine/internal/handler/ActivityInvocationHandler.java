@@ -36,7 +36,7 @@ public record ActivityInvocationHandler(Object target, ActivityOptions options) 
         if (existingCompletedActivity != null) {
             applySignals(workflowContext, existingCompletedActivity.sequenceNumber());
             if (method.getReturnType().equals(Void.TYPE)) return existingCompletedActivity.data();
-            return Json.deserialize(existingCompletedActivity.data(), method.getReturnType());
+            return Json.deserialize(existingCompletedActivity.data(), method.getGenericReturnType());
         }
 
         try {
@@ -52,7 +52,7 @@ public record ActivityInvocationHandler(Object target, ActivityOptions options) 
 
         EventEntity existingStartedActivity = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.STARTED);
 
-        Object[] finalArgs = Arrays.stream(method.getParameterTypes())
+        Object[] finalArgs = Arrays.stream(method.getGenericParameterTypes())
                 .findFirst()
                 .map(paramType -> Json.deserialize(existingStartedActivity.data(), paramType))
                 .map(deserialized -> new Object[]{deserialized})

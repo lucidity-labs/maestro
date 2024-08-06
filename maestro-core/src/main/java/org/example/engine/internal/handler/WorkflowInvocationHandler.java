@@ -81,7 +81,7 @@ public record WorkflowInvocationHandler(Object target, WorkflowOptions options) 
                 if (existingStartedWorkflow != null) {
                     Method workflowMethod = Util.findWorkflowMethod(proxy.getClass());
 
-                    Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
+                    Object[] finalArgs = Arrays.stream(workflowMethod.getGenericParameterTypes())
                             .findFirst()
                             .map(paramType -> Json.deserialize(existingStartedWorkflow.data(), paramType))
                             .map(deserialized -> new Object[]{deserialized})

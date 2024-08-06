@@ -1,16 +1,18 @@
 package org.example.engine.internal.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
 import java.time.Duration;
 
 public class Json {
     private static final Logger logger = LoggerFactory.getLogger(Json.class);
-    private static final ObjectMapper objectMapper = initializeObjectMapper();
+    private static final ObjectMapper mapper = initializeObjectMapper();
 
     public static <T> String serializeFirst(T[] args) {
         if (args == null) return null;
@@ -20,7 +22,7 @@ public class Json {
     public static <T> String serialize(T object) {
         if (object == null) return null;
         try {
-            return objectMapper.writeValueAsString(object);
+            return mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             logger.error("Error serializing object: {}", object, e);
             throw new RuntimeException(e);
@@ -29,7 +31,17 @@ public class Json {
 
     public static <T> T deserialize(String jsonString, Class<T> clazz) {
         try {
-            return objectMapper.readValue(jsonString, clazz);
+            return mapper.readValue(jsonString, clazz);
+        } catch (Exception e) {
+            logger.error("Error deserializing string: {}", jsonString, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T deserialize(String jsonString, Type type) {
+        try {
+            JavaType javaType = mapper.getTypeFactory().constructType(type);
+            return mapper.readValue(jsonString, javaType);
         } catch (Exception e) {
             logger.error("Error deserializing string: {}", jsonString, e);
             throw new RuntimeException(e);

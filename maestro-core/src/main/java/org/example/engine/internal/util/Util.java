@@ -64,7 +64,7 @@ public class Util {
                     .filter(m -> m.getName().equals(signal.functionName()))
                     .findFirst().get();
 
-            Object[] finalArgs = Arrays.stream(signalMethod.getParameterTypes())
+            Object[] finalArgs = Arrays.stream(signalMethod.getGenericParameterTypes())
                     .findFirst()
                     .map(paramType -> Json.deserialize(signal.data(), paramType))
                     .map(deserialized -> new Object[]{deserialized})
@@ -84,7 +84,7 @@ public class Util {
         Class<?> workflowClass = MaestroImpl.getWorkflowImplType(workflowStartedEvent.className());
         Method workflowMethod = Util.findWorkflowMethod(workflowClass);
 
-        Object[] finalArgs = Arrays.stream(workflowMethod.getParameterTypes())
+        Object[] finalArgs = Arrays.stream(workflowMethod.getGenericParameterTypes())
                 .findFirst()
                 .map(paramType -> Json.deserialize(workflowStartedEvent.data(), paramType))
                 .map(deserialized -> new Object[]{deserialized})
