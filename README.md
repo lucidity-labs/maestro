@@ -49,7 +49,7 @@ Take a look at [the example app](./example) for an example of how to create your
 
 Start the app with:
 ```bash
-docker compose -p ./script up --build
+docker compose -f script/docker-compose.yml up --build
 ```
 
 Then, send the app some HTTP requests using [requests.http](./example/script/requests.http).
