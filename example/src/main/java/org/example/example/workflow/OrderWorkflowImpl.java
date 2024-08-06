@@ -28,31 +28,36 @@ public class OrderWorkflowImpl implements OrderWorkflow {
     @Activity
     private NotificationActivity notificationActivity;
 
-    private Boolean orderShipped = false;
+    private String trackingNumber;
 
     @Override
     public OrderFinalized submitOrder(Order order) throws ExecutionException, InterruptedException {
+
         List<OrderedProduct> reservedProducts = inventoryActivity.reserveInventory(order.orderedProducts());
+
         paymentActivity.processPayment(order.total());
+
         notificationActivity.sendOrderConfirmedEmail();
 
-        Workflow.await(() -> orderShipped);
+        Workflow.await(() -> trackingNumber != null);
 
-        CompletableFuture<String> orderShippedEmailFuture = Async.function(() -> notificationActivity.sendOrderShippedEmail());
+        // executing the following two activities in parallel
+        CompletableFuture<String> emailResultFuture = Async.function(() -> notificationActivity.sendOrderShippedEmail(trackingNumber));
         CompletableFuture<List<ProductInventory>> newInventoryFuture = Async.function(() -> inventoryActivity.decreaseInventory(reservedProducts));
 
-        String orderShippedEmailResponse = orderShippedEmailFuture.get();
+        // waiting for both to complete
+        emailResultFuture.get();
         List<ProductInventory> newInventoryLevel = newInventoryFuture.get();
 
-        Workflow.sleep(Duration.ofSeconds(10)); // this can be much, much longer if you so wish
+        Workflow.sleep(Duration.ofSeconds(10)); // this can be as long as you like
 
-        notificationActivity.sendSpecialOfferEmail();
+        notificationActivity.sendSpecialOfferPushNotification();
 
-        return new OrderFinalized(orderShippedEmailResponse, newInventoryLevel);
+        return new OrderFinalized(trackingNumber, newInventoryLevel);
     }
 
     @Override
-    public void confirmShipped(ShippingConfirmation input) {
-        orderShipped = true;
+    public void confirmShipped(ShippingConfirmation confirmation) {
+        trackingNumber = confirmation.trackingNumber();
     }
 }

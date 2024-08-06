@@ -8,6 +8,6 @@ public class PaymentActivityImpl implements PaymentActivity {
     @Override
     public String processPayment(BigDecimal amount) {
         System.out.println("processing payment of " + amount);
-        return "success";
+        return "PROCESSED";
     }
 }

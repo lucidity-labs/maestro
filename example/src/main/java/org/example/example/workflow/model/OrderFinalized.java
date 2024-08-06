@@ -4,5 +4,5 @@ import org.example.example.activity.model.ProductInventory;
 
 import java.util.List;
 
-public record OrderFinalized(String orderShippedResponse, List<ProductInventory> newInventory) {
+public record OrderFinalized(String trackingNumber, List<ProductInventory> newInventory) {
 }

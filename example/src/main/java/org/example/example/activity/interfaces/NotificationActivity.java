@@ -7,7 +7,7 @@ public interface NotificationActivity {
 
     String sendOrderConfirmedEmail();
 
-    String sendOrderShippedEmail();
+    String sendOrderShippedEmail(String trackingNumber);
 
-    String sendSpecialOfferEmail();
+    String sendSpecialOfferPushNotification();
 }

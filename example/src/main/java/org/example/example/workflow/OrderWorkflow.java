@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 public interface OrderWorkflow {
 
     @WorkflowFunction
-    OrderFinalized submitOrder(Order input) throws ExecutionException, InterruptedException;
+    OrderFinalized submitOrder(Order order) throws ExecutionException, InterruptedException;
 
     @SignalFunction
     void confirmShipped(ShippingConfirmation confirmation);

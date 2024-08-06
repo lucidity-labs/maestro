@@ -14,18 +14,18 @@ public class NotificationActivityImpl implements NotificationActivity {
     @Override
     public String sendOrderConfirmedEmail() {
         System.out.println("sending order confirmed email using " + emailService);
-        return "some response";
+        return "SENT";
     }
 
     @Override
-    public String sendOrderShippedEmail() {
+    public String sendOrderShippedEmail(String trackingNumber) {
         System.out.println("sending order shipped email using " + emailService);
-        return "some response";
+        return "SENT";
     }
 
     @Override
-    public String sendSpecialOfferEmail() {
-        System.out.println("sending special offer email using " + emailService);
-        return "some response";
+    public String sendSpecialOfferPushNotification() {
+        System.out.println("sending special offer push notification");
+        return "SENT";
     }
 }

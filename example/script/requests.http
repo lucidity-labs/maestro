@@ -6,7 +6,7 @@ Content-Type: application/json
   "total": 127.95,
   "orderedProducts": [
     {
-      "name": "model car",
+      "name": "sunglasses",
       "quantity": 2
     }
   ]
