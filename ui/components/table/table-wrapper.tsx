@@ -11,10 +11,11 @@ export default function TableWrapper() {
     const [workflowEvents, setWorkflowEvents] = useState<Event[]>([])
     const [workflows, setWorkflows] = useState<Workflow[]>([])
     const handleRowClick = async (row: any) => {
-        const res = await fetch(`http://localhost:8000/api/workflows/${row.workflowId}`)
+        const res = await fetch(`http://localhost:8000/api/workflows/${row.workflowId}`) // TODO: get host from env
         const json = await res.json()
+        const formatted = formatModel(json)
         setSelectedWorkflow(row)
-        setWorkflowEvents(json)
+        setWorkflowEvents(formatted)
     }
     const handleBack = () => {
         setSelectedWorkflow(undefined)
@@ -22,10 +23,24 @@ export default function TableWrapper() {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/workflows')
+        fetch('http://localhost:8000/api/workflows') // TODO: get host from env
             .then(res => res.json())
+            .then(data => formatModel(data))
             .then(data => setWorkflows(data))
     }, [])
+
+    const formatModel = (json: any[]) => json.map((object: any) => ({
+        ...object,
+        startTimestamp: formatTimestamp(object.startTimestamp),
+        endTimestamp: formatTimestamp(object.endTimestamp),
+    }));
+
+    const formatTimestamp = (isoString: string) => {
+        if (!isoString) return undefined
+
+        let split = new Date(isoString).toISOString().split('.');
+        return split[0] + split[1].slice(-1)
+    };
 
     if (selectedWorkflow) {
         return (

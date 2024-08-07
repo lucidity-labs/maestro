@@ -1,5 +1,7 @@
 package org.example.engine.internal.entity;
 
+import java.time.Instant;
+
 public record EventModel(String workflowId, Category category, String className, String functionName,
-                         String startTimestamp, String endTimestamp, String input, String output) {
+                         Instant startTimestamp, Instant endTimestamp, String input, String output) {
 }

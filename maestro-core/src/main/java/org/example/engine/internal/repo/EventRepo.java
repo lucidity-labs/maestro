@@ -10,10 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -213,28 +211,33 @@ public class EventRepo {
         );
     }
 
-    private static WorkflowModel mapToWorkflow(ResultSet resultSet) throws SQLException {
+    private static WorkflowModel mapToWorkflow(ResultSet rs) throws SQLException {
         return new WorkflowModel(
-                resultSet.getString("workflow_id"),
-                resultSet.getString("class_name"),
-                resultSet.getString("function_name"),
-                resultSet.getString("start_timestamp"),
-                resultSet.getString("end_timestamp"),
-                resultSet.getString("input"),
-                resultSet.getString("output")
+                rs.getString("workflow_id"),
+                rs.getString("class_name"),
+                rs.getString("function_name"),
+                getInstantSafely(rs, "start_timestamp"),
+                getInstantSafely(rs, "end_timestamp"),
+                rs.getString("input"),
+                rs.getString("output")
         );
     }
 
-    private static EventModel mapToEventModel(ResultSet resultSet) throws SQLException {
+    private static EventModel mapToEventModel(ResultSet rs) throws SQLException {
         return new EventModel(
-                resultSet.getString("workflow_id"),
-                Category.valueOf(resultSet.getString("category")),
-                resultSet.getString("class_name"),
-                resultSet.getString("function_name"),
-                resultSet.getString("start_timestamp"),
-                resultSet.getString("end_timestamp"),
-                resultSet.getString("input"),
-                resultSet.getString("output")
+                rs.getString("workflow_id"),
+                Category.valueOf(rs.getString("category")),
+                rs.getString("class_name"),
+                rs.getString("function_name"),
+                getInstantSafely(rs, "start_timestamp"),
+                getInstantSafely(rs, "end_timestamp"),
+                rs.getString("input"),
+                rs.getString("output")
         );
+    }
+
+    private static Instant getInstantSafely(ResultSet rs, String columnName) throws SQLException {
+        Timestamp timestamp = rs.getTimestamp(columnName);
+        return timestamp != null ? timestamp.toInstant() : null;
     }
 }
