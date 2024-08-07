@@ -17,7 +17,7 @@
 
 Access the UI simply by navigating to port `8000` after starting your application. No separate deployment needed!
 
-<img width="1523" alt="Screenshot 2024-08-06 at 22 15 29" src="https://github.com/user-attachments/assets/8253f4dc-119a-43df-95ce-ca631d0a2e8d">
+<img width="1715" alt="Screenshot 2024-08-06 at 22 18 11" src="https://github.com/user-attachments/assets/52f3c4d8-3883-4a43-bb36-2746aac6acc0">
 
 
 ### Usage Instructions
