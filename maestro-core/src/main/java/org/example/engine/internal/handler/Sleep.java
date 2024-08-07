@@ -46,7 +46,7 @@ public class Sleep {
                     null, Status.STARTED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
         }
 
         String id = workflowContext.workflowId() + "-" + correlationNumber;
@@ -67,7 +67,7 @@ public class Sleep {
                     Status.COMPLETED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
         }
 
         EventEntity existingStartedWorkflow = EventRepo.get(

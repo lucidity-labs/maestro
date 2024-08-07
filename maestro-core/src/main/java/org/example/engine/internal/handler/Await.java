@@ -37,7 +37,7 @@ public class Await {
                     null, Status.STARTED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
         }
 
         Long nextSequenceNumber = EventRepo.getNextSequenceNumber(workflowContext.workflowId());

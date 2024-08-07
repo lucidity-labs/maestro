@@ -48,7 +48,7 @@ public record ActivityInvocationHandler(Object target, ActivityOptions options) 
                     Json.serializeFirst(args), Status.STARTED, null, Json.serialize(options)
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
         }
 
         EventEntity existingStartedActivity = EventRepo.get(workflowContext.workflowId(), correlationNumber, Status.STARTED);

@@ -6,30 +6,34 @@ import {Button} from "@/components/button";
 import {DataTable} from "@/components/table/data-table";
 
 export default function TableWrapper() {
-
     const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow>()
     const [workflowEvents, setWorkflowEvents] = useState<Event[]>([])
     const [workflows, setWorkflows] = useState<Workflow[]>([])
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const handleCellClick = async (cell: any) => {
         if (cell.column.id === "input" || cell.column.id === "output") return
 
         const workflow = cell.row.original
 
-        const res = await fetch(`http://localhost:8000/api/workflows/${workflow.workflowId}`) // TODO: get host from env
+        const res = await fetch(`${apiUrl}/api/workflows/${workflow.workflowId}`)
         const json = await res.json()
         setSelectedWorkflow(workflow)
         setWorkflowEvents(json)
     }
+
     const handleBack = () => {
         setSelectedWorkflow(undefined)
         setWorkflowEvents([])
     }
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/workflows') // TODO: get host from env
-            .then(res => res.json())
-            .then(data => setWorkflows(data))
+        if (apiUrl) {
+            fetch(`${apiUrl}/api/workflows`)
+                .then(res => res.json())
+                .then(data => setWorkflows(data))
+        }
     }, [])
 
     if (selectedWorkflow) {
