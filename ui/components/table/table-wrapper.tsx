@@ -12,8 +12,6 @@ export default function TableWrapper() {
     const [workflows, setWorkflows] = useState<Workflow[]>([])
 
     const handleCellClick = async (cell: any) => {
-        console.log("cell is")
-        console.log(cell)
         if (cell.column.id === "input" || cell.column.id === "output") return
 
         const workflow = cell.row.original

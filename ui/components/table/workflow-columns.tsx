@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import ReactJson from '@microlink/react-json-view';
+import DynamicJsonViewer from "@/components/table/DynamicJsonViewer";
 
 export type Event = {
     workflowId: string
@@ -26,16 +27,7 @@ const tryParseJSON = (jsonString: string) => {
     try {
         const json = JSON.parse(jsonString);
         if (json && typeof json === "object") {
-            return <ReactJson
-                src={json}
-                name={null}
-                theme="isotope"
-                collapsed={3}
-                collapseStringsAfterLength={10}
-                enableClipboard={false}
-                displayDataTypes={false}
-                displayObjectSize={false}
-            />;
+            return <DynamicJsonViewer src={json} />
         }
     } catch (e) {
         console.error('Invalid JSON:', e);
