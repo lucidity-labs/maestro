@@ -1,24 +1,24 @@
 "use client"
 
 import React from "react"
-import {ColumnDef, flexRender, getCoreRowModel, useReactTable,} from "@tanstack/react-table"
+import {Cell, ColumnDef, flexRender, getCoreRowModel, useReactTable,} from "@tanstack/react-table"
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/table"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[],
-    onRowClick?: (row: TData) => void,
     title?: string,
-    subtitle?: string
+    subtitle?: string,
+    onCellClick?: (row: Cell<TData, TValue>) => void,
 }
 
 export function DataTable<TData, TValue>({
                                              columns,
                                              data,
-                                             onRowClick,
                                              title,
-                                             subtitle
+                                             subtitle,
+                                             onCellClick
                                          }: DataTableProps<TData, TValue>) {
 
     const table = useReactTable({
@@ -61,11 +61,10 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => onRowClick ? onRowClick(row.original) : null}
                                     className="cursor-pointer hover:bg-muted"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} onClick={() => onCellClick ? onCellClick(cell) : null}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
