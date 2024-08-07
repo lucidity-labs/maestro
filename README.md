@@ -52,6 +52,6 @@ Start the app with:
 docker compose -f script/docker-compose.yml up --build --force-recreate
 ```
 
-Then, send the app some HTTP requests using [requests.http](./example/script/requests.http).
+Then, try calling the app using [requests.http](./example/script/requests.http).
 
-You can access the UI by navigating to http://localhost:8000!
+View all of your workflows and workflow events at http://localhost:8000!
