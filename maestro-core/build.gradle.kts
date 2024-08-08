@@ -5,7 +5,6 @@ plugins {
 
 java {
 	withSourcesJar()
-	withJavadocJar()
 }
 
 val jacksonVersion = "2.17.2"

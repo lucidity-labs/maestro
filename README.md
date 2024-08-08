@@ -24,7 +24,7 @@ Access the UI simply by navigating to port `8000` after starting your applicatio
 
 1. include `maestro-core` as a dependency in your `build.gradle.kts`:
     ```kotlin
-    implementation("io.github.lucidity-labs:maestro-core:0.0.1")
+    implementation("io.github.lucidity-labs:maestro-core:0.1.0")
     ```
     
     or your `pom.xml`:
@@ -33,7 +33,7 @@ Access the UI simply by navigating to port `8000` after starting your applicatio
     <dependency>
         <groupId>io.github.lucidity-labs</groupId>
         <artifactId>maestro-core</artifactId>
-        <version>0.0.1</version>
+        <version>0.1.0</version>
     </dependency>
     ```
    
