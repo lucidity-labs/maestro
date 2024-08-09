@@ -12,6 +12,7 @@ import org.example.engine.internal.entity.Status;
 import org.example.engine.internal.repo.EventRepo;
 import org.example.engine.api.throwable.AbortWorkflowExecutionError;
 import org.example.engine.internal.exception.WorkflowCorrelationStatusConflict;
+import org.example.engine.internal.util.Json;
 import org.example.engine.internal.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class Sleep {
                     UUID.randomUUID().toString(), workflowContext.workflowId(),
                     correlationNumber, EventRepo.getNextSequenceNumber(workflowContext.workflowId()),
                     Category.SLEEP, null, null,
-                    null, Status.STARTED, null, null
+                    Json.serialize(duration), Status.STARTED, null, null
             ));
         } catch (WorkflowCorrelationStatusConflict e) {
             logger.debug(e.getMessage());

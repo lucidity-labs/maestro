@@ -32,7 +32,8 @@ public class SqlQueries {
                      AND completed.category = 'WORKFLOW'
                      AND completed.status = 'COMPLETED'
             WHERE started.category = 'WORKFLOW'
-              AND started.status = 'STARTED';
+              AND started.status = 'STARTED'
+            ORDER BY started.timestamp;
             """;
 
     //language=SQL
@@ -52,7 +53,8 @@ public class SqlQueries {
                      AND completed.workflow_id = ?
                      AND completed.status = 'COMPLETED'
             WHERE started.workflow_id = ?
-              AND started.status in ('STARTED', 'RECEIVED');
+              AND started.status in ('STARTED', 'RECEIVED')
+            ORDER BY started.timestamp;
             """;
 
     //language=SQL

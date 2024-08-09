@@ -15,15 +15,15 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api")
 public class Controller {
 
-    @PostMapping("/execute/{workflowId}")
-    public OrderFinalized executeWorkflow(@PathVariable String workflowId, @RequestBody Order order) throws ExecutionException, InterruptedException {
-        OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions(workflowId));
+    @PostMapping("/order/{orderId}")
+    public OrderFinalized order(@PathVariable String orderId, @RequestBody Order order) throws ExecutionException, InterruptedException {
+        OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions(orderId));
         return workflow.submitOrder(order);
     }
 
-    @PostMapping("/signal/{workflowId}")
-    public void signalWorkflow(@PathVariable String workflowId, @RequestBody ShippingConfirmation shippingConfirmation) {
-        OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions(workflowId));
+    @PostMapping("/confirmation/{trackingNumber}")
+    public void signalWorkflow(@PathVariable String trackingNumber, @RequestBody ShippingConfirmation shippingConfirmation) {
+        OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions(trackingNumber));
         workflow.confirmShipped(shippingConfirmation);
     }
 }

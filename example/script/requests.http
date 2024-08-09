@@ -1,5 +1,5 @@
 ###
-POST http://localhost:8080/api/execute/b5647c7b-5e16-40dd-8726-48bd0ad40cab
+POST http://localhost:8080/api/order/b5647c7b-5e16-40dd-8726-48bd0ad40cab
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/api/signal/b5647c7b-5e16-40dd-8726-48bd0ad40cab
+POST http://localhost:8080/api/confirmation/b5647c7b-5e16-40dd-8726-48bd0ad40cab
 Content-Type: application/json
 
 {
