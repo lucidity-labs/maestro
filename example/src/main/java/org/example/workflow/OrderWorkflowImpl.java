@@ -1,16 +1,16 @@
-package org.example.example.workflow;
+package org.example.workflow;
 
+import org.example.activity.model.ProductInventory;
 import org.example.engine.api.async.Async;
 import org.example.engine.api.workflow.Workflow;
 import org.example.engine.api.activity.Activity;
-import org.example.example.activity.interfaces.InventoryActivity;
-import org.example.example.activity.interfaces.NotificationActivity;
-import org.example.example.activity.interfaces.PaymentActivity;
-import org.example.example.activity.model.ProductInventory;
-import org.example.example.workflow.model.Order;
-import org.example.example.workflow.model.OrderFinalized;
-import org.example.example.workflow.model.OrderedProduct;
-import org.example.example.workflow.model.ShippingConfirmation;
+import org.example.activity.interfaces.InventoryActivity;
+import org.example.activity.interfaces.NotificationActivity;
+import org.example.activity.interfaces.PaymentActivity;
+import org.example.workflow.model.Order;
+import org.example.workflow.model.OrderFinalized;
+import org.example.workflow.model.OrderedProduct;
+import org.example.workflow.model.ShippingConfirmation;
 
 import java.time.Duration;
 import java.util.List;

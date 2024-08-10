@@ -1,4 +1,4 @@
-package org.example.example.workflow.model;
+package org.example.workflow.model;
 
 import java.math.BigDecimal;
 import java.util.List;

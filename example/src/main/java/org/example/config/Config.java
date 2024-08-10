@@ -1,13 +1,13 @@
-package org.example.example.config;
+package org.example.config;
 
 import jakarta.annotation.PostConstruct;
 import org.example.engine.api.Maestro;
 import org.example.engine.api.activity.ActivityOptions;
-import org.example.example.activity.impl.InventoryActivityImpl;
-import org.example.example.activity.impl.NotificationActivityImpl;
-import org.example.example.activity.impl.PaymentActivityImpl;
-import org.example.example.service.EmailService;
-import org.example.example.workflow.OrderWorkflowImpl;
+import org.example.activity.impl.InventoryActivityImpl;
+import org.example.activity.impl.NotificationActivityImpl;
+import org.example.activity.impl.PaymentActivityImpl;
+import org.example.service.EmailService;
+import org.example.workflow.OrderWorkflowImpl;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

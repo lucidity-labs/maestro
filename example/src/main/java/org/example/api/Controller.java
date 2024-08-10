@@ -1,12 +1,12 @@
-package org.example.example.api;
+package org.example.api;
 
 import org.example.engine.api.Maestro;
 import org.example.engine.api.workflow.WorkflowOptions;
-import org.example.example.workflow.OrderWorkflow;
-import org.example.example.workflow.OrderWorkflowImpl;
-import org.example.example.workflow.model.Order;
-import org.example.example.workflow.model.OrderFinalized;
-import org.example.example.workflow.model.ShippingConfirmation;
+import org.example.workflow.OrderWorkflow;
+import org.example.workflow.OrderWorkflowImpl;
+import org.example.workflow.model.Order;
+import org.example.workflow.model.OrderFinalized;
+import org.example.workflow.model.ShippingConfirmation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;

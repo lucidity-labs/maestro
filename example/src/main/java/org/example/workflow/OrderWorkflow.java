@@ -1,11 +1,11 @@
-package org.example.example.workflow;
+package org.example.workflow;
 
 import org.example.engine.api.signal.SignalFunction;
 import org.example.engine.api.workflow.WorkflowFunction;
 import org.example.engine.api.workflow.WorkflowInterface;
-import org.example.example.workflow.model.Order;
-import org.example.example.workflow.model.OrderFinalized;
-import org.example.example.workflow.model.ShippingConfirmation;
+import org.example.workflow.model.Order;
+import org.example.workflow.model.OrderFinalized;
+import org.example.workflow.model.ShippingConfirmation;
 
 import java.util.concurrent.ExecutionException;
 

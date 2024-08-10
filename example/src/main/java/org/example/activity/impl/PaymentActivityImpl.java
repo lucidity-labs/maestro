@@ -1,6 +1,6 @@
-package org.example.example.activity.impl;
+package org.example.activity.impl;
 
-import org.example.example.activity.interfaces.PaymentActivity;
+import org.example.activity.interfaces.PaymentActivity;
 
 import java.math.BigDecimal;
 

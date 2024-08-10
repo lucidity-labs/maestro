@@ -1,7 +1,7 @@
-package org.example.example.activity.impl;
+package org.example.activity.impl;
 
-import org.example.example.activity.interfaces.NotificationActivity;
-import org.example.example.service.EmailService;
+import org.example.activity.interfaces.NotificationActivity;
+import org.example.service.EmailService;
 
 public class NotificationActivityImpl implements NotificationActivity {
 

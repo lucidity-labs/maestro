@@ -1,4 +1,4 @@
-package org.example.example.activity.interfaces;
+package org.example.activity.interfaces;
 
 import org.example.engine.api.activity.ActivityInterface;
 

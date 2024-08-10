@@ -1,6 +1,6 @@
-package org.example.example.workflow.model;
+package org.example.workflow.model;
 
-import org.example.example.activity.model.ProductInventory;
+import org.example.activity.model.ProductInventory;
 
 import java.util.List;
 

@@ -7,7 +7,7 @@
     </envs>
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="maestro.example.main" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.example.ExampleApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.ExampleApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

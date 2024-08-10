@@ -1,8 +1,8 @@
-package org.example.example.activity.impl;
+package org.example.activity.impl;
 
-import org.example.example.activity.interfaces.InventoryActivity;
-import org.example.example.activity.model.ProductInventory;
-import org.example.example.workflow.model.OrderedProduct;
+import org.example.activity.model.ProductInventory;
+import org.example.activity.interfaces.InventoryActivity;
+import org.example.workflow.model.OrderedProduct;
 
 import java.util.ArrayList;
 import java.util.List;
