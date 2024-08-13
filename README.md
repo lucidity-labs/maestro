@@ -12,6 +12,7 @@
 - packaged as a library that can be included as a simple dependency via Gradle or Maven
 - no separate server deployment
 - simple, readable codebase
+- embedded UI
 
 ### UI
 
