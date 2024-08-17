@@ -5,7 +5,6 @@ import org.example.engine.api.workflow.WorkflowOptions;
 import org.example.workflow.OrderWorkflow;
 import org.example.workflow.OrderWorkflowImpl;
 import org.example.workflow.model.Order;
-import org.example.workflow.model.OrderFinalized;
 import org.example.workflow.model.ShippingConfirmation;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +15,9 @@ import java.util.concurrent.ExecutionException;
 public class Controller {
 
     @PostMapping("/order/{orderId}")
-    public OrderFinalized order(@PathVariable String orderId, @RequestBody Order order) throws ExecutionException, InterruptedException {
+    public void order(@PathVariable String orderId, @RequestBody Order order) throws ExecutionException, InterruptedException {
         OrderWorkflow workflow = Maestro.newWorkflow(OrderWorkflowImpl.class, new WorkflowOptions(orderId));
-        return workflow.submitOrder(order);
+        workflow.submitOrder(order);
     }
 
     @PostMapping("/confirmation/{trackingNumber}")
