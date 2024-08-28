@@ -1,9 +1,9 @@
 package org.example.workflow;
 
 import org.example.activity.model.ProductInventory;
-import org.example.engine.api.async.Async;
-import org.example.engine.api.workflow.Workflow;
-import org.example.engine.api.activity.Activity;
+import lucidity.maestro.engine.api.async.Async;
+import lucidity.maestro.engine.api.workflow.Workflow;
+import lucidity.maestro.engine.api.activity.Activity;
 import org.example.activity.interfaces.InventoryActivity;
 import org.example.activity.interfaces.NotificationActivity;
 import org.example.activity.interfaces.PaymentActivity;

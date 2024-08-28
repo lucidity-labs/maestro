@@ -1,8 +1,8 @@
 package org.example.config;
 
 import jakarta.annotation.PostConstruct;
-import org.example.engine.api.Maestro;
-import org.example.engine.api.activity.ActivityOptions;
+import lucidity.maestro.engine.api.Maestro;
+import lucidity.maestro.engine.api.activity.ActivityOptions;
 import org.example.activity.impl.InventoryActivityImpl;
 import org.example.activity.impl.NotificationActivityImpl;
 import org.example.activity.impl.PaymentActivityImpl;

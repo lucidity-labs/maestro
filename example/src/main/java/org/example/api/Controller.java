@@ -1,7 +1,7 @@
 package org.example.api;
 
-import org.example.engine.api.Maestro;
-import org.example.engine.api.workflow.WorkflowOptions;
+import lucidity.maestro.engine.api.Maestro;
+import lucidity.maestro.engine.api.workflow.WorkflowOptions;
 import org.example.workflow.OrderWorkflow;
 import org.example.workflow.OrderWorkflowImpl;
 import org.example.workflow.model.Order;

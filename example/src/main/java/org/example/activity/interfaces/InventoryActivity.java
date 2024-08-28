@@ -1,7 +1,7 @@
 package org.example.activity.interfaces;
 
 import org.example.activity.model.ProductInventory;
-import org.example.engine.api.activity.ActivityInterface;
+import lucidity.maestro.engine.api.activity.ActivityInterface;
 import org.example.workflow.model.OrderedProduct;
 
 import java.util.List;

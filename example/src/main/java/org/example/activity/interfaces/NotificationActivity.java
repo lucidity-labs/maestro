@@ -1,6 +1,6 @@
 package org.example.activity.interfaces;
 
-import org.example.engine.api.activity.ActivityInterface;
+import lucidity.maestro.engine.api.activity.ActivityInterface;
 
 @ActivityInterface
 public interface NotificationActivity {
