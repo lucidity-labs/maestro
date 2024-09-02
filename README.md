@@ -55,3 +55,12 @@ View all of your workflows and workflow events at http://localhost:8000!
    ```
 
 3. Write your durable workflow! It's super easy - take a look at the [example app](./example) to see how.
+
+### Write Your First Workflow
+
+1. Create at least one activity interface, like [PaymentActivity](./example/src/main/java/org/example/activity/interfaces/PaymentActivity.java). Activities are like steps of your workflow.
+2. Implement your activity, like [PaymentActivityImpl](./example/src/main/java/org/example/activity/impl/PaymentActivityImpl.java).
+3. Create a workflow interface, like [OrderWorkflow](./example/src/main/java/org/example/workflow/OrderWorkflow.java). Include a method annotated with `@WorkflowFunction` in this interface.
+4. Implement your workflow, like [OrderWorkflowImpl](./example/src/main/java/org/example/workflow/OrderWorkflowImpl.java). You can call the activities you've created earlier by declaring them as fields and annotating the fields with `@Activity`.
+5. Register the workflow implementation and the activity implementations, like in [Config](./example/src/main/java/org/example/config/Config.java).
+6. Call your workflow, like in [Controller](./example/src/main/java/org/example/api/Controller.java).
