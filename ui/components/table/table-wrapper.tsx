@@ -34,7 +34,7 @@ export default function TableWrapper() {
                 .then(res => res.json())
                 .then(data => setWorkflows(data))
         }
-    }, [])
+    }, [apiUrl])
 
     if (selectedWorkflow) {
         return (
