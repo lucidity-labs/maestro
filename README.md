@@ -14,6 +14,10 @@
 - simple, readable codebase
 - embedded UI
 
+### Demo
+
+[![Demo](https://github.com/user-attachments/assets/8b5df22f-7cb5-408f-a3fb-beaf612851a2)](https://youtu.be/f_oNw5Oy7nQ?si=OiquEXXabQX8LQ3t)
+
 ### UI
 
 Access the UI simply by navigating to port `8000` after starting your application. No separate deployment needed!
