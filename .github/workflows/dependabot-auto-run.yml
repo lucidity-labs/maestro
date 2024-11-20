@@ -1,0 +1,15 @@
+name: Dependabot Auto-Run
+on: push
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dependabot
+        run: |
+          gh api -X POST /repos/${{ github.repository }}/dependabot/scans \
+            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"

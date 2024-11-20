@@ -1,0 +1,38 @@
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/maestro-core"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 50
+    rebase-strategy: "auto"
+    versioning-strategy: "auto"
+    allow:
+      - dependency-type: "all"
+    groups:
+      all:
+        patterns: [ "*" ]
+  - package-ecosystem: "gradle"
+    directory: "/example"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 50
+    rebase-strategy: "auto"
+    versioning-strategy: "auto"
+    allow:
+      - dependency-type: "all"
+    groups:
+      all:
+        patterns: [ "*" ]
+  - package-ecosystem: "npm"
+    directory: "/ui"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 50
+    versioning-strategy: "auto"
+    rebase-strategy: "auto"
+    allow:
+      - dependency-type: "all"
+    groups:
+      all:
+        patterns: [ "*" ]

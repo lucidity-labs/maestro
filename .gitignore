@@ -37,3 +37,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+/maestro-core/src/main/resources/nextjs-app/
