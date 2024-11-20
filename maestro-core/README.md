@@ -1,0 +1,1 @@
+Release with: `./gradlew publishAndReleaseToMavenCentral --no-configuration-cache`

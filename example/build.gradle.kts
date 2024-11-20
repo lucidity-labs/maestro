@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-//	implementation("io.github.lucidity-labs:maestro-core:0.1.2")
+//	implementation("io.github.lucidity-labs:maestro-core:0.1.3")
 	implementation(project(":maestro-core"))
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.github.kagkarlsson:db-scheduler:14.0.1")
