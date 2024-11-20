@@ -4,13 +4,17 @@ on: push
 permissions:
   contents: write
   pull-requests: write
+  security-events: write
 
 jobs:
   dependabot:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Dependabot
+      - name: Submit Dependency Snapshot
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api -X POST /repos/${{ github.repository }}/dependabot/scans
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/dependency-graph/snapshots
