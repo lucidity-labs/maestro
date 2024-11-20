@@ -10,14 +10,12 @@ export default function TableWrapper() {
     const [workflowEvents, setWorkflowEvents] = useState<Event[]>([])
     const [workflows, setWorkflows] = useState<Workflow[]>([])
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
     const handleCellClick = async (cell: any) => {
         if (cell.column.id === "input" || cell.column.id === "output") return
 
         const workflow = cell.row.original
 
-        const res = await fetch(`${apiUrl}/api/workflows/${workflow.workflowId}`)
+        const res = await fetch(`/api/workflows/${workflow.workflowId}`)
         const json = await res.json()
         setSelectedWorkflow(workflow)
         setWorkflowEvents(json)
@@ -29,12 +27,10 @@ export default function TableWrapper() {
     }
 
     useEffect(() => {
-        if (apiUrl) {
-            fetch(`${apiUrl}/api/workflows`)
-                .then(res => res.json())
-                .then(data => setWorkflows(data))
-        }
-    }, [apiUrl])
+        fetch(`/api/workflows`)
+            .then(res => res.json())
+            .then(data => setWorkflows(data))
+    })
 
     if (selectedWorkflow) {
         return (
