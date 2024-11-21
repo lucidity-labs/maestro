@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {Event, eventColumns, Workflow, workflowColumns} from "@/components/table/workflow-columns";
 import {Button} from "@/components/button";
 import {DataTable} from "@/components/table/data-table";
+import {API_BASE} from "@/lib/constants";
 
 export default function TableWrapper() {
     const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow>()
@@ -15,7 +16,7 @@ export default function TableWrapper() {
 
         const workflow = cell.row.original
 
-        const res = await fetch(`/api/workflows/${workflow.workflowId}`)
+        const res = await fetch(`${API_BASE}/api/workflows/${workflow.workflowId}`)
         const json = await res.json()
         setSelectedWorkflow(workflow)
         setWorkflowEvents(json)
@@ -27,7 +28,7 @@ export default function TableWrapper() {
     }
 
     useEffect(() => {
-        fetch(`/api/workflows`)
+        fetch(`${API_BASE}/api/workflows`)
             .then(res => res.json())
             .then(data => setWorkflows(data))
     })
