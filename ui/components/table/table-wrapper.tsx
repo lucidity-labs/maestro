@@ -31,7 +31,7 @@ export default function TableWrapper() {
         fetch(`${API_BASE}/api/workflows`)
             .then(res => res.json())
             .then(data => setWorkflows(data))
-    })
+    }, [])
 
     if (selectedWorkflow) {
         return (
