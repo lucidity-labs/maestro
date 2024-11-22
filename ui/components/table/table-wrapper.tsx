@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Event, eventColumns, Workflow, workflowColumns} from "@/components/table/workflow-columns";
-import {Button} from "@/components/button";
+import {Button} from "@/components/ui/button";
 import {DataTable} from "@/components/table/data-table";
 import {API_BASE} from "@/lib/constants";
 
