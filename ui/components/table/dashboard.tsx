@@ -1,12 +1,12 @@
 "use client"
 
 import React, {useEffect, useState} from "react";
-import {Event, eventColumns, Workflow, workflowColumns} from "@/components/table/workflow-columns";
-import {Button} from "@/components/ui/button";
-import {DataTable} from "@/components/table/data-table";
+import {Event, Workflow} from "@/components/table/workflow-columns";
 import {API_BASE} from "@/lib/constants";
+import {EventsTable} from "@/components/table/events-table";
+import {WorkflowsTable} from "@/components/table/workflows-table";
 
-export default function TableWrapper() {
+export default function Dashboard() {
     const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow>()
     const [workflowEvents, setWorkflowEvents] = useState<Event[]>([])
     const [workflows, setWorkflows] = useState<Workflow[]>([])
@@ -33,24 +33,15 @@ export default function TableWrapper() {
             .then(data => setWorkflows(data))
     }, [])
 
-    return selectedWorkflow ? (
-        <div className="flex flex-col items-center space-y-9">
-            <DataTable
-                title="Events"
-                subtitle={"Workflow ID: " + selectedWorkflow.workflowId}
-                columns={eventColumns}
-                data={workflowEvents}
-            />
-            <Button onClick={handleBack} variant="outline" className="mt-4">
-                Back to All Workflows
-            </Button>
-        </div>
-    ) : (
-        <DataTable
-            title="Workflows"
-            columns={workflowColumns}
-            data={workflows}
+    return selectedWorkflow ?
+        <EventsTable
+            workflowEvents={workflowEvents}
+            selectedWorkflow={selectedWorkflow}
+            onBack={handleBack}
+        />
+        :
+        <WorkflowsTable
+            workflows={workflows}
             onCellClick={handleCellClick}
         />
-    )
 }

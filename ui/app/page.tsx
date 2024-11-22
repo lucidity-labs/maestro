@@ -1,5 +1,5 @@
 import {Metadata} from "next"
-import TableWrapper from "@/components/table/table-wrapper";
+import Dashboard from "@/components/table/dashboard";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -12,7 +12,7 @@ export default async function DashboardPage() {
             <div className="flex-1 space-y-4 p-8 pt-16">
                 <div className="container mx-auto">
                     <h2 className="text-3xl font-bold tracking-tight mb-6">Maestro UI</h2>
-                    <TableWrapper/>
+                    <Dashboard/>
                 </div>
             </div>
         </div>
