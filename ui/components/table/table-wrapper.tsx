@@ -33,20 +33,24 @@ export default function TableWrapper() {
             .then(data => setWorkflows(data))
     }, [])
 
-    if (selectedWorkflow) {
-        return (
-            <div className="flex flex-col items-center space-y-9">
-                <div className="w-full">
-                    <DataTable title={"Events"} subtitle={"Workflow ID: " + selectedWorkflow.workflowId} columns={eventColumns} data={workflowEvents}/>
-                </div>
-                <Button onClick={handleBack} variant="outline" className="mt-4">
-                    Back to All Workflows
-                </Button>
-            </div>
-        )
-    }
-
-    return (
-        <DataTable title={"Workflows"} columns={workflowColumns} data={workflows} onCellClick={handleCellClick}/>
+    return selectedWorkflow ? (
+        <div className="flex flex-col items-center space-y-9">
+            <DataTable
+                title="Events"
+                subtitle={"Workflow ID: " + selectedWorkflow.workflowId}
+                columns={eventColumns}
+                data={workflowEvents}
+            />
+            <Button onClick={handleBack} variant="outline" className="mt-4">
+                Back to All Workflows
+            </Button>
+        </div>
+    ) : (
+        <DataTable
+            title="Workflows"
+            columns={workflowColumns}
+            data={workflows}
+            onCellClick={handleCellClick}
+        />
     )
 }
