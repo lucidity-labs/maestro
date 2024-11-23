@@ -1,17 +1,23 @@
-import React, { useMemo } from 'react';
-import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-import { DataTable } from "@/components/table/data-table";
-import { eventColumns } from "@/components/table/workflow-columns";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import React, {useMemo} from 'react';
+import {ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer} from 'recharts';
+import {DataTable} from "@/components/table/data-table";
+import {eventColumns} from "@/components/table/workflow-columns";
+import {Button} from "@/components/ui/button";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 
-const WaterfallChart = ({ events }) => {
+const WaterfallChart = ({events}) => {
     const chartData = useMemo(() => {
         if (!events?.length) return [];
 
-        const sortedEvents = [...events].sort((a, b) =>
+        const filteredEvents = events.filter(event =>
+            event.category.toUpperCase() !== 'WORKFLOW'
+        );
+
+        const sortedEvents = [...filteredEvents].sort((a, b) =>
             new Date(a.startTimestamp).getTime() - new Date(b.startTimestamp).getTime()
         );
+
+        if (sortedEvents.length === 0) return [];
 
         const firstTimestamp = new Date(sortedEvents[0].startTimestamp).getTime();
 
@@ -38,7 +44,6 @@ const WaterfallChart = ({ events }) => {
 
     const getEventColor = (category) => {
         const colors = {
-            'WORKFLOW': '#2563eb',    // Blue
             'ACTIVITY': '#0ea5e9',    // Sky blue
             'SIGNAL': '#6366f1',      // Indigo
             'AWAIT': '#8b5cf6',       // Purple
@@ -48,7 +53,7 @@ const WaterfallChart = ({ events }) => {
         return colors[category] || colors.DEFAULT;
     };
 
-    const CustomYAxisTick = ({ x, y, payload }) => {
+    const CustomYAxisTick = ({x, y, payload}) => {
         const maxLength = 15;
         const text = payload.value;
         const displayText = text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
@@ -65,7 +70,7 @@ const WaterfallChart = ({ events }) => {
                                 textAnchor="end"
                                 fill="#94a3b8"
                                 fontSize="12px"
-                                style={{ cursor: 'default' }}
+                                style={{cursor: 'default'}}
                             >
                                 {displayText}
                             </text>
@@ -82,7 +87,7 @@ const WaterfallChart = ({ events }) => {
     };
 
     const CustomBar = (props) => {
-        const { x, y, width, height, payload } = props;
+        const {x, y, width, height, payload} = props;
         const color = getEventColor(payload.category);
         const actualX = x + (payload.left * (width / payload.value));
 
@@ -107,19 +112,19 @@ const WaterfallChart = ({ events }) => {
                             <g transform={`translate(${actualX},0)`}>
                                 <circle
                                     cx={0}
-                                    cy={y + height/2}
+                                    cy={y + height / 2}
                                     r={6}
                                     fill={color}
                                     filter="url(#glow)"
-                                    style={{ cursor: 'pointer' }}
+                                    style={{cursor: 'pointer'}}
                                 />
                                 <circle
                                     cx={0}
-                                    cy={y + height/2}
+                                    cy={y + height / 2}
                                     r={4}
                                     fill="white"
                                     fillOpacity={0.6}
-                                    style={{ cursor: 'pointer' }}
+                                    style={{cursor: 'pointer'}}
                                 />
                             </g>
                         </TooltipTrigger>
@@ -136,15 +141,15 @@ const WaterfallChart = ({ events }) => {
                         <g transform={`translate(${actualX},0)`}>
                             <defs>
                                 <linearGradient id={`grad-${payload.index}`} x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor={color} stopOpacity={0.9} />
-                                    <stop offset="100%" stopColor={color} stopOpacity={0.7} />
+                                    <stop offset="0%" stopColor={color} stopOpacity={0.9}/>
+                                    <stop offset="100%" stopColor={color} stopOpacity={0.7}/>
                                 </linearGradient>
                                 <filter id="glow">
-                                    <feGaussianBlur stdDeviation="1" result="glow" />
+                                    <feGaussianBlur stdDeviation="1" result="glow"/>
                                     <feMerge>
-                                        <feMergeNode in="glow" />
-                                        <feMergeNode in="glow" />
-                                        <feMergeNode in="SourceGraphic" />
+                                        <feMergeNode in="glow"/>
+                                        <feMergeNode in="glow"/>
+                                        <feMergeNode in="SourceGraphic"/>
                                     </feMerge>
                                 </filter>
                             </defs>
@@ -157,7 +162,7 @@ const WaterfallChart = ({ events }) => {
                                 ry={2}
                                 fill={`url(#grad-${payload.index})`}
                                 filter="url(#glow)"
-                                style={{ cursor: 'pointer' }}
+                                style={{cursor: 'pointer'}}
                             />
                         </g>
                     </TooltipTrigger>
@@ -176,14 +181,14 @@ const WaterfallChart = ({ events }) => {
                     <ComposedChart
                         data={chartData}
                         layout="vertical"
-                        margin={{ top: 20, right: 32, left: 32, bottom: 20 }}
+                        margin={{top: 20, right: 32, left: 32, bottom: 20}}
                     >
                         <XAxis
                             type="number"
                             domain={[0, maxEndTime]}
                             stroke="#94a3b8"
-                            tick={{ fill: '#94a3b8' }}
-                            tickLine={{ stroke: '#94a3b8' }}
+                            tick={{fill: '#94a3b8'}}
+                            tickLine={{stroke: '#94a3b8'}}
                         />
                         <YAxis
                             type="category"
@@ -195,7 +200,7 @@ const WaterfallChart = ({ events }) => {
                         <Bar
                             dataKey="value"
                             barSize={20}
-                            shape={<CustomBar />}
+                            shape={<CustomBar/>}
                             isAnimationActive={false}
                         />
                     </ComposedChart>
@@ -205,7 +210,7 @@ const WaterfallChart = ({ events }) => {
     );
 };
 
-export const EventsTable = ({ workflowEvents, selectedWorkflow, onBack }) => {
+export const EventsTable = ({workflowEvents, selectedWorkflow, onBack}) => {
     return (
         <div className="space-y-8">
             <div className="relative">
@@ -215,7 +220,7 @@ export const EventsTable = ({ workflowEvents, selectedWorkflow, onBack }) => {
                 </p>
             </div>
 
-            <WaterfallChart events={workflowEvents} />
+            <WaterfallChart events={workflowEvents}/>
 
             <DataTable
                 columns={eventColumns}
