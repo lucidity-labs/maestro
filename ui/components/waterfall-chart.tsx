@@ -41,11 +41,11 @@ const WaterfallChart = ({events}) => {
 
     const getEventColor = (category) => {
         const colors = {
-            'ACTIVITY': '#0ea5e9',    // Sky blue
-            'SIGNAL': '#6366f1',      // Indigo
-            'AWAIT': '#8b5cf6',       // Purple
-            'SLEEP': '#a855f7',       // Violet
-            'DEFAULT': '#3b82f6'      // Default blue
+            'ACTIVITY': '#00e6e6',    // Turquoise
+            'SIGNAL': '#c466fc',      // Bright Amethyst
+            'AWAIT': '#ff5cd6',       // Hot Pink
+            'SLEEP': '#4d4dff',       // Royal Blue
+            'DEFAULT': '#2e95ff'      // Electric Sapphire
         };
         return colors[category] || colors.DEFAULT;
     };
