@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
-import { ComposedChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { DataTable } from "@/components/table/data-table";
 import { eventColumns } from "@/components/table/workflow-columns";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const WaterfallChart = ({ events }) => {
     const chartData = useMemo(() => {
@@ -47,27 +48,36 @@ const WaterfallChart = ({ events }) => {
         return colors[category] || colors.DEFAULT;
     };
 
-    // Custom tick component for YAxis with truncation
     const CustomYAxisTick = ({ x, y, payload }) => {
-        const maxLength = 15; // Maximum characters to show
+        const maxLength = 15;
         const text = payload.value;
         const displayText = text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
 
         return (
-            <g transform={`translate(${x},${y})`}>
-                <title>{text}</title> {/* Native HTML tooltip on hover */}
-                <text
-                    x={-6}
-                    y={0}
-                    dy={4}
-                    textAnchor="end"
-                    fill="#94a3b8"
-                    fontSize="12px"
-                    className="cursor-help"
-                >
-                    {displayText}
-                </text>
-            </g>
+            <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <g transform={`translate(${x},${y})`}>
+                            <text
+                                x={-6}
+                                y={0}
+                                dy={4}
+                                textAnchor="end"
+                                fill="#94a3b8"
+                                fontSize="12px"
+                                style={{ cursor: 'default' }}
+                            >
+                                {displayText}
+                            </text>
+                        </g>
+                    </TooltipTrigger>
+                    {text.length > maxLength && (
+                        <TooltipContent side="left">
+                            <p>{text}</p>
+                        </TooltipContent>
+                    )}
+                </Tooltip>
+            </TooltipProvider>
         );
     };
 
@@ -76,54 +86,84 @@ const WaterfallChart = ({ events }) => {
         const color = getEventColor(payload.category);
         const actualX = x + (payload.left * (width / payload.value));
 
+        const tooltipContent = (
+            <TooltipContent>
+                <div className="space-y-1">
+                    <p className="font-medium">{payload.displayName}</p>
+                    <p className="text-sm">Category: {payload.category}</p>
+                    <p className="text-sm">Start: {payload.start.toFixed(2)}s</p>
+                    {!payload.isPoint && (
+                        <p className="text-sm">Duration: {payload.duration.toFixed(2)}s</p>
+                    )}
+                </div>
+            </TooltipContent>
+        );
+
         if (payload.isPoint) {
             return (
-                <g transform={`translate(${actualX},0)`}>
-                    <circle
-                        cx={0}
-                        cy={y + height/2}
-                        r={6}
-                        fill={color}
-                        filter="url(#glow)"
-                    />
-                    <circle
-                        cx={0}
-                        cy={y + height/2}
-                        r={4}
-                        fill="white"
-                        fillOpacity={0.6}
-                    />
-                </g>
+                <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <g transform={`translate(${actualX},0)`}>
+                                <circle
+                                    cx={0}
+                                    cy={y + height/2}
+                                    r={6}
+                                    fill={color}
+                                    filter="url(#glow)"
+                                    style={{ cursor: 'pointer' }}
+                                />
+                                <circle
+                                    cx={0}
+                                    cy={y + height/2}
+                                    r={4}
+                                    fill="white"
+                                    fillOpacity={0.6}
+                                    style={{ cursor: 'pointer' }}
+                                />
+                            </g>
+                        </TooltipTrigger>
+                        {tooltipContent}
+                    </Tooltip>
+                </TooltipProvider>
             );
         }
 
         return (
-            <g transform={`translate(${actualX},0)`}>
-                <defs>
-                    <linearGradient id={`grad-${payload.index}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={color} stopOpacity={0.9} />
-                        <stop offset="100%" stopColor={color} stopOpacity={0.7} />
-                    </linearGradient>
-                    <filter id="glow">
-                        <feGaussianBlur stdDeviation="1" result="glow" />
-                        <feMerge>
-                            <feMergeNode in="glow" />
-                            <feMergeNode in="glow" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-                <rect
-                    x={0}
-                    y={y}
-                    width={Math.max(width, 2)}
-                    height={height}
-                    fill={`url(#grad-${payload.index})`}
-                    rx={2}
-                    ry={2}
-                    filter="url(#glow)"
-                />
-            </g>
+            <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <g transform={`translate(${actualX},0)`}>
+                            <defs>
+                                <linearGradient id={`grad-${payload.index}`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor={color} stopOpacity={0.9} />
+                                    <stop offset="100%" stopColor={color} stopOpacity={0.7} />
+                                </linearGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="1" result="glow" />
+                                    <feMerge>
+                                        <feMergeNode in="glow" />
+                                        <feMergeNode in="glow" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <rect
+                                x={0}
+                                y={y}
+                                width={Math.max(width, 2)}
+                                height={height}
+                                fill={`url(#grad-${payload.index})`}
+                                rx={2}
+                                ry={2}
+                                filter="url(#glow)"
+                                style={{ cursor: 'pointer' }}
+                            />
+                        </g>
+                    </TooltipTrigger>
+                    {tooltipContent}
+                </Tooltip>
+            </TooltipProvider>
         );
     };
 
@@ -151,24 +191,6 @@ const WaterfallChart = ({ events }) => {
                             stroke="#94a3b8"
                             tick={CustomYAxisTick}
                             width={90}
-                        />
-                        <Tooltip
-                            content={({ active, payload }) => {
-                                if (active && payload?.[0]) {
-                                    const data = payload[0].payload;
-                                    return (
-                                        <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-lg">
-                                            <p className="text-slate-200 font-medium mb-1">{data.displayName}</p>
-                                            <p className="text-slate-300 text-sm">Category: {data.category}</p>
-                                            <p className="text-slate-300 text-sm">Start: {data.start.toFixed(2)}s</p>
-                                            {!data.isPoint && (
-                                                <p className="text-slate-300 text-sm">Duration: {data.duration.toFixed(2)}s</p>
-                                            )}
-                                        </div>
-                                    );
-                                }
-                                return null;
-                            }}
                         />
                         <Bar
                             dataKey="value"
