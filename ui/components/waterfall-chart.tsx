@@ -176,13 +176,13 @@ const WaterfallChart = ({events}) => {
     };
 
     return (
-        <div className="rounded-md border bg-slate-950 p-6">
+        <div className="rounded-md border-4 bg-slate-950 p-6">
             <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                         data={chartData}
                         layout="vertical"
-                        margin={{top: 20, right: 37, left: 37, bottom: 20}}
+                        margin={{top: 20, right: 40, left: 40, bottom: 20}}
                     >
                         <XAxis
                             type="number"
