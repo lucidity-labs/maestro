@@ -40,7 +40,7 @@ View all of your workflows and workflow events at http://localhost:8000!
 
 1. include `maestro-core` as a dependency in your `build.gradle.kts`:
     ```kotlin
-    implementation("io.github.lucidity-labs:maestro-core:0.1.3")
+    implementation("io.github.lucidity-labs:maestro-core:0.1.4")
     ```
     
     or your `pom.xml`:
@@ -49,7 +49,7 @@ View all of your workflows and workflow events at http://localhost:8000!
     <dependency>
         <groupId>io.github.lucidity-labs</groupId>
         <artifactId>maestro-core</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.4</version>
     </dependency>
     ```
    
