@@ -153,9 +153,9 @@ const WaterfallChart = ({ events }) => {
                                 y={y}
                                 width={Math.max(width, 2)}
                                 height={height}
-                                fill={`url(#grad-${payload.index})`}
                                 rx={2}
                                 ry={2}
+                                fill={`url(#grad-${payload.index})`}
                                 filter="url(#glow)"
                                 style={{ cursor: 'pointer' }}
                             />
@@ -170,13 +170,13 @@ const WaterfallChart = ({ events }) => {
     const maxEndTime = Math.max(...chartData.map(d => d.start + d.value));
 
     return (
-        <div className="rounded-lg bg-slate-950 p-6">
-            <div style={{ width: '100%', height: '400px' }}>
+        <div className="rounded-lg bg-slate-950">
+            <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                         data={chartData}
                         layout="vertical"
-                        margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
+                        margin={{ top: 20, right: 32, left: 32, bottom: 20 }}
                     >
                         <XAxis
                             type="number"
@@ -190,7 +190,7 @@ const WaterfallChart = ({ events }) => {
                             dataKey="name"
                             stroke="#94a3b8"
                             tick={CustomYAxisTick}
-                            width={90}
+                            width={120}
                         />
                         <Bar
                             dataKey="value"
@@ -207,27 +207,25 @@ const WaterfallChart = ({ events }) => {
 
 export const EventsTable = ({ workflowEvents, selectedWorkflow, onBack }) => {
     return (
-        <div className="container mx-auto px-4">
-            <div className="max-w-[1200px] mx-auto space-y-8">
-                <div className="relative">
-                    <h2 className="text-2xl text-center">Events</h2>
-                    <p className="text-sm text-muted-foreground absolute right-0 top-full mt-2">
-                        Workflow ID: {selectedWorkflow.workflowId}
-                    </p>
-                </div>
+        <div className="space-y-8">
+            <div className="relative">
+                <h2 className="text-2xl text-center">Events</h2>
+                <p className="text-sm text-muted-foreground absolute right-0 top-full mt-2">
+                    Workflow ID: {selectedWorkflow.workflowId}
+                </p>
+            </div>
 
-                <WaterfallChart events={workflowEvents} />
+            <WaterfallChart events={workflowEvents} />
 
-                <DataTable
-                    columns={eventColumns}
-                    data={workflowEvents}
-                />
+            <DataTable
+                columns={eventColumns}
+                data={workflowEvents}
+            />
 
-                <div className="text-center">
-                    <Button onClick={onBack} variant="outline">
-                        Back to All Workflows
-                    </Button>
-                </div>
+            <div className="text-center">
+                <Button onClick={onBack} variant="outline">
+                    Back to All Workflows
+                </Button>
             </div>
         </div>
     );
