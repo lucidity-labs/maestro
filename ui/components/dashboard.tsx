@@ -11,27 +11,65 @@ export default function Dashboard() {
     const [workflowEvents, setWorkflowEvents] = useState<Event[]>([])
     const [workflows, setWorkflows] = useState<Workflow[]>([])
 
+    useEffect(() => {
+        // Handle browser back/forward
+        const handlePopState = (event: PopStateEvent) => {
+            const workflowState = event.state?.workflow;
+            if (workflowState) {
+                setSelectedWorkflow(workflowState);
+                // Refetch events for the workflow
+                fetchWorkflowEvents(workflowState.workflowId);
+            } else {
+                setSelectedWorkflow(undefined);
+                setWorkflowEvents([]);
+            }
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        // Fetch initial workflows
+        fetch(`${API_BASE}/api/workflows`)
+            .then(res => res.json())
+            .then(data => setWorkflows(data));
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
+
+    const fetchWorkflowEvents = async (workflowId: string) => {
+        const res = await fetch(`${API_BASE}/api/workflows/${workflowId}`);
+        const json = await res.json();
+        setWorkflowEvents(json);
+    };
+
     const handleCellClick = async (cell: any) => {
-        if (cell.column.id === "input" || cell.column.id === "output") return
+        if (cell.column.id === "input" || cell.column.id === "output") return;
 
-        const workflow = cell.row.original
+        const workflow = cell.row.original;
 
-        const res = await fetch(`${API_BASE}/api/workflows/${workflow.workflowId}`)
-        const json = await res.json()
-        setSelectedWorkflow(workflow)
-        setWorkflowEvents(json)
+        // Push the new state to browser history
+        window.history.pushState(
+            { workflow }, // State object
+            '', // Title (unused)
+            `?workflow=${workflow.workflowId}` // URL (optional)
+        );
+
+        await fetchWorkflowEvents(workflow.workflowId);
+        setSelectedWorkflow(workflow);
     }
 
     const handleBack = () => {
-        setSelectedWorkflow(undefined)
-        setWorkflowEvents([])
-    }
+        // Push the "no workflow" state to browser history
+        window.history.pushState(
+            { workflow: null },
+            '',
+            '/'
+        );
 
-    useEffect(() => {
-        fetch(`${API_BASE}/api/workflows`)
-            .then(res => res.json())
-            .then(data => setWorkflows(data))
-    }, [])
+        setSelectedWorkflow(undefined);
+        setWorkflowEvents([]);
+    }
 
     return selectedWorkflow ?
         <EventsTable
