@@ -6,8 +6,8 @@ import WaterfallChart from "@/components/waterfall-chart";
 
 export const EventsTable = ({workflowEvents, selectedWorkflow, onBack}) => {
     return (
-        <div className="space-y-6">
-            <div>
+        <div>
+            <div className="mb-8">
                 <div className="text-center mb-1">
                     <h2 className="text-2xl">Events</h2>
                 </div>
@@ -16,12 +16,16 @@ export const EventsTable = ({workflowEvents, selectedWorkflow, onBack}) => {
                 </p>
             </div>
 
-            <WaterfallChart events={workflowEvents}/>
+            <div className="mb-8">
+                <WaterfallChart events={workflowEvents}/>
+            </div>
 
-            <DataTable
-                columns={eventColumns}
-                data={workflowEvents}
-            />
+            <div className="mb-8">
+                <DataTable
+                    columns={eventColumns}
+                    data={workflowEvents}
+                />
+            </div>
 
             <div className="text-center">
                 <Button onClick={onBack} variant="outline">
