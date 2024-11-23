@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Rectangle, Scatter } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { DataTable } from "@/components/table/data-table";
 import { eventColumns } from "@/components/table/workflow-columns";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,8 @@ const WaterfallChart = ({ events }) => {
 
             return {
                 index,
-                name: event.functionName || event.category, // Fallback to category if functionName is not available
-                displayName: event.functionName || `${event.category} Event`, // More readable fallback
+                name: event.functionName || event.category,
+                displayName: event.functionName || `${event.category} Event`,
                 category: event.category,
                 start: startOffset,
                 duration: duration,
@@ -45,6 +45,30 @@ const WaterfallChart = ({ events }) => {
             'DEFAULT': '#3b82f6'      // Default blue
         };
         return colors[category] || colors.DEFAULT;
+    };
+
+    // Custom tick component for YAxis with truncation
+    const CustomYAxisTick = ({ x, y, payload }) => {
+        const maxLength = 15; // Maximum characters to show
+        const text = payload.value;
+        const displayText = text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+
+        return (
+            <g transform={`translate(${x},${y})`}>
+                <title>{text}</title> {/* Native HTML tooltip on hover */}
+                <text
+                    x={-6}
+                    y={0}
+                    dy={4}
+                    textAnchor="end"
+                    fill="#94a3b8"
+                    fontSize="12px"
+                    className="cursor-help"
+                >
+                    {displayText}
+                </text>
+            </g>
+        );
     };
 
     const CustomBar = (props) => {
@@ -107,53 +131,53 @@ const WaterfallChart = ({ events }) => {
 
     return (
         <div className="rounded-lg bg-slate-950 p-6">
-            <div className="overflow-x-auto">
-                <ComposedChart
-                    width={1000}
-                    height={400}
-                    data={chartData}
-                    layout="vertical"
-                    margin={{ top: 20, right: 30, left: 200, bottom: 20 }}
-                >
-                    <XAxis
-                        type="number"
-                        domain={[0, maxEndTime]}
-                        stroke="#94a3b8"
-                        tick={{ fill: '#94a3b8' }}
-                        tickLine={{ stroke: '#94a3b8' }}
-                    />
-                    <YAxis
-                        type="category"
-                        dataKey="name"
-                        stroke="#94a3b8"
-                        tick={{ fill: '#94a3b8' }}
-                        width={180}
-                    />
-                    <Tooltip
-                        content={({ active, payload }) => {
-                            if (active && payload?.[0]) {
-                                const data = payload[0].payload;
-                                return (
-                                    <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-lg">
-                                        <p className="text-slate-200 font-medium mb-1">{data.displayName}</p>
-                                        <p className="text-slate-300 text-sm">Category: {data.category}</p>
-                                        <p className="text-slate-300 text-sm">Start: {data.start.toFixed(2)}s</p>
-                                        {!data.isPoint && (
-                                            <p className="text-slate-300 text-sm">Duration: {data.duration.toFixed(2)}s</p>
-                                        )}
-                                    </div>
-                                );
-                            }
-                            return null;
-                        }}
-                    />
-                    <Bar
-                        dataKey="value"
-                        barSize={20}
-                        shape={<CustomBar />}
-                        isAnimationActive={false}
-                    />
-                </ComposedChart>
+            <div style={{ width: '100%', height: '400px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                        data={chartData}
+                        layout="vertical"
+                        margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
+                    >
+                        <XAxis
+                            type="number"
+                            domain={[0, maxEndTime]}
+                            stroke="#94a3b8"
+                            tick={{ fill: '#94a3b8' }}
+                            tickLine={{ stroke: '#94a3b8' }}
+                        />
+                        <YAxis
+                            type="category"
+                            dataKey="name"
+                            stroke="#94a3b8"
+                            tick={CustomYAxisTick}
+                            width={90}
+                        />
+                        <Tooltip
+                            content={({ active, payload }) => {
+                                if (active && payload?.[0]) {
+                                    const data = payload[0].payload;
+                                    return (
+                                        <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-lg">
+                                            <p className="text-slate-200 font-medium mb-1">{data.displayName}</p>
+                                            <p className="text-slate-300 text-sm">Category: {data.category}</p>
+                                            <p className="text-slate-300 text-sm">Start: {data.start.toFixed(2)}s</p>
+                                            {!data.isPoint && (
+                                                <p className="text-slate-300 text-sm">Duration: {data.duration.toFixed(2)}s</p>
+                                            )}
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            }}
+                        />
+                        <Bar
+                            dataKey="value"
+                            barSize={20}
+                            shape={<CustomBar />}
+                            isAnimationActive={false}
+                        />
+                    </ComposedChart>
+                </ResponsiveContainer>
             </div>
         </div>
     );
@@ -170,16 +194,12 @@ export const EventsTable = ({ workflowEvents, selectedWorkflow, onBack }) => {
                     </p>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <WaterfallChart events={workflowEvents} />
-                </div>
+                <WaterfallChart events={workflowEvents} />
 
-                <div className="overflow-x-auto">
-                    <DataTable
-                        columns={eventColumns}
-                        data={workflowEvents}
-                    />
-                </div>
+                <DataTable
+                    columns={eventColumns}
+                    data={workflowEvents}
+                />
 
                 <div className="text-center">
                     <Button onClick={onBack} variant="outline">
