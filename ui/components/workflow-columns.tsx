@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import ReactJson from '@microlink/react-json-view';
-import DynamicJsonViewer from "@/components/table/DynamicJsonViewer";
+import DynamicJsonViewer from "@/components/DynamicJsonViewer";
 
 export type Event = {
     workflowId: string

@@ -1,6 +1,6 @@
 import React from "react";
-import { Workflow, workflowColumns } from "@/components/table/workflow-columns";
-import { DataTable } from "@/components/table/data-table";
+import { Workflow, workflowColumns } from "@/components/workflow-columns";
+import { DataTable } from "@/components/data-table";
 
 interface WorkflowsTableProps {
     workflows: Workflow[];
