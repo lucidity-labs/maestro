@@ -1,10 +1,10 @@
 "use client"
 
 import React, {useEffect, useState} from "react";
-import {Event, Workflow} from "@/components/table/workflow-columns";
+import {Event, Workflow} from "@/components/workflow-columns";
 import {API_BASE} from "@/lib/constants";
-import {EventsTable} from "@/components/table/events-table";
-import {WorkflowsTable} from "@/components/table/workflows-table";
+import {EventsTable} from "@/components/events-table";
+import {WorkflowsTable} from "@/components/workflows-table";
 
 export default function Dashboard() {
     const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow>()

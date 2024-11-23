@@ -1,9 +1,6 @@
-import React, {useMemo} from 'react';
-import {ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer} from 'recharts';
-import {DataTable} from "@/components/table/data-table";
-import {eventColumns} from "@/components/table/workflow-columns";
-import {Button} from "@/components/ui/button";
+import React, {useMemo} from "react";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis} from "recharts";
 
 const WaterfallChart = ({events}) => {
     const chartData = useMemo(() => {
@@ -174,14 +171,18 @@ const WaterfallChart = ({events}) => {
 
     const maxEndTime = Math.max(...chartData.map(d => d.start + d.value));
 
+    const formatXAxisTick = (value) => {
+        return `${value}s`;
+    };
+
     return (
-        <div className="rounded-lg bg-slate-950">
+        <div className="rounded-md border bg-slate-950 p-6">
             <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                         data={chartData}
                         layout="vertical"
-                        margin={{top: 20, right: 32, left: 32, bottom: 20}}
+                        margin={{top: 20, right: 37, left: 37, bottom: 20}}
                     >
                         <XAxis
                             type="number"
@@ -189,6 +190,7 @@ const WaterfallChart = ({events}) => {
                             stroke="#94a3b8"
                             tick={{fill: '#94a3b8'}}
                             tickLine={{stroke: '#94a3b8'}}
+                            tickFormatter={formatXAxisTick}
                         />
                         <YAxis
                             type="category"
@@ -210,30 +212,4 @@ const WaterfallChart = ({events}) => {
     );
 };
 
-export const EventsTable = ({workflowEvents, selectedWorkflow, onBack}) => {
-    return (
-        <div className="space-y-8">
-            <div className="relative">
-                <h2 className="text-2xl text-center">Events</h2>
-                <p className="text-sm text-muted-foreground absolute right-0 top-full mt-2">
-                    Workflow ID: {selectedWorkflow.workflowId}
-                </p>
-            </div>
-
-            <WaterfallChart events={workflowEvents}/>
-
-            <DataTable
-                columns={eventColumns}
-                data={workflowEvents}
-            />
-
-            <div className="text-center">
-                <Button onClick={onBack} variant="outline">
-                    Back to All Workflows
-                </Button>
-            </div>
-        </div>
-    );
-};
-
-export default EventsTable;
+export default WaterfallChart;
