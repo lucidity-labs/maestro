@@ -7,16 +7,16 @@ import WaterfallChart from "@/components/waterfall-chart";
 export const EventsTable = ({workflowEvents, selectedWorkflow, onBack}) => {
     return (
         <div>
-            <div className="mb-8">
-                <div className="text-center mb-1">
+            <div className="mb-4">
+                <div className="text-center">
                     <h2 className="text-2xl">Events</h2>
                 </div>
-                <p className="text-sm text-muted-foreground text-right">
-                    Workflow ID: {selectedWorkflow.workflowId}
-                </p>
             </div>
 
             <div className="mb-8">
+                <p className="text-sm text-muted-foreground text-right mb-6">
+                    Workflow ID: {selectedWorkflow.workflowId}
+                </p>
                 <WaterfallChart events={workflowEvents}/>
             </div>
 
