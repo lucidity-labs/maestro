@@ -22,7 +22,9 @@
 
 Access the UI simply by navigating to port `8000` after starting your application. No separate deployment needed!
 
-<img width="1715" alt="Screenshot 2024-08-06 at 22 18 11" src="https://github.com/user-attachments/assets/52f3c4d8-3883-4a43-bb36-2746aac6acc0">
+<img width="1714" alt="Screenshot 2024-11-23 at 13 04 00" src="https://github.com/user-attachments/assets/ae9785d0-e7bf-4cd7-8d67-617c8b04339a">
+<img width="1714" alt="Screenshot 2024-11-23 at 13 05 32" src="https://github.com/user-attachments/assets/5a20a98a-d07a-4134-9c65-128eeebcf986">
+
 
 ### Example app
 Take a look at the [example app](./example) for an example of how to create your first durable [workflow](./example/src/main/java/org/example/workflow/OrderWorkflowImpl.java)! 
