@@ -41,13 +41,12 @@ const WaterfallChart = ({events}) => {
 
     const getEventColor = (category) => {
         const colors = {
-            'ACTIVITY': '#00e6e6',    // Turquoise
-            'SIGNAL': '#c466fc',      // Bright Amethyst
-            'AWAIT': '#ff5cd6',       // Hot Pink
-            'SLEEP': '#4d4dff',       // Royal Blue
-            'DEFAULT': '#2e95ff'      // Electric Sapphire
+            'ACTIVITY': '#00e6e6',    // Turquoise (frequent, easy on eyes)
+            'SIGNAL': '#ff5cd6',      // Hot Pink (short signals)
+            'AWAIT': '#c466fc',       // Bright Amethyst (medium duration)
+            'SLEEP': '#2e95ff',       // Electric Sapphire (long duration, beautiful & bold)
         };
-        return colors[category] || colors.DEFAULT;
+        return colors[category];
     };
 
     const CustomYAxisTick = ({x, y, payload}) => {
@@ -110,17 +109,9 @@ const WaterfallChart = ({events}) => {
                                 <circle
                                     cx={0}
                                     cy={y + height / 2}
-                                    r={6}
+                                    r={5}
                                     fill={color}
                                     filter="url(#glow)"
-                                    style={{cursor: 'pointer'}}
-                                />
-                                <circle
-                                    cx={0}
-                                    cy={y + height / 2}
-                                    r={4}
-                                    fill="white"
-                                    fillOpacity={0.6}
                                     style={{cursor: 'pointer'}}
                                 />
                             </g>
